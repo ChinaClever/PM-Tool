@@ -2,7 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "send_json.h"
+#include "ip_navarwid.h"
+#include "ip_jsondata.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -18,11 +19,14 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-private slots:
-    void on_MainWidget_Btn_clicked();
+protected:
+    void intiWid();
+protected slots:
+    void navBarSlot(int);
 
 private:
     Ui::MainWindow *ui;
-    send_json *sj;
+    IP_JsonData *mIPJsonData;
+    IP_NavarWid *mIPNavarWid;
 };
 #endif // MAINWINDOW_H

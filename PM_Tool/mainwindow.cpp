@@ -1,26 +1,31 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+#include "backcolourcom.h"
 #include <QDebug>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    sj = new send_json(this);
-    ui->page->addWidget(sj);
-    ui->page->setCurrentWidget(sj);
+    intiWid();
+
+}
+void MainWindow::intiWid()
+{
+    mIPNavarWid = new IP_NavarWid(ui->barWid);
+
+    mIPJsonData = new IP_JsonData();
+    ui->stackedWid->addWidget(mIPJsonData);
+    connect(mIPNavarWid, &IP_NavarWid::navBarSig, this, &MainWindow::navBarSlot);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
-
-void MainWindow::on_MainWidget_Btn_clicked()
+void MainWindow::navBarSlot(int id)
 {
-    qDebug() << "当前堆栈容器中的页面数量：" << ui->page->count();
-    qDebug() << "当前页面索引：" << ui->page->currentIndex();
-    ui->page->setCurrentWidget(sj);
+    qDebug()<<"current page:  "<<id;
+    ui->stackedWid->setCurrentIndex(id);
 }
-
