@@ -30,7 +30,7 @@
    <property name="title">
     <string>服务端设置</string>
    </property>
-   <widget class="QDoubleSpinBox" name="timeInv">
+   <widget class="QSpinBox" name="timeInv">
     <property name="geometry">
      <rect>
       <x>360</x>
@@ -60,11 +60,14 @@
     <property name="suffix">
      <string> 秒</string>
     </property>
-    <property name="decimals">
-     <number>0</number>
+    <property name="prefix">
+     <string/>
+    </property>
+    <property name="minimum">
+     <number>1</number>
     </property>
     <property name="value">
-     <double>10.000000000000000</double>
+     <number>10</number>
     </property>
    </widget>
    <widget class="QLineEdit" name="serIp">
@@ -185,7 +188,7 @@
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QPushButton" name="sendBtn_3">
+   <widget class="QPushButton" name="sendJsonBtn">
     <property name="geometry">
      <rect>
       <x>40</x>
@@ -478,6 +481,9 @@
      <font>
       <pointsize>11</pointsize>
      </font>
+    </property>
+    <property name="maximum">
+     <number>9</number>
     </property>
    </widget>
   </widget>
@@ -1049,7 +1055,7 @@
      <number>1</number>
     </property>
     <property name="maximum">
-     <double>300.000000000000000</double>
+     <double>500.000000000000000</double>
     </property>
    </widget>
    <widget class="QLabel" name="label_111">
@@ -1112,7 +1118,7 @@
      <number>2</number>
     </property>
     <property name="maximum">
-     <double>100.000000000000000</double>
+     <double>150.000000000000000</double>
     </property>
    </widget>
    <widget class="QLabel" name="label_109">
@@ -1196,7 +1202,7 @@
      <number>2</number>
     </property>
     <property name="maximum">
-     <double>100.000000000000000</double>
+     <double>150.000000000000000</double>
     </property>
    </widget>
    <widget class="QLabel" name="label_107">
@@ -1324,7 +1330,7 @@
      <number>1</number>
     </property>
     <property name="maximum">
-     <double>300.000000000000000</double>
+     <double>500.000000000000000</double>
     </property>
    </widget>
    <widget class="QLabel" name="label_115">
@@ -1368,7 +1374,7 @@
      <number>2</number>
     </property>
     <property name="maximum">
-     <double>100.000000000000000</double>
+     <double>150.000000000000000</double>
     </property>
    </widget>
    <widget class="QDoubleSpinBox" name="pfA">
@@ -1816,7 +1822,7 @@
      <number>1</number>
     </property>
     <property name="maximum">
-     <double>300.000000000000000</double>
+     <double>500.000000000000000</double>
     </property>
    </widget>
    <widget class="QLabel" name="label_121">

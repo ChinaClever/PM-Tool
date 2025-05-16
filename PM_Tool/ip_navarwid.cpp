@@ -20,7 +20,7 @@ IP_NavarWid::~IP_NavarWid()
 
 void IP_NavarWid::on_coreBtn_clicked()
 {
-
+    emit navBarSig(0);
 }
 
 void IP_NavarWid::on_generBtn_clicked()
@@ -36,7 +36,7 @@ void IP_NavarWid::on_mproBtn_clicked()
 
 void IP_NavarWid::on_ipBtn_clicked()
 {
-    emit navBarSig(0);
+    emit navBarSig(1);
 }
 
 

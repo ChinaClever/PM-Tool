@@ -25,3 +25,7 @@ int specRanNumGgen::get_humidity() {    //
 
     return QRandomGenerator::global()->bounded(5u, 96u);
 }
+double specRanNumGgen::getrandom(int x)
+{
+    return QRandomGenerator::global()->bounded(x/5.0,x)/100.0;
+}

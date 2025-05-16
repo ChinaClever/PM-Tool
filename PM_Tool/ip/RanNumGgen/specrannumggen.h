@@ -10,7 +10,7 @@ public:
     static double get_power_factor_precise();
 
     static int get_temperature();
-
+    static double getrandom(int x);
     static int get_humidity();
 };
 

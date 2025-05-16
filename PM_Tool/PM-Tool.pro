@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -11,7 +11,7 @@ CONFIG += c++17
 
 include(ip/ip.pri)
 include(common/common.pri)
-
+include(mainPage/mainPage.pri)
 
 SOURCES += \
     ip_navarwid.cpp \
