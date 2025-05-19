@@ -11,3 +11,10 @@ extern QMap<QString, IP_sDataPacket<1>> sMap;
 
 extern QQueue<QJsonObject> TJsonQueue;  // 三相JSON队列
 extern QMutex TQueueMutex;                  // 队列的互斥锁
+
+extern QQueue<QJsonObject> SJsonQueue;  // 单相JSON队列
+extern QMutex SQueueMutex;
+
+
+extern int Stimesend;
+extern int Ttimesend;

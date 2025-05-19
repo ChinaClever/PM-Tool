@@ -9,14 +9,21 @@ ip_BulkSend::ip_BulkSend(QWidget *parent)
     : QWidget(parent)
     ,m_tmapProcessor(new TMapProcessor(this))
     ,m_triphasejson(new TriPhaseJsonQueue(this))
+    ,m_smapProcessor(new SMapProcessor(this))
+    ,m_sriphasejson(new SriPhaseJsonQueue(this))
     , ui(new Ui::ip_BulkSend)
 {
     ui->setupUi(this);
 
-    numChangeconnect();
 
     inti();
-    connect(this,&ip_BulkSend::tmpchange,m_tmapProcessor,&TMapProcessor::changerun);
+    numChangeconnect();
+    connect(this,&ip_BulkSend::tmpchange,m_tmapProcessor,&TMapProcessor::Tchangerun);
+    connect(this,&ip_BulkSend::smpchange,m_smapProcessor,&SMapProcessor::Schangerun);
+
+    connect(this,&ip_BulkSend::tmpchange,m_triphasejson,&TriPhaseJsonQueue::triRun);
+    connect(this,&ip_BulkSend::smpchange,m_sriphasejson,&SriPhaseJsonQueue::sriRun);
+
 }
 void ip_BulkSend::numChangeconnect()
 {
@@ -55,36 +62,55 @@ ip_BulkSend::~ip_BulkSend()
     delete ui;
 }
 
-void ip_BulkSend::on_bulkSendBtn_clicked()
+void ip_BulkSend::on_bulkSendBtn_clicked()  //三相发送启动
 {
 
     if(ui->bulkSendBtn->text()=="开始发送"){
         ui->bulkSendBtn->setText("停止发送");
 
+        ui->TcurCap->setEnabled(0);
+        ui->devIp->setEnabled(0);
+
         intiMap(3);
         emit tmpchange(1);
 
         m_tmapProcessor->start();
-        //m_triphasejson->start();
+        m_triphasejson->start();
     }
     else{
         ui->bulkSendBtn->setText("开始发送");
 
+        ui->TcurCap->setEnabled(1);
+        ui->devIp->setEnabled(1);
+
         emit tmpchange(0);
+        tMap.clear();
+        devip = ui->devIp->text();
+        addr = -1;
 
     }
 }
-void ip_BulkSend::on_SbulkSendBtn_clicked()
+void ip_BulkSend::on_SbulkSendBtn_clicked() //单相发送启动
 {
     if(ui->SbulkSendBtn->text()=="开始发送"){
         ui->SbulkSendBtn->setText("停止发送");
-
+        ui->ScurCap->setEnabled(0);
+        ui->SdevIp->setEnabled(0);
         intiMap(1);
+        emit smpchange(1);
 
+        m_smapProcessor->start();
+        m_sriphasejson->start();
 
     }
     else{
         ui->SbulkSendBtn->setText("开始发送");
+        ui->ScurCap->setEnabled(1);
+        ui->SdevIp->setEnabled(1);
+        emit smpchange(0);
+        Sdevip = ui->SdevIp->text();
+        Saddr = -1;
+
     }
 }
 void ip_BulkSend::bulkinti(const int x)
@@ -106,6 +132,7 @@ void ip_BulkSend::bulkinti(const int x)
         packet.totalDataCal();
         packet.Timesend = Ttime;
         tMap[key] = packet;
+
       //  qDebug() << "Packet info:\n" << packet;
     }
     else{
@@ -121,29 +148,33 @@ void ip_BulkSend::bulkinti(const int x)
         packet.totalDataCal();
         packet.Timesend = Stime;
         sMap[Skey] = packet;
-        qDebug() << "Packet info:\n" << packet;
+        //qDebug() <<sMap.size();
     }
 }
-void ip_BulkSend::intiMap(const int x)
+
+void ip_BulkSend::intiMap(const int x) //判断启动项单三相，确定创建主机个数
 {
-    qDebug() <<tpe;
+    //qDebug() <<tpe;
     if(x==3){
         for(int i=0;i<tpe*Tnum;i++){
             bulkinti(3);
         }
     }
     else {
-        qDebug()<<Sdevip;
+        //qDebug()<<Sdevip;
         for(int i=0;i<spe*Snum;i++){
             bulkinti(1);
         }
     }
 
 }
-void ip_BulkSend::STNumchange()
+
+void ip_BulkSend::STNumchange() //单三相参数变化
 {
     qDebug()<<"===========";
 
+    Ttimesend = ui->Ttimeinv->value();
+    Stimesend = ui->Stimeinv->value();
     tpe = ui->tpeNum->value();
     Tnum = ui->Taddnum->value();
     spe = ui->speNum->value();
@@ -152,4 +183,16 @@ void ip_BulkSend::STNumchange()
     Stime = ui->Stimeinv->value();
 }
 
+
+
+void ip_BulkSend::on_SdevIp_editingFinished()
+{
+    Sdevip = ui->SdevIp->text();
+}
+
+
+void ip_BulkSend::on_devIp_editingFinished()
+{
+    devip = ui->devIp->text();
+}
 

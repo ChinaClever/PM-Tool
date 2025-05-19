@@ -7,12 +7,15 @@
 #include <QJsonDocument>
 template <int SIZE>
 struct sObjLine {
-    std::array<int, SIZE>cur_alarm_status; //报警状态
-    std::array<int, SIZE>vol_alarm_status;
+    std::array<int, SIZE>cur_alarm_status = {0}; //报警状态
+    std::array<int, SIZE>vol_alarm_status = {0};
+    std::array<int, SIZE>pow_alarm_status = {0};
 
     std::array<double, SIZE> vol_value;
     std::array<double, SIZE> cur_value;
     std::array<double, SIZE> cur_alarm_max;//报警上限
+    std::array<double, SIZE> vol_alarm_max;
+
 
 
     std::array<double, SIZE> pow_value;
@@ -120,7 +123,9 @@ struct IP_sDataPacket {
         packet.env_item.hum_alarm_status[0] = 0;
         packet.env_item.tem_alarm_status[0] = 0;
 
+
         packet.line_item.ele_active = {0}; //有功电能初始为0
+        for(int i=0;i<SIZE;i++)packet.line_item.vol_alarm_max[i] = {276};
 
         packet.total_item.cur_rms = {0};
         packet.total_item.vol_rms = {0};
@@ -211,30 +216,66 @@ QJsonObject toJson(const IP_sDataPacket<SIZE>& packet) {
     root["dev_key"] = packet.dev_key;
     root["datetime"] = packet.datetime;
 
+
     // 环境数据（全部转为数组）
     QJsonObject env;
     env["insert"] = QJsonArray::fromVariantList(QVariantList(packet.env_item.insert.begin(), packet.env_item.insert.end()));
-    env["hum_value"] = QJsonArray::fromVariantList(QVariantList(packet.env_item.hum_value.begin(), packet.env_item.hum_value.end()));
-    env["tem_value"] = QJsonArray::fromVariantList(QVariantList(packet.env_item.tem_value.begin(), packet.env_item.tem_value.end()));
+    QVariantList list;
+    for (double v : packet.env_item.hum_value) {
+        list.append(qRound(v));  // 四舍五入
+    }
+    env["hum_value"] = QJsonArray::fromVariantList(list); //湿度不保留小数
+
+    list.clear();
+    for (double v : packet.env_item.tem_value) {
+        list.append(qRound(v * 10) / 10.0);  // 四舍五入 + 保留 1 位
+    }
+    env["tem_value"] = QJsonArray::fromVariantList(list); //温度保留一位
+
     env["dew_point"] = QJsonArray::fromVariantList(QVariantList(packet.env_item.dew_point.begin(), packet.env_item.dew_point.end()));
     env["hum_alarm_status"] = QJsonArray::fromVariantList(QVariantList(packet.env_item.hum_alarm_status.begin(), packet.env_item.hum_alarm_status.end()));
     env["tem_alarm_status"] = QJsonArray::fromVariantList(QVariantList(packet.env_item.tem_alarm_status.begin(), packet.env_item.tem_alarm_status.end()));
+
+
 
 
     // 线路数据（自动适配单相/三相）
     QJsonObject line;
     line["cur_alarm_status"] = QJsonArray::fromVariantList(QVariantList(packet.line_item.cur_alarm_status.begin(), packet.line_item.cur_alarm_status.end()));
     line["vol_alarm_status"] = QJsonArray::fromVariantList(QVariantList(packet.line_item.vol_alarm_status.begin(), packet.line_item.vol_alarm_status.end()));
-    line["vol_value"] = QJsonArray::fromVariantList(QVariantList(packet.line_item.vol_value.begin(), packet.line_item.vol_value.end()));
-    line["cur_value"] = QJsonArray::fromVariantList(QVariantList(packet.line_item.cur_value.begin(), packet.line_item.cur_value.end()));
+    line["pow_alarm_status"] = QJsonArray::fromVariantList(QVariantList(packet.line_item.pow_alarm_status.begin(), packet.line_item.pow_alarm_status.end()));
+    list.clear();
+    for (double v : packet.line_item.vol_value) {
+        list.append(qRound(v * 10) / 10.0);
+    }
+    line["vol_value"] = QJsonArray::fromVariantList(list);
+
+    list.clear();
+    for (double v : packet.line_item.cur_value) {
+        list.append(qRound(v * 10) / 10.0);
+    }
+    line["cur_value"] = QJsonArray::fromVariantList(list);
+
     line["cur_alarm_max"] = QJsonArray::fromVariantList(QVariantList(packet.line_item.cur_alarm_max.begin(), packet.line_item.cur_alarm_max.end()));
+    line["vol_alarm_max"] = QJsonArray::fromVariantList(QVariantList(packet.line_item.vol_alarm_max.begin(), packet.line_item.vol_alarm_max.end()));
 
     line["pow_apparent"] = formatToThreeDecimals(packet.line_item.pow_apparent);
     line["pow_reactive"] = formatToThreeDecimals(packet.line_item.pow_reactive);
     line["pow_value"] = formatToThreeDecimals(packet.line_item.pow_value);
 
     line["power_factor"] = formatToThreeDecimals(packet.line_item.power_factor);
-    line["ele_active"] = QJsonArray::fromVariantList(QVariantList(packet.line_item.ele_active.begin(), packet.line_item.ele_active.end()));
+
+    line["ele_active"] = [&] {
+        QVariantList list;
+        std::transform(
+            packet.line_item.ele_active.begin(),
+            packet.line_item.ele_active.end(),
+            std::back_inserter(list),
+            [](double v) { return QVariant(static_cast<int>(v)); }
+            );
+        return QJsonArray::fromVariantList(list);
+    }();
+
 
 
 
@@ -242,16 +283,19 @@ QJsonObject toJson(const IP_sDataPacket<SIZE>& packet) {
     QJsonObject total;
     total["cur_rms"] = packet.total_item.cur_rms;
     total["vol_rms"] = packet.total_item.vol_rms;
-    total["ele_active"] = packet.total_item.ele_active;
+    total["ele_active"] = qRound(packet.total_item.ele_active*1)/1;
 
-    total["power_factor"] = qRound(packet.total_item.power_factor * 1000) / 1000.0;
+    total["power_factor"] = qRound(packet.total_item.power_factor * 100) / 100.0;
 
     total["pow_active"] = qRound(packet.total_item.pow_active*1000)/1000.0;
     total["pow_apparent"] = qRound(packet.total_item.pow_apparent*1000)/1000.0;
     total["pow_reactive"] = qRound(packet.total_item.pow_reactive*1000)/1000.0;
-    total["vol_unbalance"] = qRound(packet.total_item.vol_unbalance*10)/10.0;
-    total["cur_unbalance"] = qRound(packet.total_item.cur_unbalance*10)/10.0;
+    if(SIZE == 3){
 
+        total["vol_unbalance"] = qRound(packet.total_item.vol_unbalance*10)/10.0;
+        total["cur_unbalance"] = qRound(packet.total_item.cur_unbalance*10)/10.0;
+
+    }
     QJsonObject pdu_data;
     pdu_data["env_item_list"] = env;
     pdu_data["line_item_list"] = line;

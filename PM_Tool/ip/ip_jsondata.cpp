@@ -281,8 +281,8 @@ void IP_JsonData::powerdataCal()
         ui->ApparentB->setValue(data_cal::apparent_powerCal(ui->volB->value(),ui->curB->value()));
         ui->ApparentC->setValue(data_cal::apparent_powerCal(ui->volC->value(),ui->curC->value()));
 
-        ui->act_PowB->setValue(data_cal::active_powerCal(ui->volA->value(),ui->curB->value(),ui->pfB->value()));
-        ui->act_PowC->setValue(data_cal::active_powerCal(ui->volA->value(),ui->curC->value(),ui->pfC->value()));
+        ui->act_PowB->setValue(data_cal::active_powerCal(ui->volB->value(),ui->curB->value(),ui->pfB->value()));
+        ui->act_PowC->setValue(data_cal::active_powerCal(ui->volC->value(),ui->curC->value(),ui->pfC->value()));
 
         ui->Rec_PowB->setValue(data_cal::reactive_powerCal(ui->ApparentB->value(),ui->act_PowB->value()));
         ui->Rec_PowC->setValue(data_cal::reactive_powerCal(ui->ApparentC->value(),ui->act_PowC->value()));

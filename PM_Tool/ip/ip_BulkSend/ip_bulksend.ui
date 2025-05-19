@@ -46,13 +46,13 @@
      </font>
     </property>
     <property name="maximum">
-     <number>100000</number>
+     <number>10000</number>
     </property>
     <property name="singleStep">
      <number>2</number>
     </property>
     <property name="value">
-     <number>2</number>
+     <number>100</number>
     </property>
     <property name="displayIntegerBase">
      <number>10</number>
@@ -118,9 +118,9 @@
     <property name="geometry">
      <rect>
       <x>290</x>
-      <y>159</y>
-      <width>151</width>
-      <height>31</height>
+      <y>149</y>
+      <width>161</width>
+      <height>35</height>
      </rect>
     </property>
     <property name="font">
@@ -185,8 +185,11 @@
       <pointsize>11</pointsize>
      </font>
     </property>
+    <property name="suffix">
+     <string> 秒</string>
+    </property>
     <property name="maximum">
-     <number>100000</number>
+     <number>1000</number>
     </property>
     <property name="singleStep">
      <number>2</number>
@@ -239,7 +242,7 @@
      <number>2</number>
     </property>
     <property name="value">
-     <number>2</number>
+     <number>10</number>
     </property>
     <property name="displayIntegerBase">
      <number>10</number>
@@ -270,7 +273,7 @@
      <number>0</number>
     </property>
     <property name="maximum">
-     <number>100000</number>
+     <number>150</number>
     </property>
     <property name="singleStep">
      <number>2</number>
@@ -315,14 +318,17 @@
       <pointsize>11</pointsize>
      </font>
     </property>
+    <property name="minimum">
+     <number>1</number>
+    </property>
     <property name="maximum">
-     <number>100000</number>
+     <number>10000</number>
     </property>
     <property name="singleStep">
      <number>100</number>
     </property>
     <property name="value">
-     <number>2</number>
+     <number>100</number>
     </property>
    </widget>
    <widget class="QLabel" name="label_3">
@@ -366,7 +372,7 @@
      <number>2</number>
     </property>
     <property name="value">
-     <number>2</number>
+     <number>10</number>
     </property>
     <property name="displayIntegerBase">
      <number>10</number>
@@ -410,7 +416,7 @@
      <string> 秒</string>
     </property>
     <property name="maximum">
-     <number>100000</number>
+     <number>1000</number>
     </property>
     <property name="singleStep">
      <number>2</number>
@@ -540,7 +546,7 @@
      <number>0</number>
     </property>
     <property name="maximum">
-     <number>100000</number>
+     <number>150</number>
     </property>
     <property name="singleStep">
      <number>2</number>
@@ -554,6 +560,20 @@
    </widget>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>speNum</tabstop>
+  <tabstop>SdevIp</tabstop>
+  <tabstop>Stimeinv</tabstop>
+  <tabstop>ScurCap</tabstop>
+  <tabstop>Saddnum</tabstop>
+  <tabstop>SbulkSendBtn</tabstop>
+  <tabstop>tpeNum</tabstop>
+  <tabstop>devIp</tabstop>
+  <tabstop>Ttimeinv</tabstop>
+  <tabstop>TcurCap</tabstop>
+  <tabstop>Taddnum</tabstop>
+  <tabstop>bulkSendBtn</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

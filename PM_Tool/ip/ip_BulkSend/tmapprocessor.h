@@ -7,20 +7,18 @@ class TMapProcessor : public QThread {
 public:
     explicit TMapProcessor(QObject* parent = nullptr);
     TMapProcessor();
-    void stop();
+    ~TMapProcessor();
 
     void run() override;
-    ~TMapProcessor();
-    void Incchange(IP_sDataPacket<3>&tMap);
+    void Incchange(IP_sDataPacket<3>&tMap); //增量更新数值
     void PowerCal(IP_sDataPacket<3>&tMap);
     void EleCal(IP_sDataPacket<3>&tMap);
     void updatePhaseValue(double& value, bool& incFlag);
     void updateCurrentPhase(double& value, bool& incFlag, double cap);
     void updatePowerFactor(double& pf, bool& incFlag);
-signals:
-    void jsonReady(const QByteArray& json);  // 发送序列化后的JSON
+
 public slots:
-    void changerun(bool flag);
+    void Tchangerun(bool flag);
 protected:
 
 private:

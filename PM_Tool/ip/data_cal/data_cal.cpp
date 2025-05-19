@@ -11,14 +11,17 @@ data_cal::data_cal() {}
  * @param 电流
  * @param 功率因素
  */
+
 double data_cal::apparent_powerCal(double V,double I)
 {
     return V*I/1000.0;
 }
+
 double data_cal::active_powerCal(double V,double I,double pf)
 {
     return V*I*pf/1000.0;
 }
+
 double data_cal::reactive_powerCal(double S,double P)
 {
     return sqrt(S*S - P*P)/1000.0;
@@ -71,6 +74,7 @@ QString data_cal::generateNextCascadeIP(QString &devip, int &addr,int addnum)
 
     return dev_key;
 }
+
 double data_cal::calculate_dewpoint1(double t, double h) {
     double logex = (std::log10(h) - 2) / 0.4343 + (17.62 * t) / (243.12 + t);
     double dew = 243.12 * logex / (17.62 - logex);

@@ -1,31 +1,33 @@
-#include "triphasejsonqueue.h"
+#include "sriphasejsonqueue.h"
 #include <QDebug>
 #include "globals.h"
 #include <QUdpSocket>
 #include "data_cal/data_cal.h"
-TriPhaseJsonQueue::TriPhaseJsonQueue(QObject* parent)
-    : QThread(parent)
+SriPhaseJsonQueue::SriPhaseJsonQueue(QObject* parent)
 {
-    qDebug() << "Tqueue Processor created";
+    qDebug() << "Squeue Processor created";
 }
-TriPhaseJsonQueue::~TriPhaseJsonQueue()
+SriPhaseJsonQueue::~SriPhaseJsonQueue()
 {
     m_running = false;
     wait();
     quit();
 
 }
-void TriPhaseJsonQueue::run()
+void SriPhaseJsonQueue::run()
 {
+
     QQueue<QJsonObject>arr;
     while(m_running){
+
         {
-            QMutexLocker locker(&TQueueMutex);
-            arr = TJsonQueue;
-            TJsonQueue.clear();
+            QMutexLocker locker(&SQueueMutex);
+            arr = SJsonQueue;
+            SJsonQueue.clear();
         }
         QUdpSocket *udpsocket = new QUdpSocket();
 
+        //判断发送起始时间和结束时间，确定sleep时间
         QString x = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
 
         while(!arr.isEmpty()) {
@@ -41,12 +43,16 @@ void TriPhaseJsonQueue::run()
 
         QString y = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
         int k = data_cal::calculateTimeDiffInSeconds(y,x);
-        if(k <= Ttimesend)
-            sleep(Ttimesend - k);
+        if(k<=Stimesend)
+        sleep(Stimesend-k);
     }
 }
-void TriPhaseJsonQueue::triRun(bool flag)
+
+
+
+void SriPhaseJsonQueue::sriRun(bool flag) //启动/关闭该线程
 {
     if(flag)m_running = 1;
     else m_running = 0;
 }
+

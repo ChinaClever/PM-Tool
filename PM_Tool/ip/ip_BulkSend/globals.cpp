@@ -7,3 +7,9 @@ QMutex tMapMutex;                       // 定义互斥锁
 
 QQueue<QJsonObject> TJsonQueue;  // 三相JSON队列
 QMutex TQueueMutex;
+
+QQueue<QJsonObject> SJsonQueue;  // 单相JSON队列
+QMutex SQueueMutex;
+
+int Stimesend;
+int Ttimesend;

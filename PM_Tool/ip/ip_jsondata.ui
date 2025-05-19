@@ -1177,7 +1177,7 @@
      <number>3</number>
     </property>
     <property name="maximum">
-     <double>100000.000000000000000</double>
+     <double>10000000.000000000000000</double>
     </property>
    </widget>
    <widget class="QDoubleSpinBox" name="curB">
@@ -1261,7 +1261,7 @@
      <number>3</number>
     </property>
     <property name="maximum">
-     <double>100000.000000000000000</double>
+     <double>10000000.000000000000000</double>
     </property>
    </widget>
    <widget class="QDoubleSpinBox" name="eleB">
@@ -1455,7 +1455,7 @@
      <number>3</number>
     </property>
     <property name="maximum">
-     <double>100000.000000000000000</double>
+     <double>10000000.000000000000000</double>
     </property>
    </widget>
    <widget class="QDoubleSpinBox" name="Rec_PowB">
@@ -1489,7 +1489,7 @@
      <number>3</number>
     </property>
     <property name="maximum">
-     <double>100000.000000000000000</double>
+     <double>10000000.000000000000000</double>
     </property>
    </widget>
    <widget class="QLabel" name="label_113">
@@ -1567,7 +1567,7 @@
      <number>3</number>
     </property>
     <property name="maximum">
-     <double>100000.000000000000000</double>
+     <double>10000000.000000000000000</double>
     </property>
    </widget>
    <widget class="QDoubleSpinBox" name="pfB">
@@ -1626,7 +1626,7 @@
      <number>3</number>
     </property>
     <property name="maximum">
-     <double>100000.000000000000000</double>
+     <double>10000000.000000000000000</double>
     </property>
    </widget>
    <widget class="QLabel" name="label_114">
@@ -1679,7 +1679,7 @@
      <number>3</number>
     </property>
     <property name="maximum">
-     <double>100000.000000000000000</double>
+     <double>10000000.000000000000000</double>
     </property>
    </widget>
    <widget class="QDoubleSpinBox" name="act_PowB">
@@ -1713,7 +1713,7 @@
      <number>3</number>
     </property>
     <property name="maximum">
-     <double>100000.000000000000000</double>
+     <double>10000000.000000000000000</double>
     </property>
    </widget>
    <widget class="QDoubleSpinBox" name="ApparentB">
@@ -1747,7 +1747,7 @@
      <number>3</number>
     </property>
     <property name="maximum">
-     <double>100000.000000000000000</double>
+     <double>10000000.000000000000000</double>
     </property>
    </widget>
    <widget class="QLabel" name="label_108">
@@ -2199,7 +2199,7 @@
      <number>3</number>
     </property>
     <property name="maximum">
-     <double>300.000000000000000</double>
+     <double>100000000.000000000000000</double>
     </property>
    </widget>
    <widget class="QLabel" name="label_102">
@@ -2276,7 +2276,7 @@
      <number>3</number>
     </property>
     <property name="maximum">
-     <double>300.000000000000000</double>
+     <double>100000000.000000000000000</double>
     </property>
    </widget>
    <widget class="QDoubleSpinBox" name="powReact">
@@ -2319,7 +2319,7 @@
      <number>3</number>
     </property>
     <property name="maximum">
-     <double>100.000000000000000</double>
+     <double>100000000.000000000000000</double>
     </property>
    </widget>
    <widget class="QDoubleSpinBox" name="totalPf">
@@ -2402,7 +2402,7 @@
      <number>1</number>
     </property>
     <property name="maximum">
-     <double>10000.000000000000000</double>
+     <double>10000000000000000.000000000000000</double>
     </property>
    </widget>
    <widget class="QDoubleSpinBox" name="curUnbal">
@@ -2518,6 +2518,61 @@
    </widget>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>sendJsonBtn</tabstop>
+  <tabstop>serIp</tabstop>
+  <tabstop>port</tabstop>
+  <tabstop>timeInv</tabstop>
+  <tabstop>spe</tabstop>
+  <tabstop>tpe</tabstop>
+  <tabstop>cur32A</tabstop>
+  <tabstop>cur63A</tabstop>
+  <tabstop>cur125A</tabstop>
+  <tabstop>devIp</tabstop>
+  <tabstop>addr</tabstop>
+  <tabstop>curCapA</tabstop>
+  <tabstop>curCapB</tabstop>
+  <tabstop>curCapC</tabstop>
+  <tabstop>volCapA</tabstop>
+  <tabstop>volCapB</tabstop>
+  <tabstop>volCapC</tabstop>
+  <tabstop>envTem</tabstop>
+  <tabstop>envHum</tabstop>
+  <tabstop>envInc</tabstop>
+  <tabstop>envhumInc</tabstop>
+  <tabstop>volA</tabstop>
+  <tabstop>volB</tabstop>
+  <tabstop>volC</tabstop>
+  <tabstop>volInc</tabstop>
+  <tabstop>curA</tabstop>
+  <tabstop>curB</tabstop>
+  <tabstop>curC</tabstop>
+  <tabstop>curInc</tabstop>
+  <tabstop>pfA</tabstop>
+  <tabstop>pfB</tabstop>
+  <tabstop>pfC</tabstop>
+  <tabstop>pfInc</tabstop>
+  <tabstop>act_PowA</tabstop>
+  <tabstop>act_PowB</tabstop>
+  <tabstop>act_PowC</tabstop>
+  <tabstop>Rec_PowA</tabstop>
+  <tabstop>Rec_PowB</tabstop>
+  <tabstop>Rec_PowC</tabstop>
+  <tabstop>ApparentA</tabstop>
+  <tabstop>ApparentB</tabstop>
+  <tabstop>ApparentC</tabstop>
+  <tabstop>eleA</tabstop>
+  <tabstop>eleB</tabstop>
+  <tabstop>eleC</tabstop>
+  <tabstop>eleInc</tabstop>
+  <tabstop>powAct</tabstop>
+  <tabstop>powReact</tabstop>
+  <tabstop>totalPf</tabstop>
+  <tabstop>totalPA</tabstop>
+  <tabstop>totalEleact</tabstop>
+  <tabstop>volUnbal</tabstop>
+  <tabstop>curUnbal</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
