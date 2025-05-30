@@ -15,6 +15,7 @@ public slots:
     void sriRun(bool flag);
 private:
     bool m_running;
+
 };
 
 #endif // SRIPHASEJSONQUEUE_H

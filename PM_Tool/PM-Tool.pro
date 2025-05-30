@@ -12,6 +12,7 @@ CONFIG += c++17
 include(ip/ip.pri)
 include(common/common.pri)
 include(mainPage/mainPage.pri)
+include(mpro/mpro.pri)
 
 SOURCES += \
     ip_navarwid.cpp \

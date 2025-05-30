@@ -8,8 +8,14 @@ mp_mainPage::mp_mainPage(QWidget *parent)
 {
     ui->setupUi(this);
     set_background_icon(this,":/image/box_back.jpg");
+
     mIpBulkSend = new ip_BulkSend();
+    mMpBulkSend = new mp_bulksend();
+    mserIpPort = new serIpPort();
+
     ui->ip_BulkSendWid->addWidget(mIpBulkSend);
+    ui->mp_bulksendWid->addWidget(mMpBulkSend);
+    ui->serSetWid->addWidget(mserIpPort);
 }
 
 mp_mainPage::~mp_mainPage()

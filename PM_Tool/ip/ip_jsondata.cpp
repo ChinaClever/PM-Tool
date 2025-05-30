@@ -141,7 +141,7 @@ void IP_JsonData::on_sendJsonBtn_clicked()
 {
     if(ui->sendJsonBtn->text()=="开始发送"){
         jsonassignment();
-        emit sendSig(Json.getJsonObject(),ui->serIp->text(),ui->port->text());
+        emit sendSig(Json.getJsonObject(),ui->serIp->text(),ui->port->text(),ui->addNum->value());
         timesend->start();
         ui->sendJsonBtn->setText("停止发送");
     }
@@ -189,9 +189,8 @@ void IP_JsonData::timeoutsend()
         ui->eleC->setValue(ui->eleA->value()+(ui->act_PowC->value()*(ui->timeInv->value()/3600)));
     }
 
-    qDebug()<<222;
     jsonassignment();
-    emit sendSig(Json.getJsonObject(),ui->serIp->text(),ui->port->text());
+    emit sendSig(Json.getJsonObject(),ui->serIp->text(),ui->port->text(),ui->addNum->value());
 }
 void IP_JsonData::jsonassignment()
 {
@@ -454,7 +453,7 @@ void IP_JsonData::alarmturn()
     if(ui->sendJsonBtn->text()=="停止发送"){
         timesend->stop();
         jsonassignment();
-        emit sendSig(Json.getJsonObject(),ui->serIp->text(),ui->port->text());
+        emit sendSig(Json.getJsonObject(),ui->serIp->text(),ui->port->text(),ui->addNum->value());
         timesend->start(ui->timeInv->value()*1000);
     }
 }

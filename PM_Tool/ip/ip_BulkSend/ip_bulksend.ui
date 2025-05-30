@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>479</width>
-    <height>442</height>
+    <width>487</width>
+    <height>440</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -44,6 +44,9 @@
       <family>微软雅黑</family>
       <pointsize>11</pointsize>
      </font>
+    </property>
+    <property name="minimum">
+     <number>1</number>
     </property>
     <property name="maximum">
      <number>10000</number>
@@ -188,6 +191,9 @@
     <property name="suffix">
      <string> 秒</string>
     </property>
+    <property name="minimum">
+     <number>5</number>
+    </property>
     <property name="maximum">
      <number>1000</number>
     </property>
@@ -235,8 +241,11 @@
       <pointsize>11</pointsize>
      </font>
     </property>
+    <property name="minimum">
+     <number>1</number>
+    </property>
     <property name="maximum">
-     <number>100000</number>
+     <number>10</number>
     </property>
     <property name="singleStep">
      <number>2</number>
@@ -365,8 +374,11 @@
       <pointsize>11</pointsize>
      </font>
     </property>
+    <property name="minimum">
+     <number>1</number>
+    </property>
     <property name="maximum">
-     <number>100000</number>
+     <number>10</number>
     </property>
     <property name="singleStep">
      <number>2</number>
@@ -414,6 +426,9 @@
     </property>
     <property name="suffix">
      <string> 秒</string>
+    </property>
+    <property name="minimum">
+     <number>5</number>
     </property>
     <property name="maximum">
      <number>1000</number>

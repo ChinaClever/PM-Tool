@@ -22,9 +22,9 @@ double data_cal::active_powerCal(double V,double I,double pf)
     return V*I*pf/1000.0;
 }
 
-double data_cal::reactive_powerCal(double S,double P)
+double data_cal::reactive_powerCal(double S,double P) //S:视在功率
 {
-    return sqrt(S*S - P*P)/1000.0;
+    return sqrt(fabs(S*S - P*P));
 }
 
 qint64 data_cal::calculateTimeDiffInSeconds(const QString& timeStr1, const QString& timeStr2) {

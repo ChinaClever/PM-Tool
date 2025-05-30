@@ -5,7 +5,7 @@
 #include "ip_navarwid.h"
 #include "ip_jsondata.h"
 #include "./mainPage/mp_mainPage.h"
-
+#include "mp_data.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -30,5 +30,6 @@ private:
     IP_JsonData *mIPJsonData;
     IP_NavarWid *mIPNavarWid;
     mp_mainPage *mMainPage;
+    mp_data  *mProData;
 };
 #endif // MAINWINDOW_H

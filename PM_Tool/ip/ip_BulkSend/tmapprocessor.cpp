@@ -9,7 +9,7 @@
 TMapProcessor::TMapProcessor(QObject* parent)
     : QThread(parent)
 {
-    qDebug() << "TProcessor created";
+   // qDebug() << "TProcessor created";
 }
 
 TMapProcessor::~TMapProcessor()
@@ -21,7 +21,9 @@ TMapProcessor::~TMapProcessor()
 
 void TMapProcessor::run() {
     while(m_running){
+        QDateTime t1 = QDateTime::currentDateTime();
         for (auto it = tMap.begin(); it != tMap.end(); ++it) {
+
             Incchange(it.value());    // 增量变化计算
             EleCal(it.value());       // 电量计算
             PowerCal(it.value());     // 功率计算
@@ -34,12 +36,12 @@ void TMapProcessor::run() {
             }
         }
 
-        if(TJsonQueue.size())
-        sleep(5);
-
-        if (tMap.empty()) {
-            QThread::sleep(1);
-        }
+        QDateTime t2 = QDateTime::currentDateTime();
+        int duration = t1.msecsTo(t2);
+      //  qDebug()<<"duration: "<<duration<<"  "<<Stimesend;
+        if(duration<=Stimesend*1000)
+            msleep(Stimesend*1000-duration);
+        msleep(1);
     }
 }
 

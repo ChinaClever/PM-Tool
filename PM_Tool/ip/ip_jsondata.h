@@ -21,7 +21,7 @@ public:
 
 signals:
     void phaseChangeSig(int);
-    void sendSig(const QJsonObject &json,const QString &serip,const QString &port);
+    void sendSig(const QJsonObject &json,const QString &serip,const QString &port,const int num);
 
 private slots:
     void ST_Switch_Com_Changed(int index);

@@ -13,9 +13,6 @@ namespace Ui {
 class ip_BulkSend;
 }
 
-// extern QMap<QString,IP_sDataPacket<3>>tMap;
-// extern QMap<QString,IP_sDataPacket<1>>sMap;
-
 class ip_BulkSend : public QWidget
 {
     Q_OBJECT
@@ -28,8 +25,7 @@ public:
     void numChangeconnect();
     void intiMap(const int x);
 
-    //const QMap<QString, IP_sDataPacket<3>>& getTMap() const { return tMap; }
-    //const QMap<QString, IP_sDataPacket<1>>& getSMap() const { return sMap; }
+
 signals:
     void tmpchange(bool); //1:启动三相处理两个线程，0：关闭线程
     void smpchange(bool); //单相
@@ -46,30 +42,34 @@ private slots:
 
     void on_devIp_editingFinished();
 
+
+
 private:
     int tpe;
     int spe;
+
+    int Tnum;           //主机副机个数
+    int Snum;
+
 
     QString devip;
     QString Sdevip;
 
     TMapProcessor* m_tmapProcessor;
-    TriPhaseJsonQueue *m_triphasejson;
+    QVector<TriPhaseJsonQueue *> m_triphasejson;
 
     SMapProcessor *m_smapProcessor;
-    SriPhaseJsonQueue *m_sriphasejson;
+    QVector<SriPhaseJsonQueue *>m_sriphasejson;
+
 
     int addr = -1;  //三相设备级联地址
-    int Saddr = -1;
+    int Saddr = -1; //单相设备级联地址
 
     QString key = "";
     QString Skey = "";
 
     int Ttime = 10;     //发送时间
     int Stime = 10;
-
-    int Tnum;           //主机副机个数
-    int Snum;
 
     Ui::ip_BulkSend *ui;
 

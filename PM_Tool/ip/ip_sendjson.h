@@ -29,7 +29,7 @@ public:
     QJsonObject getJsonObject() const;                  //返回json包
 
 public slots:
-    void sendTogoal(const QJsonObject &json,const QString &serip,const QString &port);
+    void sendTogoal(const QJsonObject &json,const QString &serip,const QString &port,const int num);
 
 private:
 

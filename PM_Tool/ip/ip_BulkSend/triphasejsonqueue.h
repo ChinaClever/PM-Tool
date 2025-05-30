@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QThread>
+
 class TriPhaseJsonQueue:public QThread
 {
     Q_OBJECT
@@ -13,8 +14,11 @@ public:
     ~TriPhaseJsonQueue();
 public slots:
     void triRun(bool flag);
+
 private:
+
     bool m_running = true;
+
 };
 
 #endif // TRIPHASEJSONQUEUE_H

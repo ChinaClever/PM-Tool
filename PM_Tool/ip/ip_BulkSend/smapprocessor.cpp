@@ -4,10 +4,11 @@
 #include <math.h>
 #include "specrannumggen.h"
 #include "data_cal/data_cal.h"
+
 SMapProcessor::SMapProcessor(QObject* parent)
     : QThread(parent)
 {
-    qDebug() << "SProcessor created";
+   // qDebug() << "SProcessor created";
 }
 
 SMapProcessor::~SMapProcessor()
@@ -22,20 +23,34 @@ void SMapProcessor::run()
 
     while(m_running){
 
+
+
+    //if(SJsonQueue.size() > 10000)  SJsonQueue.clear();
+
+       QDateTime t1 = QDateTime::currentDateTime();
        for (auto it = sMap.begin(); it != sMap.end(); ++it) {
-             Incchange(it.value());    // 增量变化计算
-             EleCal(it.value());       // 电量计算
-             PowerCal(it.value());     // 功率计算
+            Incchange(it.value());    // 增量变化计算
+            EleCal(it.value());       // 电量计算
+            PowerCal(it.value());     // 功率计算
             it.value().totalDataCal();// 总体数据计算
 
-             auto u = toJson(it.value());
+            auto u = toJson(it.value());
             {
                 QMutexLocker locker(&SQueueMutex);  // 自动加锁解锁
+
                 SJsonQueue.enqueue(u);
             }
         }
-       if(SJsonQueue.size())
-       sleep(5);
+
+       //qDebug()<<sMap.size();
+
+
+        QDateTime t2 = QDateTime::currentDateTime();
+        int duration = t1.msecsTo(t2);
+        qDebug()<<"duration: "<<duration<<"  "<<Stimesend;
+         if(duration<=Stimesend*1000)
+        msleep(Stimesend*1000-duration);
+
     }
 }
 
@@ -52,6 +67,7 @@ void SMapProcessor::Incchange(IP_sDataPacket<1>&v)
                            (!v.incrEnvInc && newVal <= 0)   ? true  :
                            v.incrEnvInc;
     }
+
     {   //湿度增量
         double x = specRanNumGgen::getrandom(100);
         double y = v.env_item.hum_value[0];
@@ -151,6 +167,5 @@ void SMapProcessor::PowerCal(IP_sDataPacket<1>&v)
 
 void SMapProcessor::Schangerun(bool flag)
 {
-    if(flag)m_running = 1;
-    else m_running = 0;
+    m_running = flag;
 }

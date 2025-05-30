@@ -85,15 +85,15 @@
      </font>
     </property>
     <property name="text">
-     <string>192.168.1.246</string>
+     <string>192.168.1.245</string>
     </property>
    </widget>
    <widget class="QLabel" name="labelVersion_8">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>214</x>
       <y>150</y>
-      <width>75</width>
+      <width>101</width>
       <height>31</height>
      </rect>
     </property>
@@ -118,9 +118,9 @@
    <widget class="QLabel" name="DevIp">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>213</x>
       <y>50</y>
-      <width>74</width>
+      <width>101</width>
       <height>31</height>
      </rect>
     </property>
@@ -164,9 +164,9 @@
    <widget class="QLabel" name="Port_4">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>214</x>
       <y>101</y>
-      <width>75</width>
+      <width>101</width>
       <height>31</height>
      </rect>
     </property>
@@ -280,9 +280,9 @@
     <property name="geometry">
      <rect>
       <x>36</x>
-      <y>60</y>
+      <y>58</y>
       <width>120</width>
-      <height>20</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="minimumSize">
@@ -386,7 +386,7 @@
       <x>36</x>
       <y>101</y>
       <width>120</width>
-      <height>21</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="minimumSize">
@@ -466,6 +466,61 @@
     </property>
     <property name="text">
      <string>125A</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_24">
+    <property name="geometry">
+     <rect>
+      <x>294</x>
+      <y>149</y>
+      <width>120</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>120</width>
+      <height>0</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>120</width>
+      <height>16777215</height>
+     </size>
+    </property>
+    <property name="font">
+     <font>
+      <family>微软雅黑</family>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>设备个数：</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="addNum">
+    <property name="geometry">
+     <rect>
+      <x>419</x>
+      <y>148</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
+    <property name="minimum">
+     <number>1</number>
+    </property>
+    <property name="maximum">
+     <number>10</number>
     </property>
    </widget>
    <widget class="QSpinBox" name="addr">
@@ -714,10 +769,10 @@
    <widget class="QLabel" name="label_120">
     <property name="geometry">
      <rect>
-      <x>29</x>
+      <x>13</x>
       <y>80</y>
-      <width>75</width>
-      <height>20</height>
+      <width>91</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
@@ -733,10 +788,10 @@
    <widget class="QLabel" name="label_6">
     <property name="geometry">
      <rect>
-      <x>29</x>
+      <x>13</x>
       <y>140</y>
-      <width>75</width>
-      <height>20</height>
+      <width>91</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
@@ -895,7 +950,7 @@
      <rect>
       <x>20</x>
       <y>40</y>
-      <width>45</width>
+      <width>51</width>
       <height>31</height>
      </rect>
     </property>
@@ -945,7 +1000,7 @@
      <rect>
       <x>20</x>
       <y>100</y>
-      <width>41</width>
+      <width>51</width>
       <height>30</height>
      </rect>
     </property>
@@ -1063,7 +1118,7 @@
      <rect>
       <x>31</x>
       <y>130</y>
-      <width>60</width>
+      <width>71</width>
       <height>20</height>
      </rect>
     </property>
@@ -1082,7 +1137,7 @@
      <rect>
       <x>31</x>
       <y>180</y>
-      <width>75</width>
+      <width>81</width>
       <height>20</height>
      </rect>
     </property>
@@ -1294,7 +1349,7 @@
      <rect>
       <x>31</x>
       <y>399</y>
-      <width>75</width>
+      <width>91</width>
       <height>20</height>
      </rect>
     </property>
@@ -1338,7 +1393,7 @@
      <rect>
       <x>31</x>
       <y>349</y>
-      <width>75</width>
+      <width>91</width>
       <height>20</height>
      </rect>
     </property>
@@ -1410,7 +1465,7 @@
      <rect>
       <x>31</x>
       <y>80</y>
-      <width>60</width>
+      <width>71</width>
       <height>20</height>
      </rect>
     </property>
@@ -1497,7 +1552,7 @@
      <rect>
       <x>31</x>
       <y>230</y>
-      <width>75</width>
+      <width>81</width>
       <height>20</height>
      </rect>
     </property>
@@ -1634,7 +1689,7 @@
      <rect>
       <x>31</x>
       <y>289</y>
-      <width>75</width>
+      <width>91</width>
       <height>20</height>
      </rect>
     </property>
@@ -1977,7 +2032,7 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>370</x>
+      <x>368</x>
       <y>220</y>
       <width>135</width>
       <height>31</height>
@@ -2020,9 +2075,9 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>381</x>
+      <x>350</x>
       <y>160</y>
-      <width>120</width>
+      <width>151</width>
       <height>31</height>
      </rect>
     </property>
@@ -2122,7 +2177,7 @@
      <number>0</number>
     </property>
     <property name="maximum">
-     <double>100.000000000000000</double>
+     <double>100000.000000000000000</double>
     </property>
    </widget>
    <widget class="QLabel" name="label_106">
@@ -2208,9 +2263,9 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>24</x>
+      <x>14</x>
       <y>51</y>
-      <width>101</width>
+      <width>111</width>
       <height>31</height>
      </rect>
     </property>
@@ -2445,7 +2500,7 @@
      <number>0</number>
     </property>
     <property name="maximum">
-     <double>100.000000000000000</double>
+     <double>10000.000000000000000</double>
     </property>
    </widget>
    <widget class="QLabel" name="label_105">
@@ -2454,9 +2509,9 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>24</x>
+      <x>14</x>
       <y>110</y>
-      <width>101</width>
+      <width>111</width>
       <height>31</height>
      </rect>
     </property>
@@ -2488,9 +2543,9 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>25</x>
+      <x>15</x>
       <y>180</y>
-      <width>101</width>
+      <width>111</width>
       <height>31</height>
      </rect>
     </property>
@@ -2529,7 +2584,6 @@
   <tabstop>cur63A</tabstop>
   <tabstop>cur125A</tabstop>
   <tabstop>devIp</tabstop>
-  <tabstop>addr</tabstop>
   <tabstop>curCapA</tabstop>
   <tabstop>curCapB</tabstop>
   <tabstop>curCapC</tabstop>

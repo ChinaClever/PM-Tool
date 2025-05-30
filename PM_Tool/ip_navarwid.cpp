@@ -30,7 +30,7 @@ void IP_NavarWid::on_generBtn_clicked()
 
 void IP_NavarWid::on_mproBtn_clicked()
 {
-
+    emit navBarSig(2);
 }
 
 

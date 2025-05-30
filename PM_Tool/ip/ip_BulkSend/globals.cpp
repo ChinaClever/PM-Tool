@@ -1,6 +1,9 @@
 // globals.cpp
 #include "globals.h"
 
+
+
+//ip批量发送相关信息
 QMap<QString, IP_sDataPacket<3>> tMap;  // 实际定义
 QMap<QString, IP_sDataPacket<1>> sMap;
 QMutex tMapMutex;                       // 定义互斥锁
@@ -13,3 +16,5 @@ QMutex SQueueMutex;
 
 int Stimesend;
 int Ttimesend;
+
+QMap<QString, QString>key_time;
