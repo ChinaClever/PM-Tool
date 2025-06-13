@@ -35,6 +35,10 @@ void DMapJsonQueue::run()
             }
 
             QByteArray jsonData = QJsonDocument(u).toJson(QJsonDocument::Compact);
+            if (u.isEmpty()) {
+                qDebug() << "Empty data packet, skipped";
+                continue;
+            }
             if(udpsocket->writeDatagram(jsonData, QHostAddress(ipAddress), Port) == -1) {
                 qWarning() << "Failed to send data:" << udpsocket->errorString();
                 // 可以选择重试或记录错误

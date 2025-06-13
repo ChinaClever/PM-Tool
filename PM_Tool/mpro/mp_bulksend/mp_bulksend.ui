@@ -383,7 +383,7 @@
      </font>
     </property>
     <property name="text">
-     <string>172.18.1.2</string>
+     <string>172.20.1.2</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_7">
@@ -501,7 +501,7 @@
      </font>
     </property>
     <property name="text">
-     <string>172.19.1.2</string>
+     <string>172.21.1.2</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_8">
@@ -588,7 +588,7 @@
      </font>
     </property>
     <property name="text">
-     <string>172.20.1.2</string>
+     <string>172.22.1.2</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_14">
@@ -675,7 +675,7 @@
      </font>
     </property>
     <property name="text">
-     <string>172.21.1.2</string>
+     <string>172.23.1.2</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_16">

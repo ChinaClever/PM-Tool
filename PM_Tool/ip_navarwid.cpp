@@ -25,7 +25,7 @@ void IP_NavarWid::on_coreBtn_clicked()
 
 void IP_NavarWid::on_generBtn_clicked()
 {
-
+    emit navBarSig(3);
 }
 
 void IP_NavarWid::on_mproBtn_clicked()

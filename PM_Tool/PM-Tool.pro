@@ -13,6 +13,7 @@ include(ip/ip.pri)
 include(common/common.pri)
 include(mainPage/mainPage.pri)
 include(mpro/mpro.pri)
+include(bus/bus.pri)
 
 SOURCES += \
     ip_navarwid.cpp \

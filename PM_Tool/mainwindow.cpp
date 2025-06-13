@@ -17,9 +17,14 @@ void MainWindow::intiWid()
     mIPJsonData = new IP_JsonData();
     mMainPage = new mp_mainPage();
     mProData = new mp_data();
+    mBusData = new busUiData();
+
     ui->stackedWid->addWidget(mMainPage);
     ui->stackedWid->addWidget(mIPJsonData);
     ui->stackedWid->addWidget(mProData);
+    ui->stackedWid->addWidget(mBusData);
+
+    ui->stackedWid->setCurrentIndex(3);
     connect(mIPNavarWid, &IP_NavarWid::navBarSig, this, &MainWindow::navBarSlot);
 }
 

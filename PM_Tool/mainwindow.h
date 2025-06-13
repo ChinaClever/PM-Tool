@@ -6,6 +6,7 @@
 #include "ip_jsondata.h"
 #include "./mainPage/mp_mainPage.h"
 #include "mp_data.h"
+#include "bus/bus_uiData/busuidata.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -31,5 +32,6 @@ private:
     IP_NavarWid *mIPNavarWid;
     mp_mainPage *mMainPage;
     mp_data  *mProData;
+    busUiData *mBusData;
 };
 #endif // MAINWINDOW_H

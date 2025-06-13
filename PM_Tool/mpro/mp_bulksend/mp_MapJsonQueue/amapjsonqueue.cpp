@@ -37,8 +37,11 @@ void AMapJsonQueue::run()
                     qDebug()<<" aa  "<<ProBulkJQs[0].size();
             }
 
+            if (u.isEmpty()) {
+                qDebug() << "Empty JSON object, skipped";
+                continue;
+            }
             QByteArray jsonData = QJsonDocument(u).toJson(QJsonDocument::Compact);
-
 
             if(udpsocket->writeDatagram(jsonData, QHostAddress(ipAddress), Port) == -1) {
                 qWarning() << "Failed to send data:" << udpsocket->errorString();

@@ -47,7 +47,7 @@ void AMapProcessor::run()
         QDateTime t2 = QDateTime::currentDateTime();
         int duration = t1.msecsTo(t2);
 
-        qDebug()<<"duration: "<<duration;
+        //qDebug()<<"duration: "<<duration;
         if(duration<=mp_sendTime*1000)
             msleep(mp_sendTime*1000-duration);
 
