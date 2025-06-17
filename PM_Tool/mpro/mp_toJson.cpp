@@ -4,7 +4,8 @@
 
 #include <math.h>
 
-mp_toJson::mp_toJson(QObject *parent) : QObject(parent) {
+mp_toJson::mp_toJson(QObject *parent) : QObject(parent)
+{
 
 }
 
@@ -308,8 +309,6 @@ void mp_toJson::setGlobalData(PowerSystemData systemData) //基础信息
     m_dev_ip = systemData.devIp;
     m_datetime = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
     setDevkey();
-
-
 }
 
 void mp_toJson::setDevkey()

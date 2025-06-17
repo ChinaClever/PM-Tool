@@ -1,3 +1,4 @@
+#pragma once
 #include <QVector>
 #include <QString>
 #include <QDateTime>
@@ -228,28 +229,22 @@ struct BoxData {
     OutletItem outletItemList;
     BoxTotalData boxTotalData;
 
-    void init(int size = 3) {
-        loopItemList.init(size);
-        lineItemList.init(size);
-        outletItemList.init(size);
-    }
+
 };
 
 // 环境数据
 struct EnvItem {
-    QVector<int> temValue;       // 温度值数组
-    QVector<int> temMin;         // 温度下限
-    QVector<int> temMax;         // 温度上限
+    QVector<double> temValue;       // 温度值数组
+    QVector<double> boxtem;
     QVector<int> temStatus;      // 温度状态
-
+    QVector<int> boxStatus;      // 温度状态
     void init(int size ) {
-        temValue.resize(size); temMin.resize(size); temMax.resize(size);
+        temValue.resize(size); boxStatus.resize(size); boxtem.resize(size);
         temStatus.resize(size);
     }
 };
 
-// 主结构体
-struct  Busbar{
+struct Info{
     int addr;                  // 地址
     int status;                // 状态
     QString devIp;             // 设备IP
@@ -261,14 +256,22 @@ struct  Busbar{
     QString boxName;           // 插接箱名称
     QString busKey;            // 母线键
     QString boxKey;            // 插接箱键
+};
 
+// 主结构体
+struct  Busbar{
+
+    QString m_ser_ip;
+    QString m_port;
+
+    Info info;
     BusData busData;
     BoxData boxData;
     EnvItem envItemList;
 
     void init(int lineSize = 3, int envSize = 4) {
         busData.init(lineSize);
-        boxData.init(lineSize);
+
         envItemList.init(envSize);
     }
 };

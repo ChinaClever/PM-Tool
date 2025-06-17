@@ -2,13 +2,15 @@
 #ifndef BUS_GLOBALS_H
 #define BUS_GLOBALS_H
 #include <QVector>
-extern int cirCur;  // 只声明，不定义
-extern int outNum;
-extern int phaseVol;
+extern int cirCur;   // 回路电流
+extern int boxNum;   //插接箱个数
+extern int phaseVol; //全局电压
+extern int outletPhase; //插接箱输出位数量
+extern int cirNum;
+extern QVector<QVector<QVector<double>>> phase; //相数据
+extern QVector<QVector<double>> busPhase;
+extern QVector<QVector<QVector<double>>> outlet; //输出位数据
 
-extern QVector<QVector<QVector<double>>> phase;
-
-
-extern double cirEle[15][9];
-extern double cirReacEle[15][9];
+extern double cirEle[15][9];        //回路有功电能
+extern double cirReacEle[15][9];    //无功电能
 #endif // BUS_GLOBALS_H

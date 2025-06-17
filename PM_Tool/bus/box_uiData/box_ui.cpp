@@ -18,15 +18,24 @@ box_ui::box_ui(QWidget *parent)
 
     ui->setupUi(this);
     ui->tabWidget->tabBar()->hide();
+    ui->outletTab->setRowCount(outletPhase);
     //setEle(); //更新电能值并显示在界面上
     connect(ui->boxCirTab, &QTableWidget::cellDoubleClicked,
             this, &box_ui::RowEdit);
 
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this,&box_ui::setEle);
-    timer->start(10000);  // 每10秒触发一次
+   // timer->start(10000);  // 每10秒触发一次
 }
 
+void box_ui::timerStart(bool flag)
+{
+    if(flag){
+        setEle();
+        timer->start(10000);
+    }
+    else timer->stop();
+}
 
 void box_ui::setEle()  //计算电能并更新outlet以及相数据
 {
@@ -82,7 +91,6 @@ void box_ui::setEle()  //计算电能并更新outlet以及相数据
 
         // 先判断第0列是否为"闭合"，如果不是则跳过该行
         QString statusText = statusItem->text().trimmed();
-        qDebug()<<statusText;
 
         if (statusText != QStringLiteral("闭合"))
             continue;
@@ -109,8 +117,6 @@ void box_ui::setEle()  //计算电能并更新outlet以及相数据
         }
         reactiveEleItem->setText(QString::number(cirReacEle[id][r], 'f', 4));
     }
-
-    qDebug() << "电能数据已更新。";
     setBoxPhaseData();
 }
 
@@ -119,51 +125,93 @@ void box_ui::setBoxPhaseData()
     QTableWidget* table = ui->boxCirTab;
     int rowCount = table->rowCount();
 
-    for (int r = 0; r < rowCount; ++r){
+    for(int r = 0; r < 3; ++r){
+        phase[id][r%3][0] = 0; //相电流
+        phase[id][r%3][2] = 0; //有功功率
+        phase[id][r%3][3] = 0; //无功功率
+        phase[id][r%3][4] = 0; //视在功率
+        phase[id][r%3][5] = 0; //有功电能
+        phase[id][r%3][6] = 0; //无功电能
+    }
 
+    for (int g = 0; g < outletPhase; ++g) {
+        outlet[id][g][0] = 0;  // 有功功率
+        outlet[id][g][1] = 0;  // 无功功率
+        outlet[id][g][2] = 0;  // 视在功率
+        outlet[id][g][4] = 0;  // 无功电能
+        outlet[id][g][6] = 0;  // 有功电能
+    }
+
+    for (int r = 0; r < rowCount; ++r) {
+        // 获取第 r 行第 0 列的状态（如“闭合”或“断开”）
         QTableWidgetItem* statusItem = table->item(r, 0);
         if (!statusItem)
-            continue;
+            continue;  // 如果该行没有状态数据，跳过
+
         QString statusText = statusItem->text().trimmed();
-        qDebug()<<statusText;
 
         if (statusText != QStringLiteral("闭合"))
-            continue;
+            continue;  // 如果不是“闭合”，不计入统计，跳过
 
+        // 计算该行属于哪个插接箱（按 outletPhase 数均匀分组）
+        int outletGroup = getOutletGroup(r, rowCount, outletPhase);
+
+        // 处理第 1 列：相电流
         statusItem = table->item(r, 1);
         double s = statusItem->text().toDouble();
-        phase[id][r%3][0] += s;  //相电流
+        phase[id][r % 3][0] += s;  // 累加到相电流（按相：A、B、C）
 
+        // 处理第 2 列：有功功率
         statusItem = table->item(r, 2);
         s = statusItem->text().toDouble();
-        phase[id][r%3][2] += s; //有功功率
+        phase[id][r % 3][2] += s;  // 相有功功率累加
+        outlet[id][outletGroup][0] += s;  // 插接箱有功功率累加
 
+        // 处理第 3 列：无功功率
         statusItem = table->item(r, 3);
         s = statusItem->text().toDouble();
-        phase[id][r%3][3] += s; //无功功率
+        phase[id][r % 3][3] += s;  // 相无功功率累加
+        outlet[id][outletGroup][1] += s;  // 插接箱无功功率累加
 
+        // 处理第 4 列：视在功率
         statusItem = table->item(r, 4);
         s = statusItem->text().toDouble();
-        phase[id][r%3][4] += s; //视在功率
+        phase[id][r % 3][4] += s;  // 相视在功率累加
+        outlet[id][outletGroup][2] += s;  // 插接箱视在功率累加
 
+        // 处理第 6 列：有功电能
         statusItem = table->item(r, 6);
         s = statusItem->text().toDouble();
-        phase[id][r%3][5] += s; //有功电能
+        phase[id][r % 3][5] += s;  // 相有功电能累加
+        outlet[id][outletGroup][6] += s;  // 插接箱有功电能累加
 
+        // 处理第 7 列：无功电能
         statusItem = table->item(r, 7);
         s = statusItem->text().toDouble();
-        phase[id][r%3][6] += s; //无功电能
-
+        phase[id][r % 3][6] += s;  // 相无功电能累加
+        outlet[id][outletGroup][4] += s;  // 插接箱无功电能累加
     }
+
     for(int i = 0; i < 3; ++i){
         phase[id][i][1] = phase[id][i][4] == 0 ? 0 : phase[id][i][2]/(phase[id][i][4]*1.0);
         phase[id][i][8] = phase[id][i][0]/cirCur;
         //电流谐波
         phase[id][i][7] = 0;
     }
+    ui->outletTab->setRowCount(outletPhase);
+    for (int i = 0; i < outletPhase; ++i) {
+        // 功率因数 = 有功功率 / 视在功率
+        outlet[id][i][3] = (outlet[id][i][2] == 0)
+                               ? 0
+                               : outlet[id][i][0] / (outlet[id][i][2] * 1.0);
+
+        // 视在电能 = sqrt(无功电能² + 有功电能²)
+        outlet[id][i][5] = sqrtf(
+            powf(outlet[id][i][4], 2) + powf(outlet[id][i][6], 2)
+            );
+    }
     ui->boxPhaseTab->setRowCount(3);
     ui->boxPhaseTab->setColumnCount(9);
-
     for (int r = 0; r < 3; ++r) {
         for (int c = 0; c < 9; ++c) {
             // 转成字符串，保留2位小数
@@ -171,6 +219,15 @@ void box_ui::setBoxPhaseData()
 
             QTableWidgetItem* item = new QTableWidgetItem(text);
             ui->boxPhaseTab->setItem(r, c, item);
+        }
+    }
+    for (int r = 0; r < outletPhase; ++r) {
+        for (int c = 0; c < 7; ++c) {
+            // 转成字符串，保留2位小数
+            QString text = QString::number(outlet[id][r][c], 'f', 2);
+
+            QTableWidgetItem* item = new QTableWidgetItem(text);
+            ui->outletTab->setItem(r, c, item);
         }
     }
 
@@ -183,14 +240,189 @@ void box_ui::setBoxPhaseData()
     ui->totalPf->setValue(ui->totalPA->value() == 0 ? 0 : ui->powAct->value()/ui->totalPA->value());
 }
 
-void box_ui::setBoxoutData()
+BoxData box_ui::generaData()
 {
-    QTableWidget* table = ui->boxCirTab;
-    int rowCount = table->rowCount();
-    QVector<QVector<double>>out(3, QVector<double>(7, 0.0));
-    for (int r = 0; r < rowCount; ++r){
+    //box cfg
+    {
+        auto &u = data.boxCfg;
+        u.alarmCount = 5;
+        u.iof = 1;
+        u.boxVersion = 1;
+        u.baudRate = 9600;
+        u.beep = 1;
+        u.itemType = 1;
+        u.workMode = this->id;
+        u.loopNum = cirNum;
+        u.init(u.loopNum);
+        u.boxType = 1;
+        QTableWidget* table = ui->boxCirTab;
+        for(int r = 0; r < cirNum; ++r){
+            QTableWidgetItem* statusItem = table->item(r, 0);
+            QString statusText = statusItem->text().trimmed();
+            u.breakerStatus[r] = (statusText == QStringLiteral("闭合")) ? 1 : 0;
+        }
+    }
+
+    //loop item list
+    {
+        auto &u = data.loopItemList;
+        u.init(data.boxCfg.loopNum);
+        QTableWidget* table = ui->boxCirTab;
+        for(int i = 0; i < data.boxCfg.loopNum; ++i){
+
+            u.volValue[i] = phaseVol;
+            u.volMax[i] = phaseVol; u.volMin[i] = phaseVol;
+            u.volStatus[i] = 0;
+
+            QTableWidgetItem* itm = table->item(i, 1);
+            u.curValue[i] = itm->text().toDouble();
+            u.curMax[i] = cirCur; u.curMin[i] = 0;
+            if(u.curValue[i]>u.curMax[i])u.curStatus[i] = 2;
+
+            itm = table->item(i, 2);
+            u.powValue[i] = itm->text().toDouble();
+            u.powMax[i] = u.powValue[i] + 1; u.powMin[i] = 0;
+            u.powStatus[i] = 0;
+
+            itm = table->item(i, 3);
+            u.powReactive[i] = itm->text().toDouble();
+
+            itm = table->item(i, 4);
+            u.powApparent[i] = itm->text().toDouble();
+
+            itm = table->item(i, 5);
+            u.powerFactor[i] = itm->text().toDouble();
+
+            itm = table->item(i ,6);
+            u.eleActive[i] = itm->text().toDouble();
+
+            itm = table->item(i, 7);
+            u.eleReactive[i] = itm->text().toDouble();
+        }
+    }
+
+    //line item list
+    {
+        auto &u = data.lineItemList;
+        u.init(3);
+        for(int i = 0; i < 3; ++i){
+            u.volValue[i] = phaseVol;
+            u.curValue[i] = phase[this->id][i][0];
+            u.powerFactor[i] = phase[this->id][i][1];
+            u.powActive[i] = phase[this->id][i][2];
+            u.powReactive[i] = phase[this->id][i][3];
+            u.powApparent[i] = phase[this->id][i][4];
+            u.eleActive[i] = phase[this->id][i][5];
+            u.eleReactive[i] = phase[this->id][i][6];
+            u.curThd[i] = phase[this->id][i][7];
+            u.loadRate[i] = phase[this->id][i][8];
+        }
+    }
+
+    // outlet item list
+    {
+        auto &u = data.outletItemList;
+        u.init(outletPhase);
+
+        for(int i = 0; i < outletPhase; ++i){
+            u.powActive[i] = outlet[this->id][i][0];
+            u.powReactive[i] = outlet[this->id][i][1];
+            u.powApparent[i] = outlet[this->id][i][2];
+            u.powerFactor[i] = outlet[this->id][i][3];
+            u.eleReactive[i] = outlet[this->id][i][4];
+            u.eleApparent[i] = outlet[this->id][i][5];
+            u.eleActive[i] = outlet[this->id][i][6];
+        }
+    }
+
+    //box total data
+    {
+        auto &u = data.boxTotalData;
+        u.powActive = ui->powAct->value();
+        u.powApparent = ui->totalPA->value();
+        u.powReactive = ui->powReact->value();
+        u.powerFactor = ui->totalPf->value();
+        u.eleActive = ui->totalEle->value();
+        u.eleReactive = ui->totalReacEle->value();
+        u.eleApparent = std::sqrt(pow(u.eleActive,2)+pow(u.eleReactive,2));
+    }
+
+    return data;
+}
+
+BusData box_ui::generaBus()
+{
+    busdata.init(3);
+    //bus cfg
+    {
+        auto &u = busdata.busCfg;
+        u.curSpecs = cirCur;
+        u.workMode = 1;
+        u.beep = 1;
+        u.acDc = 0;
+        u.boxNum = boxNum;
+        u.iof = 1;
+        u.isd = 1;
+        u.shuntTrip = 1;
+        u.breakerStatus = 1;
+        u.lspStatus = 1;
+        u.busVersion = 2;
+        u.itemType = 0;
+        u.baudRate = 4;
+        u.alarmCount = 5;
+    }
+
+    //line item list
+    {
+        auto &u = busdata.lineItemList;
+
+        for(int i = 0; i < 3; ++i) {
+            u.volValue[i] = busPhase[0][i];
+            u.curValue[i] = busPhase[1][i];
+            u.powerFactor[i] = busPhase[2][i];
+            u.powValue[i] = busPhase[3][i];
+            u.powReactive[i] = busPhase[4][i];
+            u.powApparent[i] = busPhase[5][i];
+            u.eleActive[i] = busPhase[6][i];
+            u.eleReactive[i] = busPhase[7][i];
+            u.volThd[i] = 0;  //电压谐波未计算
+            u.curThd[i][0] = busPhase[8][i]; //电流谐波未计算
+            u.loadRate[i] = busPhase[9][i];
+
+            u.volMax[i] = u.volValue[i];
+            u.volMin[i] = u.volValue[i];
+            if(u.volValue[i] > u.volMax[i])u.volStatus[i] = 2;
+
+            u.curMax[i] = busdata.busCfg.curSpecs;
+            u.curMin[i] = 0;
+            if(u.curValue[i] > u.curMax[i])u.curStatus[i] = 2;
+
+            u.powMax[i] = u.powValue[i];
+            u.powMin[i] = 0;
+            if(u.powValue[i] > u.powMax[i]) u.powStatus[i] = 2;
+
+            u.volLineValue[i] = std::sqrt(3.0)*u.volValue[i]*1.0;
+            u.volLineMax[i] = u.volLineValue[i];
+            u.volLineMin[i] = u.volLineValue[i];
+
+        }
+    }
+
+    //bus total data  没有数据转到bus_ui上处理
+    {
+ //       auto &u = busdata.busTotalData;
 
     }
+    return busdata;
+}
+
+
+int box_ui::getOutletGroup(int r, int rowCount, int outletPhase) {
+    int groupSize = (rowCount + outletPhase - 1) / outletPhase;  // 等价于 ceil
+    int group = r / groupSize;
+    if (group >= outletPhase)
+        group = outletPhase - 1;
+    return group;
 }
 
 void box_ui::RowEdit(int row)   //双击编辑行数据
@@ -310,10 +542,7 @@ void box_ui::CntChanged(int targetRows)
     }
 
     int currentSelectedRow = table->currentRow();
-    qDebug() << "当前选中行: " << currentSelectedRow;
-
     int currentRows = table->rowCount();
-    qDebug() << "当前行数:" << currentRows;
 
     // 保存现有行的电能数据
     for (int i = 0; i < qMin(currentRows, 9); ++i) {

@@ -227,40 +227,6 @@
    <property name="title">
     <string>母线设置</string>
    </property>
-   <widget class="QLabel" name="label_23">
-    <property name="geometry">
-     <rect>
-      <x>261</x>
-      <y>33</y>
-      <width>120</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>120</width>
-      <height>0</height>
-     </size>
-    </property>
-    <property name="maximumSize">
-     <size>
-      <width>120</width>
-      <height>16777215</height>
-     </size>
-    </property>
-    <property name="font">
-     <font>
-      <family>微软雅黑</family>
-      <pointsize>11</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>设备地址：</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_22">
     <property name="geometry">
      <rect>
@@ -313,24 +279,6 @@
      <string>192.168.1.98</string>
     </property>
    </widget>
-   <widget class="QSpinBox" name="addr">
-    <property name="geometry">
-     <rect>
-      <x>385</x>
-      <y>33</y>
-      <width>101</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>11</pointsize>
-     </font>
-    </property>
-    <property name="maximum">
-     <number>9</number>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_24">
     <property name="geometry">
      <rect>
@@ -380,14 +328,14 @@
      </font>
     </property>
     <property name="text">
-     <string/>
+     <string>1</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_25">
     <property name="geometry">
      <rect>
       <x>260</x>
-      <y>84</y>
+      <y>43</y>
       <width>120</width>
       <height>21</height>
      </rect>
@@ -485,7 +433,7 @@
     <property name="geometry">
      <rect>
       <x>386</x>
-      <y>121</y>
+      <y>80</y>
       <width>101</width>
       <height>31</height>
      </rect>
@@ -515,7 +463,7 @@
     <property name="geometry">
      <rect>
       <x>261</x>
-      <y>120</y>
+      <y>79</y>
       <width>120</width>
       <height>31</height>
      </rect>
@@ -550,7 +498,7 @@
    <property name="geometry">
     <rect>
      <x>386</x>
-     <y>288</y>
+     <y>247</y>
      <width>101</width>
      <height>31</height>
     </rect>
@@ -768,6 +716,61 @@
      </property>
     </item>
    </widget>
+   <widget class="QLabel" name="label_23">
+    <property name="geometry">
+     <rect>
+      <x>264</x>
+      <y>83</y>
+      <width>120</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>120</width>
+      <height>0</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>120</width>
+      <height>16777215</height>
+     </size>
+    </property>
+    <property name="font">
+     <font>
+      <family>微软雅黑</family>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>设备地址：</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="addr">
+    <property name="geometry">
+     <rect>
+      <x>402</x>
+      <y>83</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
+    <property name="maximum">
+     <number>9</number>
+    </property>
+    <property name="value">
+     <number>2</number>
+    </property>
+   </widget>
   </widget>
   <widget class="QGroupBox" name="groupBox_4">
    <property name="geometry">
@@ -786,7 +789,7 @@
    <property name="title">
     <string>温升</string>
    </property>
-   <widget class="QDoubleSpinBox" name="incr1">
+   <widget class="QDoubleSpinBox" name="box1">
     <property name="geometry">
      <rect>
       <x>380</x>
@@ -1000,7 +1003,7 @@
      <string>母线温度2：</string>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="incr2">
+   <widget class="QDoubleSpinBox" name="box2">
     <property name="geometry">
      <rect>
       <x>380</x>
@@ -1124,7 +1127,7 @@
      <string>母线温度3：</string>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="incr3">
+   <widget class="QDoubleSpinBox" name="box3">
     <property name="geometry">
      <rect>
       <x>380</x>
@@ -1248,7 +1251,7 @@
      <string>母线温度4：</string>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="incr4">
+   <widget class="QDoubleSpinBox" name="box4">
     <property name="geometry">
      <rect>
       <x>380</x>
@@ -2174,7 +2177,7 @@
        <double>500.000000000000000</double>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="eleB_3">
+     <widget class="QDoubleSpinBox" name="reacEleB">
       <property name="enabled">
        <bool>false</bool>
       </property>
@@ -2202,7 +2205,7 @@
        <double>1000000.000000000000000</double>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="eleC_3">
+     <widget class="QDoubleSpinBox" name="reacEleC">
       <property name="enabled">
        <bool>false</bool>
       </property>
@@ -2230,7 +2233,7 @@
        <double>1000000.000000000000000</double>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="eleA_3">
+     <widget class="QDoubleSpinBox" name="reacEleA">
       <property name="enabled">
        <bool>false</bool>
       </property>
@@ -2277,7 +2280,7 @@
        <string>无功电能：</string>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="volC_3">
+     <widget class="QDoubleSpinBox" name="curXbC">
       <property name="enabled">
        <bool>false</bool>
       </property>
@@ -2296,7 +2299,7 @@
        </font>
       </property>
       <property name="suffix">
-       <string> V</string>
+       <string/>
       </property>
       <property name="decimals">
        <number>1</number>
@@ -2324,7 +2327,7 @@
        <string>电压谐波：</string>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="volB_3">
+     <widget class="QDoubleSpinBox" name="curXbB">
       <property name="enabled">
        <bool>false</bool>
       </property>
@@ -2343,7 +2346,7 @@
        </font>
       </property>
       <property name="suffix">
-       <string> V</string>
+       <string/>
       </property>
       <property name="decimals">
        <number>1</number>
@@ -2352,7 +2355,7 @@
        <double>500.000000000000000</double>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="volA_3">
+     <widget class="QDoubleSpinBox" name="curXbA">
       <property name="enabled">
        <bool>false</bool>
       </property>
@@ -2371,7 +2374,7 @@
        </font>
       </property>
       <property name="suffix">
-       <string> V</string>
+       <string/>
       </property>
       <property name="decimals">
        <number>1</number>
@@ -2380,7 +2383,7 @@
        <double>500.000000000000000</double>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="Rec_PowB_4">
+     <widget class="QDoubleSpinBox" name="loadB">
       <property name="enabled">
        <bool>false</bool>
       </property>
@@ -2405,7 +2408,7 @@
        <enum>QAbstractSpinBox::UpDownArrows</enum>
       </property>
       <property name="suffix">
-       <string> kVar</string>
+       <string> %</string>
       </property>
       <property name="decimals">
        <number>3</number>
@@ -2414,7 +2417,7 @@
        <double>10000000.000000000000000</double>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="Rec_PowA_4">
+     <widget class="QDoubleSpinBox" name="loadA">
       <property name="enabled">
        <bool>false</bool>
       </property>
@@ -2439,7 +2442,7 @@
        <enum>QAbstractSpinBox::UpDownArrows</enum>
       </property>
       <property name="suffix">
-       <string> kVar</string>
+       <string> %</string>
       </property>
       <property name="decimals">
        <number>3</number>
@@ -2467,7 +2470,7 @@
        <string>负载率：</string>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="Rec_PowC_4">
+     <widget class="QDoubleSpinBox" name="loadC">
       <property name="enabled">
        <bool>false</bool>
       </property>
@@ -2492,7 +2495,7 @@
        <enum>QAbstractSpinBox::UpDownArrows</enum>
       </property>
       <property name="suffix">
-       <string> kVar</string>
+       <string> %</string>
       </property>
       <property name="decimals">
        <number>3</number>
@@ -2667,7 +2670,7 @@
        <string> %</string>
       </property>
       <property name="decimals">
-       <number>0</number>
+       <number>2</number>
       </property>
       <property name="maximum">
        <double>100.000000000000000</double>
@@ -2990,7 +2993,7 @@
        <string> %</string>
       </property>
       <property name="decimals">
-       <number>0</number>
+       <number>2</number>
       </property>
       <property name="maximum">
        <double>100.000000000000000</double>
@@ -3098,7 +3101,7 @@
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="totalEleact_3">
+     <widget class="QDoubleSpinBox" name="zeroCur">
       <property name="enabled">
        <bool>false</bool>
       </property>
@@ -3132,7 +3135,7 @@
        <enum>QAbstractSpinBox::UpDownArrows</enum>
       </property>
       <property name="suffix">
-       <string> kWh</string>
+       <string> A</string>
       </property>
       <property name="decimals">
        <number>1</number>

@@ -24,7 +24,7 @@ void MainWindow::intiWid()
     ui->stackedWid->addWidget(mProData);
     ui->stackedWid->addWidget(mBusData);
 
-    ui->stackedWid->setCurrentIndex(3);
+    ui->stackedWid->setCurrentIndex(0);
     connect(mIPNavarWid, &IP_NavarWid::navBarSig, this, &MainWindow::navBarSlot);
 }
 
