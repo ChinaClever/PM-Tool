@@ -43,6 +43,7 @@ public slots:
 
 
 private:
+    int busid = 1;
     Ui::busUiData *ui;
     QVector<box_ui*>box;
     QTimer *timer;

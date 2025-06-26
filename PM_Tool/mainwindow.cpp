@@ -5,9 +5,11 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , mBusbulk(new busBulk(this))
 {
     ui->setupUi(this);
     intiWid();
+    loadAllSettings(); //读写配置文件
 
 }
 void MainWindow::intiWid()
@@ -28,10 +30,52 @@ void MainWindow::intiWid()
     connect(mIPNavarWid, &IP_NavarWid::navBarSig, this, &MainWindow::navBarSlot);
 }
 
+void MainWindow::saveAllSettings() {
+
+    QString configPath = QCoreApplication::applicationDirPath() + "/config.ini";
+    qDebug() << "Saving to:" << configPath;
+
+    QSettings settings("config.ini", QSettings::IniFormat);
+
+    if (mMainPage) {
+        if (auto bus = mMainPage->getBusBulk()) {
+            bus->saveSettings(settings);
+        }
+        if (auto mp = mMainPage->getMpBulk()) {
+            mp->saveSettings(settings);
+        }
+        if (auto ip = mMainPage->getIpBulk()) {
+            ip->saveSettings(settings);
+        }
+    }
+}
+
+void MainWindow::loadAllSettings() {
+    QSettings settings("config.ini", QSettings::IniFormat);
+
+    if (mMainPage) {
+        if (auto bus = mMainPage->getBusBulk()) {
+            bus->loadSettings(settings);
+        }
+        if (auto mp = mMainPage->getMpBulk()) {
+            mp->loadSettings(settings);
+        }
+        if (auto ip = mMainPage->getIpBulk()) {
+            ip->loadSettings(settings);
+        }
+    }
+}
+
+void MainWindow::closeEvent(QCloseEvent *event) {
+    saveAllSettings();
+    QMainWindow::closeEvent(event);
+}
+
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
 void MainWindow::navBarSlot(int id)
 {
     qDebug()<<"current page:  "<<id;

@@ -12,10 +12,14 @@ mp_mainPage::mp_mainPage(QWidget *parent)
     mIpBulkSend = new ip_BulkSend();
     mMpBulkSend = new mp_bulksend();
     mserIpPort = new serIpPort();
+    mBusBulk = new busBulk();
 
     ui->ip_BulkSendWid->addWidget(mIpBulkSend);
     ui->mp_bulksendWid->addWidget(mMpBulkSend);
     ui->serSetWid->addWidget(mserIpPort);
+    ui->bus_bulksendWid->addWidget(mBusBulk);
+
+    mserIpPort->setSubModules(mIpBulkSend, mMpBulkSend, mBusBulk);
 }
 
 mp_mainPage::~mp_mainPage()

@@ -15,7 +15,7 @@ struct LineItem {
     QVector<int> curMin;          // 电流下限
     QVector<int> curMax;          // 电流上限
     QVector<int> curStatus;       // 电流告警状态
-    QVector<QVector<int>> curThd;          // 电流谐波含量
+    QVector<int> curThd;          // 电流谐波含量
 
     QVector<double> powValue;        // 有功功率
     QVector<int> powMin;          // 有功下限
@@ -37,7 +37,7 @@ struct LineItem {
     void init(int size ) {
         volValue.resize(size); volMin.resize(size); volMax.resize(size);
         volStatus.resize(size); volThd.resize(size);
-        curThd = QVector<QVector<int>>(size, QVector<int>(3));
+        curThd = QVector<int>(size);
 
         curValue.resize(size); curMin.resize(size); curMax.resize(size);
         curStatus.resize(size);
@@ -69,6 +69,7 @@ struct BusConfig {
     int itemType;              // 项目类型
     int baudRate;              // 波特率
     int alarmCount;            // 告警滤波次数
+    int vol;
 };
 
 // 母线总数据
@@ -116,7 +117,7 @@ struct BusData {
 struct BoxConfig {
     int alarmCount;            // 告警次数
     int iof;                   // iof触点
-    int boxVersion;            // 软件版本
+    QString boxVersion;            // 软件版本
     int baudRate;              // 波特率
     int beep;                  // 蜂鸣器
     int itemType;              // 项目类型
@@ -141,7 +142,7 @@ struct LoopItem {
     QVector<int> curMin;         // 电流下限
     QVector<int> curMax;         // 电流上限
     QVector<int> curStatus;      // 电流状态
-
+    QVector<bool>curInc;
     QVector<double> powValue;       // 有功功率
     QVector<int> powMin;         // 功率下限
     QVector<int> powMax;         // 功率上限
@@ -150,13 +151,15 @@ struct LoopItem {
     QVector<double> powReactive;    // 无功功率
     QVector<double> powApparent;    // 视在功率
     QVector<double> powerFactor;    // 功率因素
+    QVector<bool> pfInc;
     QVector<double> eleActive;      // 电能
     QVector<double> eleReactive;    // 无功电能
 
     void init(int size) {
         volValue.resize(size); volMin.resize(size); volMax.resize(size);
         volStatus.resize(size);
-
+        curInc.resize(size);
+        pfInc.resize(size);
         curValue.resize(size); curMin.resize(size); curMax.resize(size);
         curStatus.resize(size);
 
@@ -250,7 +253,7 @@ struct Info{
     QString devIp;             // 设备IP
     QString key;
     QString datetime;        // 当前时间
-    QString barId;             // 母线ID
+    int barId;               // 母线ID
     QString devAlarm;          // 告警信息
     QString busName;           // 母线名称
     QString boxName;           // 插接箱名称
@@ -263,6 +266,8 @@ struct  Busbar{
 
     QString m_ser_ip;
     QString m_port;
+    bool flag;
+
 
     Info info;
     BusData busData;

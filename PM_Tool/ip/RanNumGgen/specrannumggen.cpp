@@ -17,8 +17,18 @@ double specRanNumGgen::get_power_factor_precise() { //功率因素随机
     return QRandomGenerator::global()->bounded(2, 10)/10.0;
 }
 
+double specRanNumGgen::get_thd()
+{
+    return QRandomGenerator::global()->bounded(1, 100)/1.0;
+}
+
 int specRanNumGgen::get_temperature() { // 实现温度
     return QRandomGenerator::global()->bounded(15u, 66u); // 明确无符号参数
+}
+
+double specRanNumGgen::getCurThd()
+{
+    return QRandomGenerator::global()->bounded(1,100) / 1.0;
 }
 
 int specRanNumGgen::get_humidity() {    //

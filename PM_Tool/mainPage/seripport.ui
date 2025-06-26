@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>473</width>
-    <height>162</height>
+    <width>441</width>
+    <height>251</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,8 +18,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>471</width>
-     <height>151</height>
+     <width>431</width>
+     <height>241</height>
     </rect>
    </property>
    <property name="font">
@@ -33,8 +33,8 @@
    <widget class="QLineEdit" name="serIp">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>40</y>
+      <x>135</x>
+      <y>60</y>
       <width>142</width>
       <height>31</height>
      </rect>
@@ -51,8 +51,8 @@
    <widget class="QLabel" name="DevIp">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>40</y>
+      <x>15</x>
+      <y>60</y>
       <width>74</width>
       <height>31</height>
      </rect>
@@ -78,8 +78,8 @@
    <widget class="QLineEdit" name="port">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>90</y>
+      <x>135</x>
+      <y>120</y>
       <width>142</width>
       <height>31</height>
      </rect>
@@ -97,8 +97,8 @@
    <widget class="QLabel" name="Port_4">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>91</y>
+      <x>15</x>
+      <y>121</y>
       <width>75</width>
       <height>31</height>
      </rect>
@@ -119,6 +119,19 @@
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="sendAllBtn">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>60</y>
+      <width>91</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>全部发送</string>
     </property>
    </widget>
   </widget>

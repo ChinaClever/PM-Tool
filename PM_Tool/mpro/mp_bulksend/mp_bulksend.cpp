@@ -3,9 +3,9 @@
 #include "mp_globals.h"
 #include "data_cal/data_cal.h"
 #include "specrannumggen.h"
+#include "stylehelper.h"
 #include <QDebug>
 #include <math.h>
-
 const int ProNum = 5;
 
 mp_bulksend::mp_bulksend(QWidget *parent)
@@ -30,7 +30,7 @@ mp_bulksend::mp_bulksend(QWidget *parent)
 void mp_bulksend::inti()
 {
     mp_sendTime = ui->mp_timeInv->value();
-
+    StyleHelper::setLightBlueButton(ui->mpSendBtn);
     serNum.resize(4); //abcd四个系列
     addr.resize(4);
     key.resize(4);
@@ -96,6 +96,20 @@ void mp_bulksend::on_mpSendBtn_clicked()
         updateButtonState(1);
         ui->mpSendBtn->setText("开始发送");
     }
+}
+
+void mp_bulksend::triggerToggleSend(bool flag)
+{
+    bool isSending = (ui->mpSendBtn->text() == "停止发送"); // 当前是否正在发送
+
+    if (flag && !isSending) {
+        // 传入要求开始发送，但当前没在发送，调用开始发送槽
+        on_mpSendBtn_clicked();
+    } else if (!flag && isSending) {
+        // 传入要求停止发送，但当前正在发送，调用停止发送槽
+        on_mpSendBtn_clicked();
+    }
+    // 如果状态已经符合要求，不调用槽函数
 }
 
 void mp_bulksend::processStart()
@@ -331,6 +345,25 @@ void mp_bulksend::dataResize(PowerSystemData & packet)
     packet.pduData.loopData.Circuits.resize(cirNum);
     packet.pduData.phases.initialize(0);
     packet.pduData.envData.initialize(4);
+}
+
+
+void mp_bulksend::saveSettings(QSettings &settings) {
+    settings.beginGroup("Mpbulk");
+    SettingsHelper::saveSpinBox(settings, "AsendNum", ui->AsendNum);
+    SettingsHelper::saveSpinBox(settings, "BsendNum", ui->BsendNum);
+    SettingsHelper::saveSpinBox(settings, "CsendNum", ui->CsendNum);
+    SettingsHelper::saveSpinBox(settings, "DsendNum", ui->DsendNum);
+    settings.endGroup();
+}
+
+void mp_bulksend::loadSettings(QSettings &settings) {
+    settings.beginGroup("Mpbulk");
+    SettingsHelper::loadSpinBox(settings, "AsendNum", ui->AsendNum);
+    SettingsHelper::loadSpinBox(settings, "BsendNum", ui->BsendNum);
+    SettingsHelper::loadSpinBox(settings, "CsendNum", ui->CsendNum);
+    SettingsHelper::loadSpinBox(settings, "DsendNum", ui->DsendNum);
+    settings.endGroup();
 }
 
 

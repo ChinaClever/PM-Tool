@@ -21,7 +21,7 @@ busUiData::busUiData(QWidget *parent)
     ui->setupUi(this);
     init();
     conSlots();
-    createBox(3);
+    createBox(9);
     teminit();
 }
 
@@ -30,6 +30,8 @@ void busUiData::init()
     ui->Table->setStyleSheet("QTabWidget:pane {border-top:0px solid #e8f3f9;background:  transparent; }");
     set_background_icon(this,":/image/box_back.jpg");
     ui->serIp->setValidator(new QRegExpValidator(QRegExp("\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b")));
+    ui->devIp->setValidator(new QRegExpValidator(QRegExp("\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b")));
+
     ui->port->setValidator(new QIntValidator(0, 65532,ui->port));
 
 }
@@ -159,7 +161,9 @@ void busUiData::renew()
     busPhase[2][1] = busPhase[5][1] == 0 ? 0 : busPhase[3][1] / busPhase[5][1];
     busPhase[2][2] = busPhase[5][2] == 0 ? 0 : busPhase[3][2] / busPhase[5][2];
 
-    //busPhase[8][]  电流谐波
+    busPhase[8][0] = specRanNumGgen::get_thd();
+    busPhase[8][1] = specRanNumGgen::get_thd();
+    busPhase[8][2] = specRanNumGgen::get_thd();
 
     busPhase[9][0] = busPhase[1][0] / curCap(); //负载率
     busPhase[9][1] = busPhase[1][1] / curCap();
@@ -200,8 +204,11 @@ void busUiData::renewui()
     //sqrt(IA*IA + IB*IB + IC*IC - IA*IB - IB*IC - IC*IA);
     ui->zeroCur->setValue(x);
 
-
-    busUiData::createJsonData();
+    busid = ui->busId->text().toInt();
+    for(int i = 0; i < ui->sendNum->value(); i++){
+        busUiData::createJsonData();
+        busid++;
+    }
 
 }
 
@@ -221,19 +228,23 @@ void busUiData::createJsonData()
         g.envItemList = d;
         g.info = info;
         info.addr++;
+        g.info.barId = busid;
         QJsonObject json = work->toJson(g,1);
         udpSend(json);
     }
     //发送bus
     BusData data = box[0]->generaBus();
+    data.busCfg.curSpecs = curCap();
     Busbar g;
     g.busData = setBusTotal(data);
     g.envItemList = d;
     g.info = info;
-
+    g.info.addr = busid;
+    g.info.barId = busid;
     QJsonObject json = work->toJson(g,0);
-    json["addr"] = 1;
+ //   json["addr"] = busid;
     udpSend(json);
+
 }
 
 BusData busUiData::setBusTotal(BusData &data)
@@ -252,6 +263,10 @@ BusData busUiData::setBusTotal(BusData &data)
     u.eleApparent = u.eleActive/u.powerFactor;
     u.eleReactive = sqrt(pow(u.eleApparent,2)-pow(u.eleActive,2));
     u.curZeroValue = ui->zeroCur->value();
+
+    u.curResidualValue = std::max(curCap() - ui->curA->value() - ui->curB->value() - ui->curC->value(),0.0);
+    u.curResidualAlarm = 0;
+    u.curResidualStatus = 0;
 
     u.curZeroAlarm = u.curZeroValue;
     u.volUnbalance = ui->volUnbal->value();
@@ -292,14 +307,15 @@ Info busUiData::infoInti()
     data.addr = ui->addr->value();
     data.devIp = ui->devIp->text();
     data.datetime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
-    data.barId = "1";
-    data.busName = "Bus-1";
+   // busid = ui->busId->text().toInt();
+    data.barId = ui->busId->text().toInt();
+
+    data.busName = QString("Bus-%1").arg(busid);
+
     data.boxName = QString("Box-%1").arg(data.addr);
-    data.busKey = QString("%1-%2").arg(data.devIp).arg(data.barId);
+    data.busKey = QString("%1-%2").arg(data.devIp).arg(busid, 0, 10);
     data.boxKey = QString("%1-%2").arg(data.busKey).arg(data.addr);
 
-    // 输出调试
-    qDebug() << "boxKey:" << data.boxKey; // 192.168.1.98-1-5 (假设 addr=5)
 
     return data;
 }

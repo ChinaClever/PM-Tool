@@ -5,6 +5,8 @@
 #include "globals.h"
 #include "specrannumggen.h"
 #include <QMessageBox>
+#include "stylehelper.h"
+
 
 #define SriNum 5 //单三相线程宏
 
@@ -15,6 +17,8 @@ ip_BulkSend::ip_BulkSend(QWidget *parent)
     , ui(new Ui::ip_BulkSend)
 {
     ui->setupUi(this);
+    StyleHelper::setLightBlueButton(ui->SbulkSendBtn);
+    StyleHelper::setLightBlueButton(ui->bulkSendBtn);
 
 
 
@@ -34,6 +38,7 @@ ip_BulkSend::ip_BulkSend(QWidget *parent)
     }
 
 }
+
 void ip_BulkSend::numChangeconnect()
 {
     QList<QSpinBox*> spinBoxes = {
@@ -148,6 +153,28 @@ void ip_BulkSend::on_SbulkSendBtn_clicked() //单相发送启动
 
     }
 }
+
+void ip_BulkSend::triggerToggleSend(bool flag)
+{
+    if(flag) {
+        if(ui->bulkSendBtn->text() == "开始发送") {
+            on_bulkSendBtn_clicked();
+        }
+        if(ui->SbulkSendBtn->text() == "开始发送") {
+            on_SbulkSendBtn_clicked();
+        }
+    } else {
+        if(ui->bulkSendBtn->text() == "停止发送") {
+            on_bulkSendBtn_clicked();
+        }
+        if(ui->SbulkSendBtn->text() == "停止发送") {
+            on_SbulkSendBtn_clicked();
+        }
+    }
+}
+
+
+
 void ip_BulkSend::bulkinti(const int x)
 {
 
@@ -221,16 +248,26 @@ void ip_BulkSend::STNumchange() //单三相参数变化
     Stime = ui->Stimeinv->value();
 }
 
-
-
 void ip_BulkSend::on_SdevIp_editingFinished()
 {
     Sdevip = ui->SdevIp->text();
 }
-
 
 void ip_BulkSend::on_devIp_editingFinished()
 {
     devip = ui->devIp->text();
 }
 
+void ip_BulkSend::saveSettings(QSettings &settings) {
+    settings.beginGroup("Ipbulk");
+    SettingsHelper::saveSpinBox(settings, "speNum", ui->speNum);
+    SettingsHelper::saveSpinBox(settings, "tpeNum", ui->tpeNum);
+    settings.endGroup();
+}
+
+void ip_BulkSend::loadSettings(QSettings &settings) {
+    settings.beginGroup("Ipbulk");
+    SettingsHelper::loadSpinBox(settings, "speNum", ui->speNum);
+    SettingsHelper::loadSpinBox(settings, "tpeNum", ui->tpeNum);
+    settings.endGroup();
+}

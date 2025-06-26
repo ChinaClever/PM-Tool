@@ -84,3 +84,14 @@ double data_cal::calculate_dewpoint1(double t, double h) {
     // 四舍五入到两位小数
     return round(dew * 100) / 100;
 }
+
+QString data_cal::getNextIp(const QString &ip) {
+    QStringList p = ip.split('.');
+    quint32 val = (p[0].toUInt() << 24) | (p[1].toUInt() << 16) | (p[2].toUInt() << 8) | p[3].toUInt();
+    val += 1;
+    return QString("%1.%2.%3.%4")
+        .arg((val >> 24) & 0xFF)
+        .arg((val >> 16) & 0xFF)
+        .arg((val >> 8) & 0xFF)
+        .arg(val & 0xFF);
+}

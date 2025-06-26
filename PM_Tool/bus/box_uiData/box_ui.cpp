@@ -132,6 +132,7 @@ void box_ui::setBoxPhaseData()
         phase[id][r%3][4] = 0; //视在功率
         phase[id][r%3][5] = 0; //有功电能
         phase[id][r%3][6] = 0; //无功电能
+        phase[id][r%3][7] = 0;
     }
 
     for (int g = 0; g < outletPhase; ++g) {
@@ -196,7 +197,7 @@ void box_ui::setBoxPhaseData()
         phase[id][i][1] = phase[id][i][4] == 0 ? 0 : phase[id][i][2]/(phase[id][i][4]*1.0);
         phase[id][i][8] = phase[id][i][0]/cirCur;
         //电流谐波
-        phase[id][i][7] = 0;
+        phase[id][i][7] = specRanNumGgen::get_thd();
     }
     ui->outletTab->setRowCount(outletPhase);
     for (int i = 0; i < outletPhase; ++i) {
@@ -247,14 +248,14 @@ BoxData box_ui::generaData()
         auto &u = data.boxCfg;
         u.alarmCount = 5;
         u.iof = 1;
-        u.boxVersion = 1;
+        u.boxVersion = "V3.0.3";
         u.baudRate = 9600;
         u.beep = 1;
         u.itemType = 1;
         u.workMode = this->id;
         u.loopNum = cirNum;
         u.init(u.loopNum);
-        u.boxType = 1;
+        u.boxType = 0;
         QTableWidget* table = ui->boxCirTab;
         for(int r = 0; r < cirNum; ++r){
             QTableWidgetItem* statusItem = table->item(r, 0);
@@ -316,6 +317,7 @@ BoxData box_ui::generaData()
             u.eleReactive[i] = phase[this->id][i][6];
             u.curThd[i] = phase[this->id][i][7];
             u.loadRate[i] = phase[this->id][i][8];
+
         }
     }
 
@@ -386,7 +388,7 @@ BusData box_ui::generaBus()
             u.eleActive[i] = busPhase[6][i];
             u.eleReactive[i] = busPhase[7][i];
             u.volThd[i] = 0;  //电压谐波未计算
-            u.curThd[i][0] = busPhase[8][i]; //电流谐波未计算
+            u.curThd[i] = busPhase[8][i]; //电流谐波未计算
             u.loadRate[i] = busPhase[9][i];
 
             u.volMax[i] = u.volValue[i];

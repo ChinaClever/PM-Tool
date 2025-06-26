@@ -19,7 +19,7 @@ QJsonObject bus_toJson::toJson(Busbar& data,bool flag)
         setBoxData();
     }
     else{
-        data.info.addr = 1;
+        //data.info.addr = 1;
         setBusCfg(data);
         setBusLine(data);
         setBusTotal(data);
@@ -56,7 +56,7 @@ void bus_toJson::setBusCfg(Busbar& data)
     cfg["shunt_trip"] = u.shuntTrip;
     cfg["breaker_status"] = u.breakerStatus;
     cfg["lsp_status"] = u.lspStatus;
-    cfg["bus_version"] = u.busVersion;
+    cfg["bus_version"] = "2";
     cfg["item_type"] = u.itemType;
     cfg["baud_rate"] = u.baudRate;
     cfg["alarm_count"] = u.alarmCount;
@@ -104,7 +104,7 @@ void bus_toJson::setBusTotal(Busbar& data)
 
 void bus_toJson::setBusLine(Busbar& data)
 {
-    QJsonArray vol_value,vol_min,vol_max,vol_status,vol_thd,cur_value,cur_min,cur_max
+    QJsonArray vol_value,vol_min,vol_max,vol_status,vol_thd,cur_thd,cur_value,cur_min,cur_max
                 ,cur_status,pow_value,pow_min,pow_max,pow_status,pow_apparent,pow_reactive,ele_active
                 ,ele_reactive,power_factor,load_rate,vol_line_value,vol_line_min
                 ,vol_line_max,vol_line_status;
@@ -119,7 +119,7 @@ void bus_toJson::setBusLine(Busbar& data)
         if(u.volStatus[i])st = 1;
         vol_status.append(u.volStatus[i]);
         vol_thd.append(u.volThd[i]);
-
+        cur_thd.append(u.curThd[i]);
         cur_value.append(u.curValue[i]);
         cur_min.append(u.curMin[i]);
         cur_max.append(u.curMax[i]);
@@ -151,7 +151,7 @@ void bus_toJson::setBusLine(Busbar& data)
     line["vol_max"] = vol_max;
     line["vol_status"] = vol_status;
     line["vol_thd"] = vol_thd;
-
+    line["cur_thd"] = cur_thd;
     line["cur_value"] = cur_value;
     line["cur_min"] = cur_min;
     line["cur_max"] = cur_max;
@@ -181,6 +181,8 @@ void bus_toJson::setBusLine(Busbar& data)
 void bus_toJson::setJson(bool flag)
 {
     QJsonObject json;
+
+
     if(flag){
         json["box_data"] = m_box_data;
     }
@@ -195,7 +197,7 @@ void bus_toJson::setJson(bool flag)
     json["bar_id"] = m_bar_id;
     json["bus_name"] = m_bus_name;
     json["bus_key"] = m_bus_key;
-
+    json["box_name"] = "";
     if(flag){
         json["box_name"] = m_box_name;
         json["box_key"] = m_box_key ;
@@ -242,7 +244,7 @@ void bus_toJson::setOutLet(Busbar& data)
     QJsonObject outlet;
     auto &u = data.boxData.outletItemList;
 
-    for(int i = 0; i < data.boxData.boxCfg.loopNum; i++) {
+    for(int i = 0; i < data.boxData.outletItemList.eleActive.size(); i++) {
         pow_active.append(u.powActive[i]);
         pow_apparent.append(u.powApparent[i]);
         pow_reactive.append(u.powReactive[i]);
@@ -270,7 +272,7 @@ void bus_toJson::setBoxLine(Busbar& data)
 
     QJsonObject line;
     auto &u = data.boxData.lineItemList;
-    for(int i = 0; i < data.boxData.boxCfg.loopNum; i ++){
+    for(int i = 0; i < 3; i ++){
         vol_value.append(u.volValue[i]);
         cur_value.append(u.curValue[i]);
         cur_thd.append(u.curThd[i]);
@@ -411,6 +413,7 @@ void bus_toJson::setGlobalData(Busbar& Data)
 {
     auto &u = Data.info;
     m_addr = u.addr;
+
     if(st)m_status = 2;
     else m_status = 1;
     m_dev_ip = u.devIp;

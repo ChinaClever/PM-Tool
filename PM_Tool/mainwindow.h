@@ -23,6 +23,7 @@ public:
 
 protected:
     void intiWid();
+    void closeEvent(QCloseEvent *event) override;
 protected slots:
     void navBarSlot(int);
 
@@ -33,5 +34,11 @@ private:
     mp_mainPage *mMainPage;
     mp_data  *mProData;
     busUiData *mBusData;
+
+
+    busBulk *mBusbulk;
+
+    void saveAllSettings();
+    void loadAllSettings();
 };
 #endif // MAINWINDOW_H

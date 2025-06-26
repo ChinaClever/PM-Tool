@@ -10,6 +10,7 @@
 #include "cmapjsonqueue.h"
 #include "dmapprocessor.h"
 #include "dmapjsonqueue.h"
+#include "SettingsHelper.h"
 #include <QWidget>
 #include <QVector>
 namespace Ui {
@@ -38,6 +39,11 @@ public:
     static void cirInti(PowerSystemData& );
     static void lineInti(PowerSystemData& );
     static void totalInti(PowerSystemData& );
+
+    void saveSettings(QSettings &settings);
+    void loadSettings(QSettings &settings);
+
+    void triggerToggleSend(bool);
 
 signals:
     void ProcessorRun(bool);

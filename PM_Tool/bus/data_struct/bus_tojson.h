@@ -46,10 +46,10 @@ private:
     // 所有成员变量
     int m_addr;
     int m_status;
-    int m_version = 1;
+    QString m_version = "V3.0.3";
 
     QString m_dev_ip;
-    QString m_bar_id;
+    int m_bar_id;
     QString m_datetime;
     QString m_dev_alarm;
 

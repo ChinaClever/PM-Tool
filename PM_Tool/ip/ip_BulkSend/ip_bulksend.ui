@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>487</width>
-    <height>440</height>
+    <height>791</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,9 +17,9 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>220</y>
-     <width>471</width>
-     <height>211</height>
+     <y>300</y>
+     <width>481</width>
+     <height>341</height>
     </rect>
    </property>
    <property name="font">
@@ -33,10 +33,10 @@
    <widget class="QSpinBox" name="tpeNum">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>60</y>
-      <width>120</width>
-      <height>29</height>
+      <x>109</x>
+      <y>48</y>
+      <width>131</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -65,9 +65,9 @@
     <property name="geometry">
      <rect>
       <x>11</x>
-      <y>60</y>
-      <width>94</width>
-      <height>20</height>
+      <y>50</y>
+      <width>101</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -84,9 +84,9 @@
     <property name="geometry">
      <rect>
       <x>21</x>
-      <y>111</y>
-      <width>89</width>
-      <height>20</height>
+      <y>151</y>
+      <width>81</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -102,10 +102,10 @@
    <widget class="QLineEdit" name="devIp">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>111</y>
-      <width>120</width>
-      <height>27</height>
+      <x>109</x>
+      <y>151</y>
+      <width>131</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -121,9 +121,9 @@
     <property name="geometry">
      <rect>
       <x>290</x>
-      <y>149</y>
+      <y>248</y>
       <width>161</width>
-      <height>35</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -138,10 +138,10 @@
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>255</x>
-      <y>60</y>
-      <width>75</width>
-      <height>20</height>
+      <x>259</x>
+      <y>56</y>
+      <width>81</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
@@ -158,9 +158,9 @@
     <property name="geometry">
      <rect>
       <x>21</x>
-      <y>161</y>
-      <width>64</width>
-      <height>20</height>
+      <y>250</y>
+      <width>71</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -176,10 +176,10 @@
    <widget class="QSpinBox" name="Ttimeinv">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>161</y>
-      <width>120</width>
-      <height>29</height>
+      <x>109</x>
+      <y>248</y>
+      <width>131</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -211,9 +211,9 @@
     <property name="geometry">
      <rect>
       <x>257</x>
-      <y>110</y>
-      <width>79</width>
-      <height>20</height>
+      <y>157</y>
+      <width>81</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
@@ -230,9 +230,9 @@
     <property name="geometry">
      <rect>
       <x>350</x>
-      <y>100</y>
-      <width>81</width>
-      <height>31</height>
+      <y>150</y>
+      <width>91</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -260,10 +260,10 @@
    <widget class="QSpinBox" name="TcurCap">
     <property name="geometry">
      <rect>
-      <x>350</x>
-      <y>60</y>
-      <width>90</width>
-      <height>31</height>
+      <x>349</x>
+      <y>50</y>
+      <width>91</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -300,8 +300,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>471</width>
-     <height>211</height>
+     <width>481</width>
+     <height>291</height>
     </rect>
    </property>
    <property name="font">
@@ -315,10 +315,10 @@
    <widget class="QSpinBox" name="speNum">
     <property name="geometry">
      <rect>
-      <x>120</x>
+      <x>109</x>
       <y>49</y>
-      <width>120</width>
-      <height>31</height>
+      <width>131</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -334,7 +334,7 @@
      <number>10000</number>
     </property>
     <property name="singleStep">
-     <number>100</number>
+     <number>2</number>
     </property>
     <property name="value">
      <number>100</number>
@@ -345,8 +345,8 @@
      <rect>
       <x>10</x>
       <y>49</y>
-      <width>94</width>
-      <height>20</height>
+      <width>101</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -362,10 +362,10 @@
    <widget class="QSpinBox" name="Saddnum">
     <property name="geometry">
      <rect>
-      <x>360</x>
-      <y>90</y>
-      <width>90</width>
-      <height>31</height>
+      <x>349</x>
+      <y>130</y>
+      <width>101</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -394,9 +394,9 @@
     <property name="geometry">
      <rect>
       <x>21</x>
-      <y>100</y>
-      <width>89</width>
-      <height>20</height>
+      <y>131</y>
+      <width>81</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -412,10 +412,10 @@
    <widget class="QSpinBox" name="Stimeinv">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>150</y>
-      <width>120</width>
-      <height>31</height>
+      <x>109</x>
+      <y>209</y>
+      <width>131</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -446,10 +446,10 @@
    <widget class="QLineEdit" name="SdevIp">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>100</y>
-      <width>120</width>
-      <height>31</height>
+      <x>109</x>
+      <y>131</y>
+      <width>131</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -464,10 +464,10 @@
    <widget class="QLabel" name="label_9">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>99</y>
-      <width>79</width>
-      <height>20</height>
+      <x>262</x>
+      <y>136</y>
+      <width>81</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
@@ -484,9 +484,9 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>150</y>
-      <width>64</width>
-      <height>20</height>
+      <y>216</y>
+      <width>71</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
@@ -502,10 +502,10 @@
    <widget class="QLabel" name="label_11">
     <property name="geometry">
      <rect>
-      <x>278</x>
+      <x>270</x>
       <y>49</y>
-      <width>75</width>
-      <height>20</height>
+      <width>71</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -522,9 +522,9 @@
     <property name="geometry">
      <rect>
       <x>290</x>
-      <y>150</y>
+      <y>213</y>
       <width>161</width>
-      <height>35</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -539,10 +539,10 @@
    <widget class="QSpinBox" name="ScurCap">
     <property name="geometry">
      <rect>
-      <x>360</x>
+      <x>349</x>
       <y>50</y>
-      <width>90</width>
-      <height>31</height>
+      <width>101</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">

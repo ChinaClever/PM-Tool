@@ -9,6 +9,8 @@
 #include "SMapProcessor.h"
 #include "triphasejsonqueue.h"
 #include "sriphasejsonqueue.h"
+
+#include "SettingsHelper.h"
 namespace Ui {
 class ip_BulkSend;
 }
@@ -25,6 +27,11 @@ public:
     void numChangeconnect();
     void intiMap(const int x);
 
+
+    void saveSettings(QSettings &settings);
+    void loadSettings(QSettings &settings);
+
+    void triggerToggleSend(bool);
 
 signals:
     void tmpchange(bool); //1:启动三相处理两个线程，0：关闭线程

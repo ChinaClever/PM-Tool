@@ -10,6 +10,8 @@ serIpPort::serIpPort(QWidget *parent)
 {
     ui->setupUi(this);
 
+
+
     serIp = ui->serIp->text();
     port = ui->port->text();
 
@@ -28,3 +30,27 @@ serIpPort::~serIpPort()
 {
     delete ui;
 }
+
+void serIpPort::on_sendAllBtn_clicked()
+{
+    bool start = (ui->sendAllBtn->text() == "全部发送");
+
+    if (start) {
+        ui->sendAllBtn->setText("停止发送");
+    } else {
+        ui->sendAllBtn->setText("全部发送");
+    }
+     //mIpBulkSend->triggerToggleSend(start);
+     mMpBulkSend->triggerToggleSend(start);
+     //mBusBulk->triggerToggleSend(start);
+}
+
+// seripport.cpp
+
+void serIpPort::setSubModules(ip_BulkSend* ip, mp_bulksend* mp, busBulk* bus)
+{
+    mIpBulkSend = ip;
+    mMpBulkSend = mp;
+    mBusBulk = bus;
+}
+
