@@ -191,8 +191,8 @@ void IP_JsonData::timeoutsend()
     int phase = BtnGroup_phase->checkedId();    //时间间隔到，更新有功电能
     ui->eleA->setValue(ui->eleA->value()+(ui->act_PowA->value()*ui->timeInv->value()/3600.0));
     if(!phase){ //三相
-        ui->eleB->setValue(ui->eleA->value()+(ui->act_PowB->value()*ui->timeInv->value()/3600.0));
-        ui->eleC->setValue(ui->eleA->value()+(ui->act_PowC->value()*ui->timeInv->value()/3600.0));
+        ui->eleB->setValue(ui->eleB->value()+(ui->act_PowB->value()*ui->timeInv->value()/3600.0));
+        ui->eleC->setValue(ui->eleC->value()+(ui->act_PowC->value()*ui->timeInv->value()/3600.0));
     }
 
     jsonassignment();
