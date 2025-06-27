@@ -27,6 +27,10 @@ mp_data::mp_data(QWidget *parent)
     m_systemData.pduData.envData.initialize(4);
 
 
+    QString configPath = QCoreApplication::applicationDirPath() + "/config.ini";
+    QSettings settings(configPath, QSettings::IniFormat);
+
+    loadSettings(settings);
     inti();
     seriesinti();
     m_DglobalUpdateTimer = new QTimer(this);
@@ -128,13 +132,10 @@ void mp_data::inti()
 void mp_data::Ddatainti() //数据初始化
 {
 
-
-
     connect(ui->opbitTable, &QTableWidget::cellDoubleClicked,
             this, &mp_data::BitRowEdit);
 
     emit cuicurDatachange(4); //更新回路数据
-
 }
 
 void mp_data::Adatainti()
@@ -419,8 +420,6 @@ void mp_data::phaseData()
 
 void mp_data::onGlobalTimerTimeout()
 {
-
-
     int rowCount = ui->opbitTable->rowCount();
 
     for(int row = 0; row < rowCount; ++row) {
@@ -475,10 +474,8 @@ void mp_data::onGlobalTimerTimeout()
 
 }
 
-
 void mp_data::setBitEle(const int row)
 {
-
 
     QTableWidget* table = ui->opbitTable;
     QTableWidgetItem* ele = new QTableWidgetItem();
@@ -975,3 +972,34 @@ void mp_data::timesend()
 
 }
 
+void mp_data::saveSettings(QSettings &settings)
+{
+    bitCntChanged();
+    settings.beginGroup("MpbitEle");
+    for (int i = 0; i < 50; ++i) {
+        settings.setValue(QString("bitEle_%1").arg(i), bitEle[i]);
+    }
+    settings.endGroup();
+    settings.sync();
+}
+
+void mp_data::loadSettings(QSettings &settings)
+{
+    bitCntChanged();
+    settings.beginGroup("MpbitEle");
+    for (int i = 0; i < 50; ++i) {
+        bitEle[i] = settings.value(QString("bitEle_%1").arg(i), 0.0).toDouble();
+    }
+    settings.endGroup();
+}
+
+void mp_data::hideEvent(QHideEvent *event)
+{
+    qDebug() << "mp_data hideEvent triggered";
+    bitCntChanged();
+    QString configPath = QCoreApplication::applicationDirPath() + "/config.ini";
+    QSettings settings(configPath, QSettings::IniFormat);
+    saveSettings(settings);
+
+    QWidget::hideEvent(event);  // 调用基类实现
+}

@@ -27,12 +27,13 @@ void CMapProcessor::run()
         QDateTime t1 = QDateTime::currentDateTime();
 
         for(auto it = CMap.begin(); it != CMap.end(); ++it){
-            envInc(it.value());
-            bitInc(it.value());
-            mp_bulksend::cirInti(it.value());
-            mp_bulksend::lineInti(it.value());
-            mp_bulksend::totalInti(it.value());
-            u->toJsonSlot(it.value());
+            auto &dev = it.value();
+            envInc(dev);
+            bitInc(dev);
+            mp_bulksend::cirInti(dev);
+            mp_bulksend::lineInti(dev);
+            mp_bulksend::totalInti(dev);
+            u->toJsonSlot(dev);
 
             auto json = u ->getJsonObject();
             {

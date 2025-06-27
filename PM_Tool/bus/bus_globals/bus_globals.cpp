@@ -6,8 +6,8 @@ int phaseVol = 230;
 int boxNum = 9;
 int outletPhase = 3; //插接箱输出位数量
 int cirNum = 3; //插接箱回路数量
-double cirEle[15][9] = {0};
-double cirReacEle[15][9] = {0};
+double cirEle[15][9];
+double cirReacEle[15][9];
 
 int bus_sendTime;
 

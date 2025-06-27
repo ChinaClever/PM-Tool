@@ -31,8 +31,8 @@ void BMapJsonQueue::run()
             {
                 QMutexLocker locker(&ProBulkJQMutexes[1]);
                 if(!ProBulkJQs[1].isEmpty()) u = ProBulkJQs[1].dequeue();
-                if(ProBulkJQs[1].size()>10000)
-                    qDebug()<<" bb  "<<ProBulkJQs[1].size();
+               // if(ProBulkJQs[1].size()>10000)
+                   // qDebug()<<" bb  "<<ProBulkJQs[1].size();
             }
 
             if (u.isEmpty()) {

@@ -31,8 +31,8 @@ void CMapJsonQueue::run()
             {
                 QMutexLocker locker(&ProBulkJQMutexes[2]);
                 if(!ProBulkJQs[2].isEmpty()) u = ProBulkJQs[2].dequeue();
-                if(ProBulkJQs[2].size()>10000)
-                    qDebug()<<" cc  "<<ProBulkJQs[2].size();
+                //if(ProBulkJQs[2].size()>10000)
+                   // qDebug()<<" cc  "<<ProBulkJQs[2].size();
             }
 
             if (u.isEmpty()) {

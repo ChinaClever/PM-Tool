@@ -1,6 +1,6 @@
 #ifndef MP_DATA_H
 #define MP_DATA_H
-
+#include "SettingsHelper.h"
 #include <QWidget>
 #include <QButtonGroup>
 #include <QSpinBox>
@@ -36,6 +36,11 @@ public:
     void DcuicurData();
 
     void udpsend();
+
+    void hideEvent(QHideEvent *event);
+    void saveSettings(QSettings &settings);
+    void loadSettings(QSettings &settings);
+
 public slots:
 
     void timesend();
@@ -63,7 +68,7 @@ private:
     QList<QDoubleSpinBox*> temBoxes;
     QList<QDoubleSpinBox*> humBoxes;
 
-    double bitEle[42] = {0};
+    double bitEle[50] = {0};
 
     QList<QCheckBox*> sensors;
 

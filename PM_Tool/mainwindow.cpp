@@ -11,7 +11,9 @@ MainWindow::MainWindow(QWidget *parent)
     intiWid();
     loadAllSettings(); //读写配置文件
 
+
 }
+
 void MainWindow::intiWid()
 {
     mIPNavarWid = new IP_NavarWid(ui->barWid);
@@ -31,11 +33,10 @@ void MainWindow::intiWid()
 }
 
 void MainWindow::saveAllSettings() {
-
     QString configPath = QCoreApplication::applicationDirPath() + "/config.ini";
     qDebug() << "Saving to:" << configPath;
 
-    QSettings settings("config.ini", QSettings::IniFormat);
+    QSettings settings(configPath, QSettings::IniFormat); // 这里使用完整路径
 
     if (mMainPage) {
         if (auto bus = mMainPage->getBusBulk()) {
@@ -48,10 +49,14 @@ void MainWindow::saveAllSettings() {
             ip->saveSettings(settings);
         }
     }
+
+    settings.sync(); // 同步写磁盘
 }
 
 void MainWindow::loadAllSettings() {
-    QSettings settings("config.ini", QSettings::IniFormat);
+    QString configPath = QCoreApplication::applicationDirPath() + "/config.ini";
+
+    QSettings settings(configPath, QSettings::IniFormat); // 这里使用完整路径
 
     if (mMainPage) {
         if (auto bus = mMainPage->getBusBulk()) {

@@ -221,12 +221,16 @@ void ip_BulkSend::intiMap(const int x) //判断启动项单三相，确定创建
 {
     //qDebug() <<tpe;
     if(x==3){
+        devip = ui->devIp->text();
+        addr = -1;
         for(int i=0;i<tpe;i++){
             bulkinti(3);
         }
     }
     else {
         //qDebug()<<Sdevip;
+        Sdevip = ui->SdevIp->text();
+        Saddr = -1;
         for(int i=0;i<spe;i++){
             bulkinti(1);
         }

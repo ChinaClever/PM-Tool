@@ -15,6 +15,7 @@ IP_JsonData::IP_JsonData(QWidget *parent)
 {
     ui->setupUi(this);
     set_background_icon(this,":/image/box_back.jpg");
+
     intiSec();
     connect(
         BtnGroup_phase,
@@ -33,6 +34,10 @@ IP_JsonData::IP_JsonData(QWidget *parent)
   //  ip_sendJson Json; //定义json对象
     ip_sendJson *Json = new(ip_sendJson);
     connect(this,&IP_JsonData::sendSig,Json,&ip_sendJson::sendTogoal);
+
+    QString configPath = QCoreApplication::applicationDirPath() + "/config.ini";
+    QSettings settings(configPath, QSettings::IniFormat);
+    loadSettings(settings);  // 必须主动调用加载
 }
 
 IP_JsonData::~IP_JsonData()
@@ -136,7 +141,6 @@ void IP_JsonData::ST_Switch_Com_Changed(int index)
     }
 }
 
-
 void IP_JsonData::on_sendJsonBtn_clicked()
 {
     if(ui->sendJsonBtn->text()=="开始发送"){
@@ -164,6 +168,7 @@ void IP_JsonData::on_sendJsonBtn_clicked()
     }
 
 }
+
 void IP_JsonData::timechange()
 {
     // 停止定时器
@@ -178,20 +183,22 @@ void IP_JsonData::timechange()
     if(ui->sendJsonBtn->text()=="停止发送"){
         timesend->start();
     }
-    qDebug() << "Timer restarted with interval:" << newInterval;
+  //  qDebug() << "Timer restarted with interval:" << newInterval;
 }
+
 void IP_JsonData::timeoutsend()
 {
     int phase = BtnGroup_phase->checkedId();    //时间间隔到，更新有功电能
-    ui->eleA->setValue(ui->eleA->value()+(ui->act_PowA->value()*(ui->timeInv->value()/3600)));
-    if(phase){
-        ui->eleB->setValue(ui->eleA->value()+(ui->act_PowB->value()*(ui->timeInv->value()/3600)));
-        ui->eleC->setValue(ui->eleA->value()+(ui->act_PowC->value()*(ui->timeInv->value()/3600)));
+    ui->eleA->setValue(ui->eleA->value()+(ui->act_PowA->value()*ui->timeInv->value()/3600.0));
+    if(!phase){ //三相
+        ui->eleB->setValue(ui->eleA->value()+(ui->act_PowB->value()*ui->timeInv->value()/3600.0));
+        ui->eleC->setValue(ui->eleA->value()+(ui->act_PowC->value()*ui->timeInv->value()/3600.0));
     }
 
     jsonassignment();
     emit sendSig(Json.getJsonObject(),ui->serIp->text(),ui->port->text(),ui->addNum->value());
 }
+
 void IP_JsonData::jsonassignment()
 {
 
@@ -238,6 +245,7 @@ void IP_JsonData::jsonassignment()
     Json.generateJson();
 
 }
+
 void IP_JsonData::set_current(int index)
 {
     double cur  = (index == 0) ? 32 : (index == 1) ? 63 : 125;
@@ -265,6 +273,7 @@ void IP_JsonData::set_abled(int id)
     ui->vol_unbal_4->setVisible(id);
     ui->cur_unbal_4->setVisible(id);
 }
+
 void IP_JsonData::powerdataCal()
 {
     int phase = BtnGroup_phase->checkedId();
@@ -410,7 +419,6 @@ void IP_JsonData::incrCal()  //增量计算
     }
 }
 
-
 void IP_JsonData::alarmturn()
 {
     if(ui->curA->value()>=ui->curCapA->value()){
@@ -458,7 +466,44 @@ void IP_JsonData::alarmturn()
     }
 }
 
+void IP_JsonData::saveSettings(QSettings &settings) {
+    settings.beginGroup("IpEle");
+    SettingsHelper::saveDoubleSpinBox(settings, "eleA", ui->eleA);
+    SettingsHelper::saveDoubleSpinBox(settings, "eleB", ui->eleB);
+    SettingsHelper::saveDoubleSpinBox(settings, "eleC", ui->eleC);
+    settings.endGroup();
+    settings.sync();  // 强制写入
+}
 
+void IP_JsonData::loadSettings(QSettings &settings) {
+    settings.beginGroup("IpEle");
+    SettingsHelper::loadDoubleSpinBox(settings, "eleA", ui->eleA);
+    SettingsHelper::loadDoubleSpinBox(settings, "eleB", ui->eleB);
+    SettingsHelper::loadDoubleSpinBox(settings, "eleC", ui->eleC);
+    settings.endGroup();
+}
+
+void IP_JsonData::closeEvent(QCloseEvent *event)
+{
+    QString configPath = QCoreApplication::applicationDirPath() + "/config.ini";
+    qDebug() << "Saving to:" << configPath;
+
+    QSettings settings(configPath, QSettings::IniFormat);  // 用完整路径
+
+    saveSettings(settings);
+
+    QWidget::closeEvent(event);
+}
+
+void IP_JsonData::hideEvent(QHideEvent *event)
+{
+    qDebug() << "IP_JsonData::hideEvent called";
+    QString configPath = QCoreApplication::applicationDirPath() + "/config.ini";
+    QSettings settings(configPath, QSettings::IniFormat);
+    saveSettings(settings);
+
+    QWidget::hideEvent(event);
+}
 
 void IP_JsonData::totalData()  //统计数据
 {
@@ -499,7 +544,6 @@ void IP_JsonData::totalData()  //统计数据
     ui->totalPA->setValue(totalPaTotal);
     ui->totalEleact->setValue(totalEleact);
 }
-
 
 QJsonObject IP_JsonData::getenvItemlist()
 {
@@ -627,6 +671,7 @@ QJsonObject IP_JsonData::getlineItemList()
 
     return lineItem;
 }
+
 QJsonObject IP_JsonData::getpduTotaldata()
 {
     QJsonObject pdu_total_data;
@@ -657,8 +702,8 @@ QJsonObject IP_JsonData::getpduTotaldata()
 
     return pdu_total_data;
 }
-QJsonObject IP_JsonData::getpduData(const QJsonObject &envItem,const QJsonObject &lineItem,
-                                    const QJsonObject &totalData)
+
+QJsonObject IP_JsonData::getpduData(const QJsonObject &envItem,const QJsonObject &lineItem,const QJsonObject &totalData)
 {
     QJsonObject pduData;
     // 合并三个数据模块
@@ -668,6 +713,7 @@ QJsonObject IP_JsonData::getpduData(const QJsonObject &envItem,const QJsonObject
 
     return pduData;
 }
+
 QString IP_JsonData::getAlarm()
 {
     QStringList alarmList;

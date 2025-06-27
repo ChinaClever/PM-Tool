@@ -29,12 +29,15 @@ void SMapProcessor::run()
 
        QDateTime t1 = QDateTime::currentDateTime();
        for (auto it = sMap.begin(); it != sMap.end(); ++it) {
-            Incchange(it.value());    // 增量变化计算
-            EleCal(it.value());       // 电量计算
-            PowerCal(it.value());     // 功率计算
-            it.value().totalDataCal();// 总体数据计算
 
-            auto u = toJson(it.value());
+           auto &dev = it.value();
+
+            Incchange(dev);    // 增量变化计算
+            EleCal(dev);       // 电量计算
+            PowerCal(dev);     // 功率计算
+            dev.totalDataCal();// 总体数据计算
+
+            auto u = toJson(dev);
             {
                 QMutexLocker locker(&SQueueMutex);  // 自动加锁解锁
 
@@ -47,7 +50,7 @@ void SMapProcessor::run()
 
         QDateTime t2 = QDateTime::currentDateTime();
         int duration = t1.msecsTo(t2);
-        qDebug()<<"duration: "<<duration<<"  "<<Stimesend;
+       // qDebug()<<"duration: "<<duration<<"  "<<Stimesend;
          if(duration<=Stimesend*1000)
         msleep(Stimesend*1000-duration);
 

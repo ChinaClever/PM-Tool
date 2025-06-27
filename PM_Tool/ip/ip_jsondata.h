@@ -5,6 +5,7 @@
 #include "ui_ip_jsondata.h"
 #include <QTimer>
 #include <ip_sendJson.h>
+#include "SettingsHelper.h"
 namespace Ui {
 class IP_JsonData;
 }
@@ -18,6 +19,12 @@ public:
     ~IP_JsonData();
     void intiSec();
     void timeinti();
+
+    void saveSettings(QSettings &settings);
+    void loadSettings(QSettings &settings);
+    void closeEvent(QCloseEvent *event);
+    void hideEvent(QHideEvent *event);
+
 
 signals:
     void phaseChangeSig(int);

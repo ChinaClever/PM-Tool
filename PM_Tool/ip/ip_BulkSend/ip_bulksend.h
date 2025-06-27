@@ -59,8 +59,8 @@ private:
     int Snum;
 
 
-    QString devip;
-    QString Sdevip;
+    QString devip;  //三相起始ip
+    QString Sdevip; //单相起始ip
 
     TMapProcessor* m_tmapProcessor;
     QVector<TriPhaseJsonQueue *> m_triphasejson;

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "bus/data_struct/BusData.h"
+#include "SettingsHelper.h"
 namespace Ui {
 class box_ui;
 }
@@ -22,6 +23,8 @@ public:
     BusData generaBus();
 
     QTimer* timer;
+
+
 
 public slots:
     void RowEdit(int row);

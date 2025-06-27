@@ -33,8 +33,8 @@ void AMapJsonQueue::run()
             {
                 QMutexLocker locker(&ProBulkJQMutexes[0]);
                 if(!ProBulkJQs[0].isEmpty()) u = ProBulkJQs[0].dequeue();
-                if(ProBulkJQs[0].size()>10000)
-                    qDebug()<<" aa  "<<ProBulkJQs[0].size();
+                //if(ProBulkJQs[0].size()>10000)
+                  //  qDebug()<<" aa  "<<ProBulkJQs[0].size();
             }
 
             if (u.isEmpty()) {

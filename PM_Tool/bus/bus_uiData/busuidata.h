@@ -25,6 +25,11 @@ public:
     EnvItem temInit();
     Info infoInti();
 
+
+    void saveSettings(QSettings &settings);
+    void loadSettings(QSettings &settings);
+    void hideEvent(QHideEvent *event) override;
+
 public slots:
 
     void createBox(int cnt);

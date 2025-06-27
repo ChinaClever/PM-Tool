@@ -19,7 +19,8 @@ box_ui::box_ui(QWidget *parent)
     ui->setupUi(this);
     ui->tabWidget->tabBar()->hide();
     ui->outletTab->setRowCount(outletPhase);
-    //setEle(); //更新电能值并显示在界面上
+
+    setEle(); //更新电能值并显示在界面上
     connect(ui->boxCirTab, &QTableWidget::cellDoubleClicked,
             this, &box_ui::RowEdit);
 
@@ -664,3 +665,6 @@ box_ui::~box_ui()
 {
     delete ui;
 }
+
+
+

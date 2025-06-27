@@ -50,12 +50,12 @@ void mp_bulksend::inti()
     }
 
     QLineEdit* devIpEdits[] = { ui->AdevIp, ui->BdevIp, ui->CdevIp, ui->DdevIp };
+    QRegExp ipRegex("\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b");
 
     for (int i = 0; i < 4; ++i) {
-        devip[i] = devIpEdits[i]->text();
-        devIpEdits[i]->setValidator(new QRegExpValidator(QRegExp("\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b")));
-        addr[i] = -1;
+        devIpEdits[i]->setValidator(new QRegExpValidator(ipRegex, this));  // 设置父对象 Qt 会自动释放
     }
+    initdevip();
 
     QList<QSpinBox*> spinBoxes = { ui->mp_timeInv, ui->cirNum, ui->bitNum, ui->machNum, ui->volCap,
                                    ui->AsendNum, ui->BsendNum, ui->CsendNum, ui->DsendNum };
@@ -64,6 +64,15 @@ void mp_bulksend::inti()
     for (QSpinBox* spinBox : spinBoxes) {
         connect(spinBox, QOverload<int>::of(&QSpinBox::valueChanged),
                 this, &mp_bulksend::intchange);
+    }
+}
+
+void mp_bulksend::initdevip()
+{
+    QLineEdit* devIpEdits[] = { ui->AdevIp, ui->BdevIp, ui->CdevIp, ui->DdevIp };
+    for (int i = 0; i < 4; ++i) {
+        devip[i] = devIpEdits[i]->text();
+        addr[i] = -1;
     }
 }
 
@@ -84,7 +93,7 @@ void mp_bulksend::on_mpSendBtn_clicked()
 {
     if(ui->mpSendBtn->text() == "开始发送"){
         ui->mpSendBtn->setText("停止发送");
-
+        initdevip();
         updateButtonState(0);
 
         intiMap();
@@ -346,7 +355,6 @@ void mp_bulksend::dataResize(PowerSystemData & packet)
     packet.pduData.phases.initialize(0);
     packet.pduData.envData.initialize(4);
 }
-
 
 void mp_bulksend::saveSettings(QSettings &settings) {
     settings.beginGroup("Mpbulk");

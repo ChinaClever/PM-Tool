@@ -1082,7 +1082,7 @@
      <string> kWh</string>
     </property>
     <property name="decimals">
-     <number>1</number>
+     <number>3</number>
     </property>
     <property name="maximum">
      <double>1000.000000000000000</double>
@@ -1338,7 +1338,7 @@
      <string> kWh</string>
     </property>
     <property name="decimals">
-     <number>1</number>
+     <number>3</number>
     </property>
     <property name="maximum">
      <double>1000.000000000000000</double>
@@ -1849,7 +1849,7 @@
      <string> kWh</string>
     </property>
     <property name="decimals">
-     <number>1</number>
+     <number>3</number>
     </property>
     <property name="maximum">
      <double>1000.000000000000000</double>

@@ -109,18 +109,18 @@ void ip_sendJson::sendTogoal(const QJsonObject &json,const QString &serip,const 
     quint16 Port = portStr.toUShort();
    // qDebug() << "发送目标 IP:" << ipAddress << "Port:" << Port; // 添加此行打印目标地址
     udpsocket->writeDatagram(jsonData, QHostAddress(ipAddress), Port);
-    qDebug()<<json;
+ //   qDebug()<<json;
     int addr = json["addr"].toInt();
     for(int i = 1; i < num; i++){
         if(addr + i >=10 )break;
         QJsonObject modified = json;
         modified["addr"] = addr + i;
         QString dev_key = modified["dev_ip"].toString() + "-" + QString("%1").arg(addr+i, 1, 10, QChar('0'));
-        qDebug()<<dev_key<<' '<<modified["dev_ip"].toString()<<' '<<addr+i;
+    //    qDebug()<<dev_key<<' '<<modified["dev_ip"].toString()<<' '<<addr+i;
         modified["dev_key"] = dev_key;
         QByteArray jsonData = QJsonDocument(modified).toJson(QJsonDocument::Compact);
         udpsocket->writeDatagram(jsonData, QHostAddress(ipAddress), Port);
-            qDebug()<<modified;
+        //    qDebug()<<modified;
     }
 
     udpsocket->deleteLater();

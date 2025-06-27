@@ -457,7 +457,7 @@
      </font>
     </property>
     <property name="text">
-     <string>192.168.1.98</string>
+     <string>192.168.1.97</string>
     </property>
    </widget>
    <widget class="QSpinBox" name="addr">
@@ -597,7 +597,7 @@
      <number>8</number>
     </property>
     <property name="maximum">
-     <number>32</number>
+     <number>42</number>
     </property>
     <property name="value">
      <number>24</number>
@@ -1551,7 +1551,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="bitTab">
     <attribute name="title">

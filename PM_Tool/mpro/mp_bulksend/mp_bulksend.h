@@ -29,6 +29,7 @@ public:
     void dataResize(PowerSystemData &);
     void bulkinti(const int );
     void inti();//初始化设置
+    void initdevip();
 
     void processStart();
     void updateButtonState(bool);

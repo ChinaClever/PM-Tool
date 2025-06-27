@@ -26,6 +26,7 @@ private:
     mp_bulksend *mMpBulkSend; //Mpro批量处理
     serIpPort *mserIpPort;    //发送地址
     busBulk   *mBusBulk;      //母线批量处理
+
 };
 
 #endif // MP_MAINPAGE_H

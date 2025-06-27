@@ -30,8 +30,8 @@ void DMapJsonQueue::run()
             {
                 QMutexLocker locker(&ProBulkJQMutexes[3]);
                 if(!ProBulkJQs[3].isEmpty()) u = ProBulkJQs[3].dequeue();
-                if(ProBulkJQs[3].size()>10000)
-                qDebug()<<" dd  "<<ProBulkJQs[3].size();
+                //if(ProBulkJQs[3].size()>10000)
+                //qDebug()<<" dd  "<<ProBulkJQs[3].size();
             }
 
             QByteArray jsonData = QJsonDocument(u).toJson(QJsonDocument::Compact);

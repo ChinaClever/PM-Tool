@@ -40,9 +40,9 @@ void serIpPort::on_sendAllBtn_clicked()
     } else {
         ui->sendAllBtn->setText("全部发送");
     }
-     //mIpBulkSend->triggerToggleSend(start);
+     mIpBulkSend->triggerToggleSend(start);
      mMpBulkSend->triggerToggleSend(start);
-     //mBusBulk->triggerToggleSend(start);
+     mBusBulk->triggerToggleSend(start);
 }
 
 // seripport.cpp

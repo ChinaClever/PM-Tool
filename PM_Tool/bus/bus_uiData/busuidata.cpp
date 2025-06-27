@@ -19,10 +19,16 @@ busUiData::busUiData(QWidget *parent)
     , work(new bus_toJson(this))
 {
     ui->setupUi(this);
+    QString configPath = QCoreApplication::applicationDirPath() + "/config.ini";
+    QSettings settings(configPath, QSettings::IniFormat);
+
+    loadSettings(settings);   // 加载配置数据
+
     init();
     conSlots();
     createBox(9);
     teminit();
+
 }
 
 void busUiData::init()
@@ -354,5 +360,63 @@ void busUiData::on_sendJsonBtn_clicked()
     }
 }
 
+void busUiData::saveSettings(QSettings &settings)
+{
+    settings.beginGroup("BoxCirEle");
+    for (int i = 0; i < 15; ++i) {
+        for (int j = 0; j < 9; ++j) {
+            QString key = QString("cirEle_%1_%2").arg(i).arg(j);
+            settings.setValue(key, cirEle[i][j]);  // 直接保存 double
+        }
+    }
+    settings.endGroup();
+
+    settings.beginGroup("BoxCirReacEle");
+    for (int i = 0; i < 15; ++i) {
+        for (int j = 0; j < 9; ++j) {
+            QString key = QString("cirReacEle_%1_%2").arg(i).arg(j);
+            settings.setValue(key, cirReacEle[i][j]);
+        }
+    }
+    settings.endGroup();
+
+    settings.sync();
+
+    qDebug() << "Saved BusCirEle and BusCirReacEle data.";
+}
+
+void busUiData::loadSettings(QSettings &settings)
+{
+    qDebug() << "Loading BusCirEle and BusCirReacEle data...";
+    settings.beginGroup("BoxCirEle");
+    for (int i = 0; i < 15; ++i) {
+        for (int j = 0; j < 9; ++j) {
+            QString key = QString("cirEle_%1_%2").arg(i).arg(j);
+            cirEle[i][j] = settings.value(key, 0.0).toDouble();
+        }
+    }
+    settings.endGroup();
+
+    settings.beginGroup("BoxCirReacEle");
+    for (int i = 0; i < 15; ++i) {
+        for (int j = 0; j < 9; ++j) {
+            QString key = QString("cirReacEle_%1_%2").arg(i).arg(j);
+            cirReacEle[i][j] = settings.value(key, 0.0).toDouble();
+        }
+    }
+    settings.endGroup();
+
+    qDebug() << "Loaded BusCirEle and BusCirReacEle data.";
+}
 
 
+void busUiData::hideEvent(QHideEvent *event)
+{
+    qDebug() << "box_ui::hideEvent called, saving settings.";
+
+    QString configPath = QCoreApplication::applicationDirPath() + "/config.ini";
+    QSettings settings(configPath, QSettings::IniFormat);
+    saveSettings(settings);
+
+    QWidget::hideEvent(event);  // 保留父类处理
+}
