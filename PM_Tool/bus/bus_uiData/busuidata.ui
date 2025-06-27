@@ -161,7 +161,7 @@
      </font>
     </property>
     <property name="text">
-     <string>6002</string>
+     <string>6000</string>
     </property>
    </widget>
    <widget class="QLabel" name="Port_4">

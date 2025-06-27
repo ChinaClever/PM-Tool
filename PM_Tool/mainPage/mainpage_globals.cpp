@@ -2,3 +2,4 @@
 
 QString serIp;
 QString port;
+QString BusPort;
