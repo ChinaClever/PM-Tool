@@ -124,10 +124,10 @@
    <widget class="QPushButton" name="sendAllBtn">
     <property name="geometry">
      <rect>
-      <x>310</x>
+      <x>300</x>
       <y>60</y>
-      <width>91</width>
-      <height>91</height>
+      <width>111</width>
+      <height>121</height>
      </rect>
     </property>
     <property name="text">

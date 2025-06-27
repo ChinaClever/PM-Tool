@@ -429,7 +429,7 @@
      </font>
     </property>
     <property name="text">
-     <string>192.168.1.99</string>
+     <string>192.168.1.97</string>
     </property>
    </widget>
    <widget class="QRadioButton" name="cur63A">

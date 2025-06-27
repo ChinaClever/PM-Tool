@@ -276,7 +276,7 @@
      </font>
     </property>
     <property name="text">
-     <string>192.168.1.98</string>
+     <string>192.168.1.99</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_24">

@@ -34,7 +34,7 @@ void MainWindow::intiWid()
 
 void MainWindow::saveAllSettings() {
     QString configPath = QCoreApplication::applicationDirPath() + "/config.ini";
-    qDebug() << "Saving to:" << configPath;
+    //qDebug() << "Saving to:" << configPath;
 
     QSettings settings(configPath, QSettings::IniFormat); // 这里使用完整路径
 

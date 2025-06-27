@@ -382,12 +382,12 @@ void busUiData::saveSettings(QSettings &settings)
 
     settings.sync();
 
-    qDebug() << "Saved BusCirEle and BusCirReacEle data.";
+  //  qDebug() << "Saved BusCirEle and BusCirReacEle data.";
 }
 
 void busUiData::loadSettings(QSettings &settings)
 {
-    qDebug() << "Loading BusCirEle and BusCirReacEle data...";
+  //  qDebug() << "Loading BusCirEle and BusCirReacEle data...";
     settings.beginGroup("BoxCirEle");
     for (int i = 0; i < 15; ++i) {
         for (int j = 0; j < 9; ++j) {
@@ -406,13 +406,13 @@ void busUiData::loadSettings(QSettings &settings)
     }
     settings.endGroup();
 
-    qDebug() << "Loaded BusCirEle and BusCirReacEle data.";
+    //qDebug() << "Loaded BusCirEle and BusCirReacEle data.";
 }
 
 
 void busUiData::hideEvent(QHideEvent *event)
 {
-    qDebug() << "box_ui::hideEvent called, saving settings.";
+    //qDebug() << "box_ui::hideEvent called, saving settings.";
 
     QString configPath = QCoreApplication::applicationDirPath() + "/config.ini";
     QSettings settings(configPath, QSettings::IniFormat);

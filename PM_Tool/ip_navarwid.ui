@@ -19,7 +19,7 @@
   <widget class="QPushButton" name="ipBtn">
    <property name="geometry">
     <rect>
-     <x>1090</x>
+     <x>790</x>
      <y>24</y>
      <width>120</width>
      <height>45</height>
@@ -94,7 +94,7 @@
   <widget class="QPushButton" name="generBtn">
    <property name="geometry">
     <rect>
-     <x>790</x>
+     <x>1090</x>
      <y>24</y>
      <width>120</width>
      <height>45</height>

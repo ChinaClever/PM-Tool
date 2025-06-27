@@ -14,6 +14,7 @@ serIpPort::serIpPort(QWidget *parent)
 
     serIp = ui->serIp->text();
     port = ui->port->text();
+    BusPort = ui->BusPort->text();
 
     ui->serIp->setValidator(new QRegExpValidator(QRegExp("\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b")));
     ui->port->setValidator(new QIntValidator(0, 65532,ui->port));
@@ -24,6 +25,9 @@ serIpPort::serIpPort(QWidget *parent)
     });
     connect(ui->port, &QLineEdit::editingFinished, this, [this](){
         port = ui->port->text();
+    });
+    connect(ui->BusPort, &QLineEdit::editingFinished, this, [this](){
+        BusPort = ui->BusPort->text();
     });
 }
 
