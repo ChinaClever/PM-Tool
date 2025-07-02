@@ -1,6 +1,7 @@
 #include "mp_globals.h"
 #include "specrannumggen.h"
 #include "data_cal/data_cal.h"
+#include "databasemanager.h"
 #include <QDebug>
 #include <QDateTime>
 #include <math.h>
@@ -49,7 +50,6 @@ void envInc(PowerSystemData& u) //环境增量改变
 void bitInc(PowerSystemData& u) //输出位增量变化
 {
     int size = u.pduData.outputData.outputBits.size();
-
     for(int i = 0; i < size; ++i){
         double x = specRanNumGgen::getrandom(25);
         double &y = u.pduData.outputData.outputBits[i].current;
@@ -71,6 +71,15 @@ void bitInc(PowerSystemData& u) //输出位增量变化
 
         u.pduData.outputData.outputBits[i].energy +=
             (u.pduData.outputData.outputBits[i].activePower * mp_sendTime)/3600;
+    }
+    {
+        auto key = u.dev_key;
+        int size = u.pduData.outputData.outputBits.size();
+        double energies[48] = {0};
+        for(int i = 0; i < size; ++i){
+            energies[i] = u.pduData.outputData.outputBits[i].energy;
+        }
+        DatabaseManager::instance().insertOrUpdateOutputBitEnergy(key, energies);
     }
 }
 

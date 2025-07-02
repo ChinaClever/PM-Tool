@@ -16,6 +16,8 @@ public slots:
 private:
     bool m_running;
 
+
+
 };
 
 #endif // SRIPHASEJSONQUEUE_H

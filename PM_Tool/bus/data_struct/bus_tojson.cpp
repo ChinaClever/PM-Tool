@@ -116,20 +116,37 @@ void bus_toJson::setBusLine(Busbar& data)
         vol_value.append(u.volValue[i]);
         vol_min.append(u.volMin[i]);
         vol_max.append(u.volMax[i]);
-        if(u.volStatus[i])st = 1;
+        if (u.volStatus[i]) {
+            st = 1;
+            alarm += QString("始端箱相电压过高，当前电压 %1 V，最大电压 %2 V\n")
+                         .arg(u.volValue[i])
+                         .arg(u.volMax[i]);
+        }
+
         vol_status.append(u.volStatus[i]);
         vol_thd.append(u.volThd[i]);
         cur_thd.append(u.curThd[i]);
         cur_value.append(u.curValue[i]);
         cur_min.append(u.curMin[i]);
         cur_max.append(u.curMax[i]);
-        if(u.curStatus[i])st = 1;
+        if (u.curStatus[i]) {
+            st = 1;
+            alarm += QString("始端箱相电流过高，当前电流 %1 A，最大电流 %2 A")
+                         .arg(u.curValue[i])
+                         .arg(u.curMax[i]);
+        }
+
         cur_status.append(u.curStatus[i]);
 
         pow_value.append(u.powValue[i]);
         pow_min.append(u.powMin[i]);
         pow_max.append(u.powMax[i]);
-        if(u.powStatus[i])st = 1;
+        if (u.powStatus[i]) {
+            st = 1;
+            alarm += QString("始端箱相功率过高，当前功率 %1 kW，最大功率 %2 kW\n")
+                         .arg(u.powValue[i])
+                         .arg(u.powMax[i]);
+        }
         pow_status.append(u.powStatus[i]);
         pow_apparent.append(u.powApparent[i]);
         pow_reactive.append(u.powReactive[i]);

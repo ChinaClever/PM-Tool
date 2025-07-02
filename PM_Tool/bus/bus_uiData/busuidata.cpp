@@ -54,6 +54,7 @@ void busUiData::conSlots()
             cirCur = value;
             qDebug() << "更新全局变量 phaseCur =" << cirCur << "A";
             });     //回路电流改变，更新全局
+    connect(ui->comboBox,QOverload<int>::of(&QComboBox::currentIndexChanged),this, &busUiData::curCap);
     connect(ui->boxNum, QOverload<int>::of(&QSpinBox::valueChanged),
             this, &busUiData::createBox);  // 插接箱数量改变
     connect(timer, &QTimer::timeout, this,&busUiData::renew);
@@ -239,8 +240,9 @@ void busUiData::createJsonData()
         udpSend(json);
     }
     //发送bus
-    BusData data = box[0]->generaBus();
+    BusData data;
     data.busCfg.curSpecs = curCap();
+    data = box[0]->generaBus();
     Busbar g;
     g.busData = setBusTotal(data);
     g.envItemList = d;
@@ -408,7 +410,6 @@ void busUiData::loadSettings(QSettings &settings)
 
     //qDebug() << "Loaded BusCirEle and BusCirReacEle data.";
 }
-
 
 void busUiData::hideEvent(QHideEvent *event)
 {

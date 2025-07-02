@@ -6,9 +6,9 @@
 #include "specrannumggen.h"
 #include <QMessageBox>
 #include "stylehelper.h"
+#include "databasemanager.h"
 
-
-#define SriNum 5 //单三相线程宏
+#define SriNum 15 //单三相线程宏
 
 ip_BulkSend::ip_BulkSend(QWidget *parent)
     : QWidget(parent)
@@ -20,7 +20,8 @@ ip_BulkSend::ip_BulkSend(QWidget *parent)
     StyleHelper::setLightBlueButton(ui->SbulkSendBtn);
     StyleHelper::setLightBlueButton(ui->bulkSendBtn);
 
-
+    m_dbWriteThread = new DbWriteThread(this);
+    m_dbWriteThread->start();
 
     for(int i=0;i<SriNum;i++){
         m_sriphasejson.push_back(new SriPhaseJsonQueue(this));
@@ -55,6 +56,7 @@ void ip_BulkSend::numChangeconnect()
                 this, &ip_BulkSend::STNumchange);
     }
 }
+
 void ip_BulkSend::inti()
 {
 
@@ -173,12 +175,8 @@ void ip_BulkSend::triggerToggleSend(bool flag)
     }
 }
 
-
-
 void ip_BulkSend::bulkinti(const int x)
 {
-
-
     if(x == 3){
         QString key = data_cal::generateNextCascadeIP(devip,addr,Tnum);
         auto packet = IP_sDataPacket<3>::create();  // SIZE=3
@@ -193,6 +191,28 @@ void ip_BulkSend::bulkinti(const int x)
 
         packet.totalDataCal();
         packet.Timesend = Ttime;
+
+        {
+            double v0 = 0, v1 = 0, v2 = 0;
+            bool found = DatabaseManager::instance().queryThreePhaseEnergy(key, v0, v1, v2);
+            if (!found) {
+                qDebug() << "数据库无此key，自动插入初始值 0:" << key;
+                v0 = v1 = v2 = 0.0;
+
+                // 这里改成异步写入，避免UI卡顿
+                DbWriteTask task;
+                task.table = DbWriteTask::ThreePhase;
+                task.key = key;
+                task.values = { v0, v1, v2 };
+                m_dbWriteThread->enqueueTask(task);
+            }
+
+            // 不管是否新插入，都把数据赋给 packet
+            packet.line_item.ele_active[0] = v0;
+            packet.line_item.ele_active[1] = v1;
+            packet.line_item.ele_active[2] = v2;
+        }
+
         tMap[key] = packet;
 
        // qDebug() << "Packet info:\n" << key;
@@ -212,6 +232,25 @@ void ip_BulkSend::bulkinti(const int x)
         packet.totalDataCal();
         packet.Timesend = Stime;
 
+        {
+            double v0;
+            bool found = DatabaseManager::instance().querySignalPhaseEnergy(Skey, v0);
+            if (found) {
+               // qDebug() << "从数据库读取单相电能:" << Skey << v0;
+            } else {
+                //qDebug() << "数据库无此key，自动插入值为0:" << Skey;
+                v0 = 0.0;
+                // 改成异步写入，避免UI卡顿
+                DbWriteTask task;
+                task.table = DbWriteTask::SinglePhase;
+                task.key = Skey;
+                task.values = {v0};
+                m_dbWriteThread->enqueueTask(task);
+            }
+
+            packet.line_item.ele_active[0] = v0;
+        }
+
         sMap[Skey] = packet;
         //qDebug() <<sMap.size();
     }
@@ -219,7 +258,7 @@ void ip_BulkSend::bulkinti(const int x)
 
 void ip_BulkSend::intiMap(const int x) //判断启动项单三相，确定创建主机个数
 {
-    //qDebug() <<tpe;
+   // auto yy = QDateTime::currentDateTime();
     if(x==3){
         devip = ui->devIp->text();
         addr = -1;
@@ -229,6 +268,7 @@ void ip_BulkSend::intiMap(const int x) //判断启动项单三相，确定创建
     }
     else {
         //qDebug()<<Sdevip;
+        //qDebug()<<x;
         Sdevip = ui->SdevIp->text();
         Saddr = -1;
         for(int i=0;i<spe;i++){
@@ -236,11 +276,16 @@ void ip_BulkSend::intiMap(const int x) //判断启动项单三相，确定创建
         }
     }
 
+  //  auto y = QDateTime::currentDateTime();
+   // qint64 seconds = y.secsTo(yy);
+    //qDebug()<<seconds;
+
+
 }
 
 void ip_BulkSend::STNumchange() //单三相参数变化
 {
-    qDebug()<<"===========";
+   // qDebug()<<"===========";
 
     Ttimesend = ui->Ttimeinv->value();
     Stimesend = ui->Stimeinv->value();

@@ -1085,7 +1085,7 @@
      <number>3</number>
     </property>
     <property name="maximum">
-     <double>1000.000000000000000</double>
+     <double>10000000.000000000000000</double>
     </property>
    </widget>
    <widget class="QDoubleSpinBox" name="volB">
@@ -1341,7 +1341,7 @@
      <number>3</number>
     </property>
     <property name="maximum">
-     <double>1000.000000000000000</double>
+     <double>10000000.000000000000000</double>
     </property>
    </widget>
    <widget class="QLabel" name="label_116">
@@ -1852,7 +1852,7 @@
      <number>3</number>
     </property>
     <property name="maximum">
-     <double>1000.000000000000000</double>
+     <double>10000000.000000000000000</double>
     </property>
    </widget>
    <widget class="QDoubleSpinBox" name="volA">

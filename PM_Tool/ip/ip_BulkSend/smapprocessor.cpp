@@ -1,14 +1,22 @@
 #include "smapprocessor.h"
+#include "specrannumggen.h"
+#include "data_cal/data_cal.h"
+#include "databasemanager.h"
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <math.h>
-#include "specrannumggen.h"
-#include "data_cal/data_cal.h"
-
 SMapProcessor::SMapProcessor(QObject* parent)
     : QThread(parent)
 {
    // qDebug() << "SProcessor created";
+    mSaveTimer = new QTimer(this);
+    dbWriteThread = new DbWriteThread(this);
+    dbWriteThread->start();
+
+    mSaveTimer->setInterval(15 * 60 * 1000); // 5分钟一次
+    connect(mSaveTimer, &QTimer::timeout, this, &SMapProcessor::onSaveTimerTimeout);
+    mSaveTimer->start();
+
 }
 
 SMapProcessor::~SMapProcessor()
@@ -33,7 +41,7 @@ void SMapProcessor::run()
            auto &dev = it.value();
 
             Incchange(dev);    // 增量变化计算
-            EleCal(dev);       // 电量计算
+            EleCal(dev,it->dev_key);       // 电量计算
             PowerCal(dev);     // 功率计算
             dev.totalDataCal();// 总体数据计算
 
@@ -144,15 +152,44 @@ void SMapProcessor::updatePhaseValue(double& value, bool& incFlag) {
     }
 }
 
-void SMapProcessor::EleCal(IP_sDataPacket<1>&v) //计算电能
+void SMapProcessor::EleCal(IP_sDataPacket<1>& v, const QString &key) // 加 const QString &key 参数
 {
     QString x = v.datetime;
     QString y = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
     v.datetime = y;
-    int k = data_cal::calculateTimeDiffInSeconds(y,x);
-    // qDebug()<<x<<'\n'<<y<<'\n'<<k<<"????";
-    v.line_item.ele_active[0] += (v.line_item.pow_value[0]*k)/3600;
+    int k = data_cal::calculateTimeDiffInSeconds(y, x);
+    // qDebug() << x << '\n' << y << '\n' << k << "????";
 
+    v.line_item.ele_active[0] += (v.line_item.pow_value[0] * k) / 3600;
+    // qDebug() << v.line_item.ele_active[0] << " " << v.line_item.pow_value[0] * k;
+
+    // === 新增：计算后立即保存数据库 ===
+  //   bool saveOk = DatabaseManager::instance().insertOrUpdateSignalPhaseEnergy(
+  //       key,
+  //       v.line_item.ele_active[0]
+  //       );
+
+  // //  if (!saveOk) {
+  // //      qDebug() << "保存单相电能失败:" << key;
+  // //  } else {
+  // //      qDebug() << "保存单相电能成功:" << key << v.line_item.ele_active[0];
+  // // }
+}
+
+void SMapProcessor::onSaveTimerTimeout()
+{
+    QMutexLocker locker(&mMapMutex);
+
+    for (auto it = sMap.begin(); it != sMap.end(); ++it) {
+        DbWriteTask task;
+        task.table = DbWriteTask::SinglePhase; // 根据你的业务修改
+        task.key = it.key();
+        task.values.append(it.value().line_item.ele_active[0]);
+
+        dbWriteThread->enqueueTask(task);  // 这里仅入队，不阻塞
+    }
+
+    qDebug() << "本次 onSaveTimerTimeout 入队完成";
 }
 
 void SMapProcessor::PowerCal(IP_sDataPacket<1>&v)

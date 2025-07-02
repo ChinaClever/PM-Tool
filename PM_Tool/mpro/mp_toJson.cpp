@@ -71,7 +71,7 @@ void mp_toJson::setPduTotalData(PowerSystemData systemData)
     int cnt = systemData.pduData.phases.phaseNum;
 
     // 直接存储单个值到JSON对象
-    totalItem["ele_active"] = qRound(systemData.pduData.totalData.eleActive*1000)/1000.0;
+    totalItem["ele_active"] = qRound(systemData.pduData.totalData.eleActive*1)/1.0;
     totalItem["pow_apparent"] = qRound(systemData.pduData.totalData.powApparent*1000)/1000.0;
     totalItem["pow_active"] = qRound(systemData.pduData.totalData.powActive*1000)/1000.0;
     totalItem["pow_reactive"] = qRound(systemData.pduData.totalData.powReactive*1000)/1000.0;
@@ -115,7 +115,7 @@ void mp_toJson::setLineItemList(PowerSystemData systemData)
         pow_apparent[i] = qRound(systemData.pduData.phases.apparentPowers[i]*1000)/1000.0;
         pow_value[i] = qRound(systemData.pduData.phases.activePowers[i]*1000)/1000.0;
         power_factor[i] = qRound(systemData.pduData.phases.powerFactors[i]*100)/100.0;
-        ele_active[i] = qRound(systemData.pduData.phases.energies[i]*1000)/1000.0;
+        ele_active[i] = qRound(systemData.pduData.phases.energies[i]*1)/1.0;
         phase_voltage[i] = qRound(vol_value[i] / sqrt(3) *100.0)/100.0;
 
         // 将数据添加到JSON数组
@@ -165,7 +165,7 @@ void mp_toJson::setLoopItemList(PowerSystemData systemData)//回路信息
         powApparentArr, volValueArr, powValueArr, powerFactorArr;
 
     for(int i = 0;i < cnt;i ++){
-        ele_active[i] = qRound(systemData.pduData.loopData.Circuits[i].energy *1000.0)/1000.0;
+        ele_active[i] = qRound(systemData.pduData.loopData.Circuits[i].energy *1.0)/1.0;
         breaker[i] = systemData.pduData.loopData.Circuits[i].breakerStatus;
         if(breaker[i]){
             cur_alarm_status[i] = systemData.pduData.loopData.Circuits[i].curAlarmStatus;
@@ -227,7 +227,7 @@ void mp_toJson::setOutBitItemList(PowerSystemData systemData)//输出位信息
     QJsonArray powAlarmStatusArray, curAlarmStatusArray, curAlarmMaxArray;
 
     for (int i = 0; i < cnt; ++i) {
-        ele_active[i] = qRound(systemData.pduData.outputData.outputBits[i].energy *100.0)/100.0;
+        ele_active[i] = qRound(systemData.pduData.outputData.outputBits[i].energy *1)/1.0;
         relay_state[i] = systemData.pduData.outputData.outputBits[i].switchStatus;
 
         if(relay_state[i]){

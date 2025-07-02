@@ -1,15 +1,24 @@
 // tmap_processor.cpp
 #include "TMapProcessor.h"
+#include "specrannumggen.h"
+#include "databasemanager.h"
+#include "data_cal/data_cal.h"
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <math.h>
-#include "specrannumggen.h"
-#include "data_cal/data_cal.h"
 
 TMapProcessor::TMapProcessor(QObject* parent)
     : QThread(parent)
 {
    // qDebug() << "TProcessor created";
+    mSaveTimer = new QTimer(this);
+
+   dbWriteThread = new DbWriteThread(this);
+   dbWriteThread->start();
+
+    mSaveTimer->setInterval(16 * 60 * 1000); // 8分钟一次
+    connect(mSaveTimer, &QTimer::timeout, this, &TMapProcessor::onSaveTimerTimeout);
+    mSaveTimer->start();
 }
 
 TMapProcessor::~TMapProcessor()
@@ -26,7 +35,8 @@ void TMapProcessor::run() {
 
             auto &dev = it.value();
             Incchange(dev);    // 增量变化计算
-            EleCal(dev);       // 电量计算
+            EleCal(dev,it->dev_key);       // 电量计算
+            // qDebug()<<it->dev_key<<"???";
             PowerCal(dev);     // 功率计算
             dev.totalDataCal();// 总体数据计算
 
@@ -52,17 +62,58 @@ void TMapProcessor::Tchangerun(bool flag)
     else m_running = 0;
 }
 
-void TMapProcessor::EleCal(IP_sDataPacket<3>&v)
+void TMapProcessor::EleCal(IP_sDataPacket<3>& v, QString &key)
 {
     QString x = v.datetime;
     QString y = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
     v.datetime = y;
-    int k = data_cal::calculateTimeDiffInSeconds(y,x);
-   // qDebug()<<x<<'\n'<<y<<'\n'<<k<<"????";
-    for(int i=0;i<3;i++){
-        v.line_item.ele_active[i] += (v.line_item.pow_value[i]*k)/3600;
+    int k = data_cal::calculateTimeDiffInSeconds(y, x);
+    // qDebug() << x << '\n' << y << '\n' << k << "????";
+
+    for (int i = 0; i < 3; i++) {
+        v.line_item.ele_active[i] += (v.line_item.pow_value[i] * k) / 3600;
     }
+
+    // // === 新增：计算完后立即保存至数据库，避免断电丢失 ===
+    // bool saveOk = DatabaseManager::instance().insertOrUpdateThreePhaseEnergy(
+    //     key,  // 此处使用你传入的 key
+    //     v.line_item.ele_active[0],
+    //     v.line_item.ele_active[1],
+    //     v.line_item.ele_active[2]
+    //     );
+    // if (!saveOk) {
+    //     qDebug() << "保存三相电能失败: " << key;
+    // } else {
+    //     qDebug() << "保存三相电能成功: " << key
+    //              << v.line_item.ele_active[0]
+    //              << v.line_item.ele_active[1]
+    //              << v.line_item.ele_active[2];
+    // }
 }
+
+void TMapProcessor::onSaveTimerTimeout()
+{
+    qDebug() << "批量入队三相电能写入任务开始";
+
+    QMutexLocker locker(&mMapMutex);  // 防止和 run 冲突
+
+    for (auto it = tMap.begin(); it != tMap.end(); ++it) {
+        const QString &key = it.key();
+        IP_sDataPacket<3> &dev = it.value();
+
+        DbWriteTask task;
+        task.table = DbWriteTask::ThreePhase;
+        task.key = key;
+        task.values.append(dev.line_item.ele_active[0]);
+        task.values.append(dev.line_item.ele_active[1]);
+        task.values.append(dev.line_item.ele_active[2]);
+
+        dbWriteThread->enqueueTask(task);
+    }
+
+    qDebug() << "批量入队三相电能写入任务结束";
+}
+
 
 void TMapProcessor::PowerCal(IP_sDataPacket<3>&v)
 {

@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "databasemanager.h"
 #include <QDebug>
+#include <QDir>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -8,10 +10,56 @@ MainWindow::MainWindow(QWidget *parent)
     , mBusbulk(new busBulk(this))
 {
     ui->setupUi(this);
+
+
+    initDataBase(); // === 添加数据库初始化和建表 ===
+
     intiWid();
     loadAllSettings(); //读写配置文件
 
 
+}
+
+void MainWindow::initDataBase()
+{
+    QString appDir = QCoreApplication::applicationDirPath();
+    QString dbDir = appDir + "/db";
+    QDir dir(dbDir);
+    if (!dir.exists()) {
+        dir.mkpath(".");
+    }
+
+    QString dbFilePath = dbDir + "/energy_data.db";
+
+    if (!DatabaseManager::instance().init(dbFilePath)) {
+        qDebug() << "数据库初始化失败";
+    } else {
+        qDebug() << "数据库初始化成功";
+    }
+
+    if (!DatabaseManager::instance().createThreePhaseEnergyTable()) {
+        qDebug() << "创建三相电能表失败";
+    } else {
+        qDebug() << "三相电能表已创建或已存在";
+    }
+
+    if (!DatabaseManager::instance().createSignalPhaseEnergyTable()) {
+        qDebug() << "创建单相电能表失败";
+    } else {
+        qDebug() << "单相电能表已创建或已存在";
+    }
+
+    if (!DatabaseManager::instance().createBoxPhaseEnergyTable()) {
+        qDebug() << "创建插接箱电能表失败";
+    } else {
+        qDebug() << "插接箱电能表已创建或已存在";
+    }
+
+    if (!DatabaseManager::instance().createOutputBitEnergyTable()) {
+        qDebug() << "创建 OutputBitEnergy 表失败";
+    } else {
+        qDebug() << "OutputBitEnergy 表已创建或已存在";
+    }
 }
 
 void MainWindow::intiWid()

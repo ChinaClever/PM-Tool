@@ -4,6 +4,7 @@
 #include "data_cal/data_cal.h"
 #include "specrannumggen.h"
 #include "stylehelper.h"
+#include "databasemanager.h"
 #include <QDebug>
 #include <math.h>
 const int ProNum = 5;
@@ -17,6 +18,9 @@ mp_bulksend::mp_bulksend(QWidget *parent)
     , mDMapProcessor(new DMapProcessor(this))
 {
     ui->setupUi(this);
+
+    m_dbWriteThread = new DbWriteThread(this);
+    m_dbWriteThread->start();
 
     for(int i = 0; i < ProNum; i++){
         mAJsonQ.push_back(new AMapJsonQueue(this));
@@ -151,6 +155,9 @@ mp_bulksend::~mp_bulksend()
 
 void mp_bulksend::intiMap()
 {
+
+    //auto yy = QDateTime::currentDateTime();
+
     for(int i = 0;i < serNum[0];i ++){
         bulkinti(0);
     }
@@ -163,6 +170,11 @@ void mp_bulksend::intiMap()
     for(int i = 0;i < serNum[3];i ++){
         bulkinti(3);
     }
+
+    //auto y = QDateTime::currentDateTime();
+   // qint64 msecs = yy.msecsTo(y);
+
+   // qDebug()<<msecs;
 }
 
 void mp_bulksend::bulkinti(const int x)
@@ -180,6 +192,31 @@ void mp_bulksend::bulkinti(const int x)
     cirInti(packet);
     lineInti(packet);
     totalInti(packet);
+
+    {
+
+        double energies[48] = {0};
+        // 先同步读（如果读时间长，可以考虑异步读）
+        bool found = DatabaseManager::instance().queryOutputBitEnergy(key, energies);
+        if (!found) {
+            // 如果没有数据，初始化为0
+            for (int i = 0; i < 48; ++i) energies[i] = 0.0;
+            // 异步写入初始值，避免UI卡顿
+            DbWriteTask task;
+            task.table = DbWriteTask::OutputBit;
+            task.key = key;
+            for (int i = 0; i < 48; ++i) task.values.append(energies[i]);
+            m_dbWriteThread->enqueueTask(task);
+        }
+
+        // 这里的“更新数据示例”写操作也放异步队列
+        DbWriteTask updateTask;
+        updateTask.table = DbWriteTask::OutputBit;
+        updateTask.key = key;
+        for (int i = 0; i < 48; ++i) updateTask.values.append(energies[i]); // 填写当前48路能量数据
+        m_dbWriteThread->enqueueTask(updateTask);
+
+    }
 
     if(x == 0){
         packet.settings.series = "A";

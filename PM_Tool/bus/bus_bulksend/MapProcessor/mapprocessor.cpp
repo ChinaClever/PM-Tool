@@ -1,13 +1,28 @@
 #include "mapprocessor.h"
 #include "bus_globals.h"
 #include "specRanNumGgen.h"
+#include "databasemanager.h"
 #include "busbulk.h"
+#include "DbWriteThread.h"
 #include <math.h>
 #include <QDebug>
+#include <QtConcurrent/QtConcurrent>
+
+
 
 MapProcessor::MapProcessor(QObject* parent)
 {
     mBus = new bus_toJson(this);
+    saveTimer = new QTimer(this);
+
+    dbWriteThread = new DbWriteThread(this);
+
+    dbWriteThread->start();
+    saveTimer->setInterval(10 * 60 * 1000); // 每 5 分钟触发一次
+    saveTimer->disconnect();
+    connect(saveTimer, &QTimer::timeout, this, &MapProcessor::SaveTimerTimeout);
+    saveTimer->start();
+
 }
 
 MapProcessor::~MapProcessor()
@@ -16,6 +31,14 @@ MapProcessor::~MapProcessor()
     m_running = false;
     wait();
     quit();
+    if (dbWriteThread) {
+        dbWriteThread->requestInterruption();
+        dbWriteThread->quit();
+        dbWriteThread->wait();
+        delete dbWriteThread;
+        dbWriteThread = nullptr;
+    }
+
 }
 
 void MapProcessor::run()
@@ -39,9 +62,10 @@ void MapProcessor::run()
                  }
             }
             else{
+                QString key = busMap[i+1].info.boxKey;
                 busMap[i+1].info.datetime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
-                setBoxInc(busMap[i+1].boxData);
-               busBulk::setBoxList(busMap[i+1].boxData);
+                setBoxInc(busMap[i+1].boxData,key);
+                busBulk::setBoxList(busMap[i+1].boxData);
             }
 
             QJsonObject json = u->toJson(busMap[i+1], busMap[i+1].flag);
@@ -63,7 +87,7 @@ void MapProcessor::run()
     qDebug() << "Mpstop!";
 }
 
-void MapProcessor::setBoxInc(BoxData& box)
+void MapProcessor::setBoxInc(BoxData& box,const QString& key)
 {
     double x,newVal;
     auto &u = box.loopItemList;
@@ -97,6 +121,31 @@ void MapProcessor::setBoxInc(BoxData& box)
         u.eleReactive[i] += bus_sendTime*u.powReactive[i] / 3600;
     }
 
+}
+
+void MapProcessor::SaveTimerTimeout() {
+    auto startTime = QDateTime::currentDateTime();
+
+    busMapLock.lockForRead();
+    for (auto it = busMap.begin(); it != busMap.end(); ++it) {
+        DbWriteTask task;
+        task.table = DbWriteTask::BoxPhase;
+        task.key = it.value().info.boxKey;
+
+        const auto &u = it.value().boxData.loopItemList;
+        // 把 eleActive 和 eleReactive 放入 values
+        for (int i = 0; i < u.eleActive.size(); ++i)
+            task.values.append(u.eleActive[i]);
+        for (int i = 0; i < u.eleReactive.size(); ++i)
+            task.values.append(u.eleReactive[i]);
+
+        dbWriteThread->enqueueTask(task);
+    }
+    busMapLock.unlock();
+
+    auto endTime = QDateTime::currentDateTime();
+    qint64 elapsedMs = startTime.msecsTo(endTime);
+   // qDebug() << "✅ 本次 onSaveTimerTimeout 入队完成，用时" << elapsedMs << "ms";
 }
 
 void MapProcessor::PRun(bool flag)

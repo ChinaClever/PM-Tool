@@ -4,10 +4,10 @@
 #include "specrannumggen.h"
 #include "data_cal/data_cal.h"
 #include "stylehelper.h"
-
+#include "databasemanager.h"
 #include <QDebug>
 #include <math.h>
-const int BusNum = 5;
+const int BusNum = 10;
 busBulk::busBulk(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::busBulk)
@@ -48,7 +48,7 @@ void busBulk::updateButtonState(bool x)
 void busBulk::DataResize(Busbar& bus) //resize数组大小
 {
     bus.init(3,4);
-    bus.boxData.loopItemList.init(6);
+    bus.boxData.loopItemList.init(9);
     bus.boxData.outletItemList.init(3);
     bus.boxData.lineItemList.init(3);
 
@@ -79,7 +79,7 @@ void busBulk::setBoxCfg(BoxConfig& cfg)
     cfg.beep = 1;
     cfg.workMode = 2;
     cfg.itemType = 1;
-    cfg.loopNum = 6;
+    cfg.loopNum = 9;
     cfg.boxType = 0;
     cfg.breakerStatus.resize(cfg.loopNum);
     for(int i = 0; i < cfg.loopNum; i ++){
@@ -220,7 +220,7 @@ void busBulk::setBusline(BusData& bus)
         u.volThd[i] = specRanNumGgen::getCurThd();
 
         u.curValue[i] = bulkPhase[0][i];
-        u.curMax[i] = bus.busCfg.curSpecs;
+        u.curMax[i] = 800;
         u.curThd[i] = specRanNumGgen::getCurThd();
 
         u.powValue[i] = bulkPhase[1][i];
@@ -272,6 +272,8 @@ void busBulk::setBusTotal(BusData& bus)
                  - std::min({v.curValue[0],v.curValue[1],v.curValue[2]});
     double avg = (v.curValue[0]+v.curValue[1]+v.curValue[2]) / 3.0;
 
+    u.volUnbalance = 0;
+
     if(avg == 0)u.curUnbalance = 0;
     else u.curUnbalance = cnt / avg * 1.0;
 }
@@ -280,7 +282,7 @@ void busBulk::bulkinti(const int x)
 {
     bulkPhase = QVector<QVector<double>>(6, QVector<double>(3, 0.0));
     auto Bus = Busbar();
-    DataResize(Bus);
+    DataResize(Bus);   //回路数量修改
     envTem(Bus.envItemList);
     setInfo(Bus.info);
 
@@ -290,7 +292,7 @@ void busBulk::bulkinti(const int x)
         auto Box = BoxData();
         setBoxCfg(Box.boxCfg);
         Box.boxCfg.workMode = i + 2;
-        Box.loopItemList.init(6);
+        Box.loopItemList.init(9);   //回路数量
         Box.outletItemList.init(3);
         Box.lineItemList.init(3);
 
@@ -303,7 +305,30 @@ void busBulk::bulkinti(const int x)
         Bus.info.busName = "Bus-1";
         Bus.info.boxKey = Bus.info.busKey+"-"+QString("%1").arg(i+2);
 
-       busMap[index++] = Bus ;
+        {
+            double eleActive[6] = {0};
+            double eleReactive[6] = {0};
+            QString key = Bus.info.boxKey;
+
+            bool ok = DatabaseManager::instance().queryBoxPhaseEnergy(key, eleActive, eleReactive);
+            if (ok) {
+                for (int i = 0; i < 6; i++) {
+                    Box.loopItemList.eleActive[i] = eleActive[i];
+                    Box.loopItemList.eleReactive[i] = eleReactive[i];
+                }
+            } else {
+                // 数据库无此key，赋默认值0
+                for (int i = 0; i < 6; i++) {
+                    Box.loopItemList.eleActive[i] = 0;
+                    Box.loopItemList.eleReactive[i] = 0;
+                }
+                // 自动插入一条新记录，初始值全0
+                DatabaseManager::instance().insertOrUpdateBoxPhaseEnergy(key, eleActive, eleReactive);
+            }
+
+        }
+
+        busMap[index++] = Bus ;
     }
 
     setBusCfg(Bus.busData.busCfg);
@@ -312,6 +337,10 @@ void busBulk::bulkinti(const int x)
     Bus.flag = 0;
     Bus.info.addr = 1;
     Bus.info.busName = "Bus-1";
+    {
+        //qDebug()<<Bus.info.busKey;
+        //如果key存在，读写数据库文件
+    }
     busMap[index++] = Bus ;
 }
 
@@ -325,6 +354,9 @@ void busBulk::intiMap()
         }
         bulkinti(i);
     }
+
+
+
 }
 
 void busBulk::on_busSendBtn_clicked()

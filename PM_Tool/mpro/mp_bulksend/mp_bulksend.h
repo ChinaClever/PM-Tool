@@ -11,6 +11,7 @@
 #include "dmapprocessor.h"
 #include "dmapjsonqueue.h"
 #include "SettingsHelper.h"
+#include "DbWriteThread.h"
 #include <QWidget>
 #include <QVector>
 namespace Ui {
@@ -83,7 +84,7 @@ private:
     QVector<int> addr ;  //级联地址
     QVector<int> serNum; //系列设备数量
 
-
+    DbWriteThread *m_dbWriteThread;
 };
 
 #endif // MP_BULKSEND_H

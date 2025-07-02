@@ -3,6 +3,8 @@
 
 #include <QThread>
 #include "globals.h"
+#include <QTimer>
+#include "DbWriteThread.h"
 
 class SMapProcessor: public QThread {
     Q_OBJECT
@@ -17,12 +19,17 @@ public:
     void updateCurrentPhase(double& value, bool& incFlag, double cap);
     void updatePowerFactor(double& pf, bool& incFlag);
 
-    void EleCal(IP_sDataPacket<1>&sMap);
-    void PowerCal(IP_sDataPacket<1>&sMap);
+    void EleCal(IP_sDataPacket<1>&sMap,const QString& key);
+    void PowerCal(IP_sDataPacket<1>&sMapm);
 public slots:
     void Schangerun(bool flag);
+    void onSaveTimerTimeout();
 private:
     bool m_running = true;
+    QTimer* mSaveTimer = nullptr;
+    QMutex mMapMutex;  // 如果你有多线程操作 sMap，最好用锁保护
+
+    DbWriteThread* dbWriteThread = nullptr;
 };
 
 #endif // SMAPPROCESSOR_H

@@ -359,7 +359,7 @@ BusData box_ui::generaBus()
     //bus cfg
     {
         auto &u = busdata.busCfg;
-        u.curSpecs = cirCur;
+        //u.curSpecs = 800;
         u.workMode = 1;
         u.beep = 1;
         u.acDc = 0;
@@ -402,7 +402,7 @@ BusData box_ui::generaBus()
 
             u.powMax[i] = u.powValue[i];
             u.powMin[i] = 0;
-            if(u.powValue[i] > u.powMax[i]) u.powStatus[i] = 2;
+            if(u.powValue[i] > u.powMax[i]) u.powStatus[i] = 0;
 
             u.volLineValue[i] = std::sqrt(3.0)*u.volValue[i]*1.0;
             u.volLineMax[i] = u.volLineValue[i];

@@ -1501,7 +1501,7 @@
        <number>2</number>
       </property>
       <property name="maximum">
-       <double>150.000000000000000</double>
+       <double>500.000000000000000</double>
       </property>
      </widget>
      <widget class="QLabel" name="label_109">
@@ -1588,7 +1588,7 @@
        <number>2</number>
       </property>
       <property name="maximum">
-       <double>150.000000000000000</double>
+       <double>500.000000000000000</double>
       </property>
      </widget>
      <widget class="QLabel" name="label_107">
@@ -1769,7 +1769,7 @@
        <number>2</number>
       </property>
       <property name="maximum">
-       <double>150.000000000000000</double>
+       <double>500.000000000000000</double>
       </property>
      </widget>
      <widget class="QDoubleSpinBox" name="pfA">

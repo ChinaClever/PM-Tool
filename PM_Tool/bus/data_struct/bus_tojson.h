@@ -40,6 +40,7 @@ private:
 
     bool st = 0; //alarm status
 
+    QString alarm = "";
     QString m_ser_ip;
     QString m_port;
 

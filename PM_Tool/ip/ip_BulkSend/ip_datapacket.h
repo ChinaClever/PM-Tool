@@ -271,10 +271,11 @@ QJsonObject toJson(const IP_sDataPacket<SIZE>& packet) {
             packet.line_item.ele_active.begin(),
             packet.line_item.ele_active.end(),
             std::back_inserter(list),
-            [](double v) { return QVariant(static_cast<int>(v)); }
+            [](double v) { return QVariant(v); } // 保留原始 double，不取整
             );
         return QJsonArray::fromVariantList(list);
     }();
+
 
 
 

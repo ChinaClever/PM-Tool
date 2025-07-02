@@ -16,7 +16,7 @@ void MapJsonQueue::run()
     int cnt = 0;
     QString ipAddress = serIp;
     QString portStr = BusPort;
-    qDebug()<<BusPort;
+   // qDebug()<<BusPort;
     quint16 Port = portStr.toUShort();
     std::unique_ptr<QUdpSocket> udpsocket = std::make_unique<QUdpSocket>();
     while(m_running){

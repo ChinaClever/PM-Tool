@@ -9,7 +9,7 @@
 #include "SMapProcessor.h"
 #include "triphasejsonqueue.h"
 #include "sriphasejsonqueue.h"
-
+#include "DbWriteThread.h"
 #include "SettingsHelper.h"
 namespace Ui {
 class ip_BulkSend;
@@ -79,7 +79,7 @@ private:
     int Stime = 10;
 
     Ui::ip_BulkSend *ui;
-
+    DbWriteThread *m_dbWriteThread;
 };
 
 #endif // IP_BULKSEND_H
