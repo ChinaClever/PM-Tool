@@ -24,6 +24,8 @@ public:
 public slots:
     void Schangerun(bool flag);
     void onSaveTimerTimeout();
+signals:
+    void ScheckSend(int,int,int);
 private:
     bool m_running = true;
     QTimer* mSaveTimer = nullptr;

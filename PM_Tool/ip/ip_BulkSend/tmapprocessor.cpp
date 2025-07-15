@@ -16,7 +16,7 @@ TMapProcessor::TMapProcessor(QObject* parent)
    dbWriteThread = new DbWriteThread(this);
    dbWriteThread->start();
 
-    mSaveTimer->setInterval(16 * 60 * 1000); // 8分钟一次
+    mSaveTimer->setInterval(45 * 60 * 1000); // 8分钟一次
     connect(mSaveTimer, &QTimer::timeout, this, &TMapProcessor::onSaveTimerTimeout);
     mSaveTimer->start();
 }
@@ -50,9 +50,12 @@ void TMapProcessor::run() {
         QDateTime t2 = QDateTime::currentDateTime();
         int duration = t1.msecsTo(t2);
       //  qDebug()<<"duration: "<<duration<<"  "<<Stimesend;
-        if(duration<=Stimesend*1000)
-            msleep(Stimesend*1000-duration);
-        msleep(1);
+        if(duration<=Ttimesend*1000){
+            msleep(Ttimesend*1000-duration);
+        }
+      //  qDebug()<<duration<<"  "<<TCnt<<"  "<<TCntEr<<endl;
+        emit TcheckSend(duration,TCnt,TCntEr);
+        TCnt = TCntEr = 0;
     }
 }
 
@@ -136,9 +139,9 @@ void TMapProcessor::Incchange(IP_sDataPacket<3>&v)
         double x = specRanNumGgen::getrandom(100);
         double y = v.env_item.tem_value[0];
         double newVal = v.incrEnvInc ? x + y : x - y;
-        v.env_item.tem_value[0] = ((v.incrEnvInc ? fmin(x + y, 100) : fmax(x - y, 0)));
-        v.incrEnvInc = (v.incrEnvInc && newVal >= 100) ? false :
-                           (!v.incrEnvInc && newVal <= 0)   ? true  :
+        v.env_item.tem_value[0] = ((v.incrEnvInc ? fmin(x + y, 45) : fmax(x - y, 20)));
+        v.incrEnvInc = (v.incrEnvInc && newVal >= 45) ? false :
+                           (!v.incrEnvInc && newVal <= 20)   ? true  :
                            v.incrEnvInc;
     }
     {   //湿度增量

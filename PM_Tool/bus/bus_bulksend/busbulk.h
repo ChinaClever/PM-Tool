@@ -43,11 +43,15 @@ public:
 
 signals:
     void ProcessorRun(bool);
+
+
 private slots:
     void on_busSendBtn_clicked();
 
     void on_bus_timeInv_valueChanged(int arg1);
 
+    void checkSend(int,int,int);
+    void checkTime(int);
 private:
 
     Ui::busBulk *ui;

@@ -281,6 +281,8 @@ void mp_toJson::setEnvItemList(PowerSystemData systemData) //环境信息
     int temAlarm[4] = {0};
     int humAlarm[4] = {0};
     double dewPoint[4] = {0};
+
+
     for(int i = 0;i < 4;i ++){
         insert[i] = systemData.pduData.envData.sensorStatuses[i];
         hum[i] = qRound(systemData.pduData.envData.humidities[i]*1)/1.0;
@@ -290,12 +292,21 @@ void mp_toJson::setEnvItemList(PowerSystemData systemData) //环境信息
         dewPoint[i] = qRound(systemData.pduData.envData.dewPoints[i]*100)/100.0;
     }
 
+    auto &u = systemData.pduData.envData;
+    envItem["door"] = QJsonArray::fromVariantList({u.door[0],u.door[1]});
+    envItem["lock"] = QJsonArray::fromVariantList({u.lock[0]});
+    envItem["water"] = QJsonArray::fromVariantList({u.water[0]});
+    envItem["smoke"] = QJsonArray::fromVariantList({u.smoke[0]});
+
+
     envItem["insert"] = QJsonArray::fromVariantList({insert[0], insert[1], insert[2], insert[3]});
     envItem["hum_value"] = QJsonArray::fromVariantList({hum[0], hum[1], hum[2], hum[3]});
     envItem["tem_value"] = QJsonArray::fromVariantList({tem[0], tem[1], tem[2], tem[3]});
     envItem["dew_point"] = QJsonArray::fromVariantList({dewPoint[0], dewPoint[1], dewPoint[2], dewPoint[3]});
     envItem["hum_alarm_status"] = QJsonArray::fromVariantList({humAlarm[0], humAlarm[1], humAlarm[2], humAlarm[3]});
     envItem["tem_alarm_status"] = QJsonArray::fromVariantList({temAlarm[0], temAlarm[1], temAlarm[2], temAlarm[3]});
+
+
 
     m_env_item_list = envItem;
 

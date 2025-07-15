@@ -32,26 +32,41 @@ void SriPhaseJsonQueue::run()
 
         cnt = 0;
 
+        QDateTime t1 = QDateTime::currentDateTime();
+
         while(!SJsonQueue.isEmpty()) {
 
-            SQueueMutex.lock();
-            if(!SJsonQueue.isEmpty()) u = SJsonQueue.dequeue();
-            if(SJsonQueue.size()>10000)
-            qDebug()<<" aa  "<<SJsonQueue.size();
-            SQueueMutex.unlock();
-
+            {
+                QMutexLocker locker(&SQueueMutex);
+                if(!SJsonQueue.isEmpty()) u = SJsonQueue.dequeue();
+                if(SJsonQueue.size()>10000)
+                    qDebug()<<" aa  "<<SJsonQueue.size();
+            }
 
             QByteArray jsonData = QJsonDocument(u).toJson(QJsonDocument::Compact);
 
+            SCnt++;
+            SCntt++;
 
             if(udpsocket->writeDatagram(jsonData, QHostAddress(ipAddress), Port) == -1) {
                 qWarning() << "Failed to send data:" << udpsocket->errorString();
+                SCntEr++;
                 // 可以选择重试或记录错误
             }
-            if((cnt++)%500 == 0)
+            if((cnt++)%50 == 0){
+                // int s = QRandomGenerator::global()->bounded(1, 100);
                 usleep(1);
+            }
         }
-        QThread::usleep(100);
+        msleep(5);
+
+        if(SCntt >= SsendNum*0.9) {
+            SCntt = 0;
+            QDateTime t2 = QDateTime::currentDateTime();
+            int duration = t1.msecsTo(t2);
+            emit ScheckTime(duration);
+            //qDebug()<<duration;
+        }
 
     }
 }

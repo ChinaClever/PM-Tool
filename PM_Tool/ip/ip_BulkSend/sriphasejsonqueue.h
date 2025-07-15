@@ -13,6 +13,8 @@ public:
     ~SriPhaseJsonQueue();
 public slots:
     void sriRun(bool flag);
+signals:
+    void ScheckTime(int);
 private:
     bool m_running;
 

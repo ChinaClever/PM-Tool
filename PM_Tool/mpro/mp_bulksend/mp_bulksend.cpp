@@ -7,7 +7,7 @@
 #include "databasemanager.h"
 #include <QDebug>
 #include <math.h>
-const int ProNum = 5;
+const int ProNum = 3;
 
 mp_bulksend::mp_bulksend(QWidget *parent)
     : QWidget(parent)
@@ -41,6 +41,11 @@ void mp_bulksend::inti()
     devip.resize(4);
 
     connect(this,&mp_bulksend::ProcessorRun,mAMapProcessor,&AMapProcessor::APRun);
+    connect(mAMapProcessor, &AMapProcessor::checkSend,
+            this, &mp_bulksend::checkSend,
+            Qt::QueuedConnection);
+
+
     connect(this,&mp_bulksend::ProcessorRun,mBMapProcessor,&BMapProcessor::BPRun);
     connect(this,&mp_bulksend::ProcessorRun,mCMapProcessor,&CMapProcessor::CPRun);
     connect(this,&mp_bulksend::ProcessorRun,mDMapProcessor,&DMapProcessor::DPRun);
@@ -93,12 +98,24 @@ void mp_bulksend::intchange()
     serNum[3] = ui->DsendNum->value();
 }
 
+void mp_bulksend::checkSend(int a,int b,int c)
+{
+    ui->MproTime->setValue(a/1000.0);
+    ui->MproNum->setValue(b);
+    ui->MproErNum->setValue(c);
+}
+
 void mp_bulksend::on_mpSendBtn_clicked()
 {
     if(ui->mpSendBtn->text() == "开始发送"){
         ui->mpSendBtn->setText("停止发送");
         initdevip();
         updateButtonState(0);
+
+        Anum = ui->AsendNum->value();
+        Bnum = ui->BsendNum->value();
+        Cnum = ui->CsendNum->value();
+        Dnum = ui->DsendNum->value();
 
         intiMap();
         processStart();
@@ -270,10 +287,20 @@ void mp_bulksend::totalInti(PowerSystemData& u)
     u.pduData.totalData.powerFactor = (u.pduData.totalData.powApparent != 0 ?
                                         u.pduData.totalData.powActive/u.pduData.totalData.powApparent : 0);
 
-    double  cnt = (*std::max_element(u.pduData.phases.currents.begin(),u.pduData.phases.currents.end()))
-        -(*std::min_element(u.pduData.phases.currents.begin(),u.pduData.phases.currents.end()));
-    double avg = u.pduData.totalData.curValue/3.0;
-    u.pduData.totalData.curUnbalance = avg != 0 ? cnt / avg : 0;
+    auto& currents = u.pduData.phases.currents;
+
+    // 计算平均值
+    double avg = std::accumulate(currents.begin(), currents.end(), 0.0) / currents.size();
+
+    // 最大值
+    double max_val = *std::max_element(currents.begin(), currents.end());
+
+    // 工业标准不平衡度计算
+    if (avg != 0.0)
+        u.pduData.totalData.curUnbalance = (max_val - avg) / avg * 100.0;
+    else
+        u.pduData.totalData.curUnbalance = 0.0;
+
 }
 
 void mp_bulksend::lineInti(PowerSystemData& u)
@@ -382,6 +409,11 @@ void mp_bulksend::envInti(PowerSystemData& packet)
         packet.pduData.envData.temperatures[i] = specRanNumGgen::get_temperature();
         packet.pduData.envData.dewPoints[i] = data_cal::calculate_dewpoint1(packet.pduData.envData.temperatures[i],  packet.pduData.envData.humidities[i]);
     }
+
+    packet.pduData.envData.door[0] = packet.pduData.envData.door[1] = 1;
+    packet.pduData.envData.water[0] = 1;
+    packet.pduData.envData.smoke[0] = 1;
+    packet.pduData.envData.lock[0] = 1;
 
 }
 

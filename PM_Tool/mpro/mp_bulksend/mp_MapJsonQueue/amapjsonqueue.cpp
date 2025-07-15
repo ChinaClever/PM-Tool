@@ -28,6 +28,7 @@ void AMapJsonQueue::run()
     while(m_running){
 
         cnt = 0;
+        QDateTime t1 = QDateTime::currentDateTime();
         while(!ProBulkJQs[0].isEmpty()) {
 
             {
@@ -37,20 +38,34 @@ void AMapJsonQueue::run()
                   //  qDebug()<<" aa  "<<ProBulkJQs[0].size();
             }
 
+            MpCnt++;
+            MpCntt++;
+
             if (u.isEmpty()) {
-                qDebug() << "Empty JSON object, skipped";
+                //qDebug() << "Empty JSON object, skipped";
+                MpCntEr++;
                 continue;
             }
             QByteArray jsonData = QJsonDocument(u).toJson(QJsonDocument::Compact);
 
             if(udpsocket->writeDatagram(jsonData, QHostAddress(ipAddress), Port) == -1) {
-                qWarning() << "Failed to send data:" << udpsocket->errorString();
+                //qWarning() << "Failed to send data:" << udpsocket->errorString();
+                MpCntEr++;
                 // 可以选择重试或记录错误
             }
-            if((cnt++)%500 == 0)
+            if((cnt++)%50 == 0)
                 usleep(1);
         }
         msleep(1);
+        if(MpCntt >= (Anum+Bnum+Cnum+Dnum)*0.95) {
+            //qDebug()<<(Anum+Bnum+Cnum+Dnum)*0.95<<'?';
+            MpCntt = 0;
+            QDateTime t2 = QDateTime::currentDateTime();
+            int duration = t1.msecsTo(t2);
+            //emit TcheckTime(duration);
+            // qDebug()<<duration;
+        }
+
     }
 }
 

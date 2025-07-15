@@ -17,3 +17,8 @@ extern int mp_sendTime;
 
 extern void envInc(PowerSystemData&);
 extern void bitInc(PowerSystemData&);
+
+extern int MpCnt;
+extern int MpCntt;
+extern int MpCntEr;
+extern int Anum,Bnum,Cnum,Dnum;

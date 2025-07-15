@@ -11,13 +11,37 @@ AMapProcessor::AMapProcessor(QObject* parent)
     :QThread(parent)
 {
     qDebug()<<"AMapProcessor creater";
+
+    dbWriteThread = new DbWriteThread(this);
+   // dbWriteThread->start();
+
+    dbWriteTimer = new QTimer(this);
+    dbWriteTimer->setInterval(34 * 60 * 1000); // 30分钟写一次
+    //dbWriteTimer->setInterval(10000); // 30分钟写一次
+
+    connect(dbWriteTimer, &QTimer::timeout, this, &AMapProcessor::writeDbTimeout);
+    //dbWriteTimer->start();
 }
 AMapProcessor::~AMapProcessor()
 {
 
     m_running = false;
-    wait();
     quit();
+    wait();
+
+    if (dbWriteTimer) {
+        dbWriteTimer->stop();
+        delete dbWriteTimer;
+        dbWriteTimer = nullptr;
+    }
+
+    if (dbWriteThread) {
+        dbWriteThread->requestInterruption();
+        dbWriteThread->quit();
+        dbWriteThread->wait();
+        delete dbWriteThread;
+        dbWriteThread = nullptr;
+    }
 }
 
 void AMapProcessor::run()
@@ -52,6 +76,9 @@ void AMapProcessor::run()
         //qDebug()<<"duration: "<<duration;
         if(duration<=mp_sendTime*1000)
             msleep(mp_sendTime*1000-duration);
+        //qDebug()<<duration<<' '<<MpCnt<<" "<<MpCntEr;
+        emit checkSend(duration,MpCnt,MpCntEr);
+        MpCntEr = MpCnt = 0;
 
     }
 
@@ -60,4 +87,33 @@ void AMapProcessor::run()
 void AMapProcessor::APRun(bool flag)
 {
     m_running = flag;
+}
+
+void AMapProcessor::writeDbTimeout()
+{
+    QMutexLocker locker(&mapMutex);
+
+    for (auto it = AMap.begin(); it != AMap.end(); ++it) {
+        auto& dev = it.value();
+
+        DbWriteTask task;
+        task.table = DbWriteTask::OutputBit;
+        task.key = dev.dev_key;
+
+
+        int size = dev.pduData.outputData.outputBits.size();
+        //qDebug()<<task.key ;
+        for (int i = 0; i < size; ++i) {
+            task.values.append(dev.pduData.outputData.outputBits[i].energy);
+            //qDebug()<<dev.pduData.outputData.outputBits[i].energy<<' ';
+        }
+        for (int i = size; i < 48; ++i) {
+            task.values.append(0.0);
+        }
+
+
+        dbWriteThread->enqueueTask(task);
+    }
+
+    qDebug() << "AMapProcessor 写数据库任务入队完成";
 }

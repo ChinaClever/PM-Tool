@@ -7,7 +7,7 @@
 #include "databasemanager.h"
 #include <QDebug>
 #include <math.h>
-const int BusNum = 10;
+const int BusNum = 3;
 busBulk::busBulk(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::busBulk)
@@ -17,7 +17,6 @@ busBulk::busBulk(QWidget *parent)
     for(int i = 0; i < BusNum; i++){
         mJsonQ.push_back(new MapJsonQueue(this));
     }
-
 
     init();
 }
@@ -30,9 +29,12 @@ void busBulk::init()
 
     bus_sendTime = ui->bus_timeInv->value();
     connect(this,&busBulk::ProcessorRun,mMapProcessor,&MapProcessor::PRun);
-
+    connect(mMapProcessor, &MapProcessor::checkSend,
+            this, &busBulk::checkSend);
     for(int i = 0; i < BusNum; i++){
         connect(this,&busBulk::ProcessorRun,mJsonQ[i],&MapJsonQueue::JRun);
+        connect(mJsonQ[i], &MapJsonQueue::checkTime,
+                this, &busBulk::checkTime);
     }
 }
 
@@ -268,14 +270,9 @@ void busBulk::setBusTotal(BusData& bus)
     u.powMax = 1200;
     if(u.powValue > u.powMax)u.powStatus = 2;
 
-    double cnt = std::max({v.curValue[0],v.curValue[1],v.curValue[2]})
-                 - std::min({v.curValue[0],v.curValue[1],v.curValue[2]});
-    double avg = (v.curValue[0]+v.curValue[1]+v.curValue[2]) / 3.0;
-
     u.volUnbalance = 0;
 
-    if(avg == 0)u.curUnbalance = 0;
-    else u.curUnbalance = cnt / avg * 1.0;
+    u.curUnbalance = data_cal::calculateUnbalance(v.curValue[0],v.curValue[1],v.curValue[2]);
 }
 
 void busBulk::bulkinti(const int x)
@@ -365,6 +362,7 @@ void busBulk::on_busSendBtn_clicked()
         ui->busSendBtn->setText("停止发送");
         updateButtonState(0);
         bulkBoxNum = ui->boxNum->value();
+        bulkBusNum = ui->busNum->value();
         index = 1;
         intiMap();
         processStart();
@@ -409,12 +407,53 @@ void busBulk::processStart()
 
 busBulk::~busBulk()
 {
+    {
+        QMutexLocker locker(&busBulkJQMutexes);
+        busQueue.clear();
+    }
+
+    // 断开与 mJsonQ 的信号槽连接（可保留）
+    for (int i = 0; i < mJsonQ.size(); ++i) {
+        if (mJsonQ[i]) {
+            disconnect(mJsonQ[i], nullptr, this, nullptr);
+            mJsonQ[i]->JRun(false);
+            mJsonQ[i]->quit();
+            mJsonQ[i]->wait();
+            // 不要 delete 和置 nullptr
+        }
+    }
+
+    if (mMapProcessor) {
+        disconnect(mMapProcessor, nullptr, this, nullptr);
+        emit ProcessorRun(0);
+        mMapProcessor->PRun(false);
+        mMapProcessor->quit();
+        mMapProcessor->wait();
+        // 不要 delete 和置 nullptr
+    }
+
+    // 不需要 mJsonQ.clear();
     delete ui;
 }
+
+
 
 void busBulk::on_bus_timeInv_valueChanged(int arg1)
 {
     bus_sendTime = arg1;
+}
+
+void busBulk::checkSend(int a,int b,int c)
+{
+   // qDebug()<<a<<"  "<<b<<"  "<<c<<"!"<<endl;
+    ui->ErNum->setValue(c);
+    ui->successNum->setValue(b);
+}
+
+void busBulk::checkTime(int t)
+{
+    //qDebug()<<t;
+    ui->successTime->setValue(t/1000.0);
 }
 
 

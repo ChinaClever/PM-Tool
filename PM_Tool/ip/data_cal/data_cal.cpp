@@ -95,3 +95,17 @@ QString data_cal::getNextIp(const QString &ip) {
         .arg((val >> 8) & 0xFF)
         .arg(val & 0xFF);
 }
+
+
+// 电流不平衡度 = (最大值 - 平均值) / 平均值 × 100%
+double data_cal::calculateUnbalance(double iA, double iB, double iC)
+{
+    double maxVal = qMax(iA, qMax(iB, iC));
+    double avgVal = (iA + iB + iC) / 3.0;
+
+    if (avgVal == 0.0)
+        return 0.0;
+
+    double unbalance = (maxVal - avgVal) / avgVal * 100.0;
+    return unbalance;
+}

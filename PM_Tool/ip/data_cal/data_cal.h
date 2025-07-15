@@ -14,7 +14,7 @@ public:
     static QString generateNextCascadeIP(QString &devip, int &addr,int addnum);  //返回下一个key，devip，addr递增
 
     static double calculate_dewpoint1(double t, double h) ;
-
+    static double calculateUnbalance(double iA, double iB, double iC);
     static QString getNextIp(const QString &ip);
 
 };

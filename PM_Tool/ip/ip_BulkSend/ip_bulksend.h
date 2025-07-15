@@ -26,7 +26,7 @@ public:
     void inti();
     void numChangeconnect();
     void intiMap(const int x);
-
+    void threadConnect();
 
     void saveSettings(QSettings &settings);
     void loadSettings(QSettings &settings);
@@ -49,7 +49,11 @@ private slots:
 
     void on_devIp_editingFinished();
 
+    void ScheckTime(int);
+    void ScheckSend(int,int,int);
 
+    void TcheckTime(int);
+    void TcheckSend(int,int,int);
 
 private:
     int tpe;

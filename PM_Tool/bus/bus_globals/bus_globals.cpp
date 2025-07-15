@@ -38,3 +38,8 @@ QMutex busBulkJQMutexes; //批量进队锁
 QMutex busBulkPhase; //批量进队锁
 QReadWriteLock busMapLock;
 int bulkBoxNum;
+int bulkBusNum;
+
+int BusCnt;
+int BusCntt;
+int BusCntEr;

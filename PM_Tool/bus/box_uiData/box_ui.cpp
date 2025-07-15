@@ -396,9 +396,9 @@ BusData box_ui::generaBus()
             u.volMin[i] = u.volValue[i];
             if(u.volValue[i] > u.volMax[i])u.volStatus[i] = 2;
 
-            u.curMax[i] = busdata.busCfg.curSpecs;
+            // u.curMax[i] = busdata.busCfg.curSpecs;
+            // if(u.curValue[i] > u.curMax[i])u.curStatus[i] = 2;
             u.curMin[i] = 0;
-            if(u.curValue[i] > u.curMax[i])u.curStatus[i] = 2;
 
             u.powMax[i] = u.powValue[i];
             u.powMin[i] = 0;

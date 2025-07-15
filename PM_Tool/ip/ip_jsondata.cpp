@@ -523,15 +523,12 @@ void IP_JsonData::totalData()  //统计数据
         totalEleact += ui->eleC->value();
 
         {
-            double x =(std::max({ui->volA->value(),ui->volB->value(),ui->volC->value()})
-                        -std::min({ui->volA->value(),ui->volB->value(),ui->volC->value()}));
-            double y = (ui->volA->value()+ui->volB->value()+ui->volC->value())/3.0;
-            ui->volUnbal->setValue(y == 0 ? 0 : (x / y * 1.0)*100);
 
-            x =(std::max({ui->curA->value(),ui->curB->value(),ui->curC->value()})
-                 -std::min({ui->curA->value(),ui->curB->value(),ui->curC->value()}));
-            y = (ui->curA->value()+ui->curB->value()+ui->curC->value())/3.0;
-            ui->curUnbal->setValue(y == 0 ? 0 : (x / y * 1.0)*100);
+            double volunbal = data_cal::calculateUnbalance(ui->volA->value(),ui->volB->value(),ui->volC->value());
+            ui->volUnbal->setValue(volunbal);
+
+            double curunbal = data_cal::calculateUnbalance(ui->curA->value(),ui->curB->value(),ui->curC->value());
+            ui->curUnbal->setValue(curunbal);
 
             //   qDebug()<<x<<"   "<<y;
         }

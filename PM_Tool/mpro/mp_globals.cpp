@@ -22,19 +22,28 @@ QMap<QString, PowerSystemData> BMap;
 QMap<QString, PowerSystemData> CMap;
 QMap<QString, PowerSystemData> DMap;
 
+int MpCnt;
+int MpCntt;
+int MpCntEr;
+
+int Anum,Bnum,Cnum,Dnum;
+
+
 void envInc(PowerSystemData& u) //环境增量改变
 {
     int size = u.pduData.envData.dewPoints.size();
 
     for(int i = 0; i < size; ++i){
+        //温度
         double x = specRanNumGgen::getrandom(100);
         double &y = u.pduData.envData.temperatures[i];
         double newVal = u.pduData.envData.incr[i] ?x+y : y-x;
 
-        y = ((u.pduData.envData.incr[i] ? fmin(x + y, 100) : fmax(y - x, 0)));
-        u.pduData.envData.incr[i] = (u.pduData.envData.incr[i] && newVal >= 100) ? false :
-                            (!u.pduData.envData.incr[i] && newVal <= 1)   ? true  : u.pduData.envData.incr[i];
+        y = ((u.pduData.envData.incr[i] ? fmin(x + y, 45) : fmax(y - x, 20)));
+        u.pduData.envData.incr[i] = (u.pduData.envData.incr[i] && newVal >= 45) ? false :
+                            (!u.pduData.envData.incr[i] && newVal <= 20)   ? true  : u.pduData.envData.incr[i];
 
+        //湿度
         x = specRanNumGgen::getrandom(100);
         double &yy = u.pduData.envData.humidities[i];
         newVal = u.pduData.envData.humincr[i] ?x+yy : yy-x;
@@ -44,6 +53,19 @@ void envInc(PowerSystemData& u) //环境增量改变
 
         u.pduData.envData.dewPoints[i] = data_cal::calculate_dewpoint1(u.pduData.envData.temperatures[i], u.pduData.envData.humidities[i]);
     }
+
+    int x = specRanNumGgen::get_power_factor_precise() * 10;
+    int y = specRanNumGgen::get_power_factor_precise() * 10;
+
+    if(x == 2) x = 2;else x = 1;
+    if(y == 2) y = 2;else y = 1;
+
+   //qDebug()<<x<<" "<<y;
+
+    u.pduData.envData.door[0] = u.pduData.envData.door[1] = x;
+    u.pduData.envData.lock[0] = y;u.pduData.envData.water[0] = y;
+    u.pduData.envData.smoke[0] = x;
+
     //qDebug()<<u.pduData.envData.temperatures[0]<<"   "<<u.pduData.envData.humidities[0];
 }
 
@@ -72,15 +94,16 @@ void bitInc(PowerSystemData& u) //输出位增量变化
         u.pduData.outputData.outputBits[i].energy +=
             (u.pduData.outputData.outputBits[i].activePower * mp_sendTime)/3600;
     }
-    {
-        auto key = u.dev_key;
-        int size = u.pduData.outputData.outputBits.size();
-        double energies[48] = {0};
-        for(int i = 0; i < size; ++i){
-            energies[i] = u.pduData.outputData.outputBits[i].energy;
-        }
-        DatabaseManager::instance().insertOrUpdateOutputBitEnergy(key, energies);
-    }
+
+    // {
+    //     auto key = u.dev_key;
+    //     int size = u.pduData.outputData.outputBits.size();
+    //     double energies[48] = {0};
+    //     for(int i = 0; i < size; ++i){
+    //         energies[i] = u.pduData.outputData.outputBits[i].energy;
+    //     }
+    //     DatabaseManager::instance().insertOrUpdateOutputBitEnergy(key, energies);
+    // }
 }
 
 void debugPrintSystemData(PowerSystemData& packet)

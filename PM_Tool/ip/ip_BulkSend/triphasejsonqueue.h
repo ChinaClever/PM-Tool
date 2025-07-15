@@ -14,7 +14,8 @@ public:
     ~TriPhaseJsonQueue();
 public slots:
     void triRun(bool flag);
-
+signals:
+    void TcheckTime(int);
 private:
 
     bool m_running = true;

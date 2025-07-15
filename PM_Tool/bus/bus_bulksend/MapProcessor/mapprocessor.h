@@ -20,6 +20,9 @@ public slots:
     void PRun(bool flag);
     void SaveTimerTimeout();
 
+signals:
+    void checkSend(int,int,int);
+
 private:
     bus_toJson* mBus;
     bool m_running;

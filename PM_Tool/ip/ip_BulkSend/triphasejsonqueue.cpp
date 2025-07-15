@@ -25,34 +25,45 @@ void TriPhaseJsonQueue::run()
 
 
 
+    QString ipAddress = serIp;
+    QString portStr = port;
+    quint16 Port = portStr.toUShort();
     std::unique_ptr<QUdpSocket> udpsocket = std::make_unique<QUdpSocket>();
     int cnt = 0;
+    QJsonObject u;
     while(m_running){
-        {
-            QMutexLocker locker(&TQueueMutex);
-            arr = TJsonQueue;
-           // qDebug()<<" aa  "<<TJsonQueue.size();
-            TJsonQueue.clear();
-        }
         cnt = 0;
-        QString ipAddress = serIp;
-        QString portStr = port;
-        quint16 Port = portStr.toUShort();
+        QDateTime t1 = QDateTime::currentDateTime();
+        while(!TJsonQueue.isEmpty()) {
 
-       // qDebug()<<Port<<" "<<ipAddress;
-        while(!arr.isEmpty()) {
-            auto u = arr.dequeue();
+            {
+                QMutexLocker locker(&TQueueMutex);
+                if(!TJsonQueue.isEmpty()) u = TJsonQueue.dequeue();
+                if(TJsonQueue.size()>10000)
+                    qDebug()<<" aa  "<<TJsonQueue.size();
+            }
+
             QByteArray jsonData = QJsonDocument(u).toJson(QJsonDocument::Compact);
 
+            TCnt++;
+            TCntt++;
             if(udpsocket->writeDatagram(jsonData, QHostAddress(ipAddress), Port) == -1) {
                 qWarning() << "Failed to send data:" << udpsocket->errorString();
+                TCntEr++;
                 // 可以选择重试或记录错误
             }
-            if((cnt++)%100 == 0)
+            if((cnt++)%50 == 0)
                 usleep(1);
         }
-        msleep(1);
+        msleep(5);
 
+        if(TCntt >= TsendNum*0.9) {
+            TCntt = 0;
+            QDateTime t2 = QDateTime::currentDateTime();
+            int duration = t1.msecsTo(t2);
+            emit TcheckTime(duration);
+           // qDebug()<<duration;
+        }
     }
 }
 

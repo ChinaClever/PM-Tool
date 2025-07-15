@@ -4,7 +4,7 @@
 #include "BusData.h"
 #include "bus_globals/bus_globals.h"
 #include "specrannumggen.h"
-
+#include "data_cal/data_cal.h"
 #include <QJsonArray>
 #include <QVector>
 #include <QDebug>
@@ -198,10 +198,10 @@ void busUiData::renewui()
     ui->totalEleact->setValue(busPhase[6][0]+busPhase[6][2]+busPhase[6][1]);
     ui->totalPf->setValue(ui->totalPA->value() == 0 ? 0 : ui->powAct->value()/ui->totalPA->value());
     ui->volUnbal->setValue(0);
-    double cnt = std::max({busPhase[1][0],busPhase[1][1],busPhase[1][2]})
-                 - std::min({busPhase[1][0],busPhase[1][1],busPhase[1][2]});
-    double avg = (busPhase[1][0]+busPhase[1][1]+busPhase[1][2]) / 3.0;
-    ui->curUnbal->setValue(cnt/avg);
+
+    double cnt = data_cal::calculateUnbalance(busPhase[1][0],busPhase[1][1],busPhase[1][2]);
+
+    ui->curUnbal->setValue(cnt);
 
     double x =sqrt(busPhase[1][0]*busPhase[1][0]
                     + busPhase[1][1]*busPhase[1][1]
@@ -241,8 +241,16 @@ void busUiData::createJsonData()
     }
     //发送bus
     BusData data;
-    data.busCfg.curSpecs = curCap();
     data = box[0]->generaBus();
+    data.busCfg.curSpecs = curCap();
+
+    for(int i = 0; i < 3; i ++){
+        data.lineItemList.curMax[i] = data.busCfg.curSpecs;
+        if(data.lineItemList.curValue[i] > data.lineItemList.curMax[i])
+            data.lineItemList.curStatus[i] = 2;
+    }
+
+    qDebug()<<data.busCfg.curSpecs;
     Busbar g;
     g.busData = setBusTotal(data);
     g.envItemList = d;

@@ -18,7 +18,7 @@ MapProcessor::MapProcessor(QObject* parent)
     dbWriteThread = new DbWriteThread(this);
 
     dbWriteThread->start();
-    saveTimer->setInterval(10 * 60 * 1000); // 每 5 分钟触发一次
+    saveTimer->setInterval(30 * 60 * 1000); // 每 5 分钟触发一次
     saveTimer->disconnect();
     connect(saveTimer, &QTimer::timeout, this, &MapProcessor::SaveTimerTimeout);
     saveTimer->start();
@@ -27,19 +27,9 @@ MapProcessor::MapProcessor(QObject* parent)
 
 MapProcessor::~MapProcessor()
 {
-
     m_running = false;
-    wait();
-    quit();
-    if (dbWriteThread) {
-        dbWriteThread->requestInterruption();
-        dbWriteThread->quit();
-        dbWriteThread->wait();
-        delete dbWriteThread;
-        dbWriteThread = nullptr;
-    }
-
 }
+
 
 void MapProcessor::run()
 {
@@ -49,7 +39,7 @@ void MapProcessor::run()
     while (m_running) {
         QDateTime t1 = QDateTime::currentDateTime();
 
-        busMapLock.lockForRead();  // ✅ 加读锁
+        busMapLock.lockForRead();  //  加读锁
         for (int i = 0; i < busMap.size(); i++) {
 
 
@@ -75,13 +65,17 @@ void MapProcessor::run()
             }
           // qDebug()<<json;
         }
-        busMapLock.unlock();  // ✅ 解锁
+        busMapLock.unlock();  // 解锁
 
         QDateTime t2 = QDateTime::currentDateTime();
         int duration = t1.msecsTo(t2);
 
-        if (duration <= bus_sendTime * 1000)
+        if (duration <= bus_sendTime * 1000){
             msleep(bus_sendTime * 1000 - duration);
+        }
+        //qDebug()<<duration<<"  "<<BusCnt<<"  "<<BusCntEr<<endl;
+        emit checkSend(duration,BusCnt,BusCntEr);
+        BusCnt = BusCntEr = 0;
     }
 
     qDebug() << "Mpstop!";
@@ -140,12 +134,13 @@ void MapProcessor::SaveTimerTimeout() {
             task.values.append(u.eleReactive[i]);
 
         dbWriteThread->enqueueTask(task);
+
     }
     busMapLock.unlock();
 
     auto endTime = QDateTime::currentDateTime();
     qint64 elapsedMs = startTime.msecsTo(endTime);
-   // qDebug() << "✅ 本次 onSaveTimerTimeout 入队完成，用时" << elapsedMs << "ms";
+   // qDebug() << " 本次 onSaveTimerTimeout 入队完成，用时" << elapsedMs << "ms";
 }
 
 void MapProcessor::PRun(bool flag)

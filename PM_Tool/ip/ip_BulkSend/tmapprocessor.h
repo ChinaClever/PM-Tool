@@ -21,7 +21,8 @@ public:
 public slots:
     void Tchangerun(bool flag);
     void onSaveTimerTimeout();
-protected:
+signals:
+    void TcheckSend(int,int,int);
 
 private:
     bool m_running = true;

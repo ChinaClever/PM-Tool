@@ -23,7 +23,7 @@ double specRanNumGgen::get_thd()
 }
 
 int specRanNumGgen::get_temperature() { // 实现温度
-    return QRandomGenerator::global()->bounded(15u, 66u); // 明确无符号参数
+    return QRandomGenerator::global()->bounded(20u, 45u); // 明确无符号参数
 }
 
 double specRanNumGgen::getCurThd()

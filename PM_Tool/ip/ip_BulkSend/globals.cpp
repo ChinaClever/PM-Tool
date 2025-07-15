@@ -18,3 +18,15 @@ int Stimesend;
 int Ttimesend;
 
 QMap<QString, QString>key_time;
+
+
+int SsendNum;
+int TsendNum;
+
+int SCnt;
+int SCntt;
+int SCntEr;
+int TCnt;
+int TCntt;
+int TCntEr;
+

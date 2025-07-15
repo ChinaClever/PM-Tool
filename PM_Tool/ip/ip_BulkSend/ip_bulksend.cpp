@@ -8,7 +8,7 @@
 #include "stylehelper.h"
 #include "databasemanager.h"
 
-#define SriNum 15 //单三相线程宏
+#define SriNum 1 //单三相线程宏
 
 ip_BulkSend::ip_BulkSend(QWidget *parent)
     : QWidget(parent)
@@ -30,13 +30,9 @@ ip_BulkSend::ip_BulkSend(QWidget *parent)
 
     inti();
     numChangeconnect();
-    connect(this,&ip_BulkSend::tmpchange,m_tmapProcessor,&TMapProcessor::Tchangerun);
-    connect(this,&ip_BulkSend::smpchange,m_smapProcessor,&SMapProcessor::Schangerun);
+    threadConnect();// 链接线程
 
-    for(int i=0;i<SriNum;i++){
-        connect(this,&ip_BulkSend::smpchange,m_sriphasejson[i],&SriPhaseJsonQueue::sriRun);
-        connect(this,&ip_BulkSend::smpchange,m_triphasejson[i],&TriPhaseJsonQueue::triRun);
-    }
+
 
 }
 
@@ -54,6 +50,32 @@ void ip_BulkSend::numChangeconnect()
     for (QSpinBox* spinBox : spinBoxes) {
         connect(spinBox, QOverload<int>::of(&QSpinBox::valueChanged),
                 this, &ip_BulkSend::STNumchange);
+    }
+}
+
+void ip_BulkSend::threadConnect()
+{
+    connect(this,&ip_BulkSend::tmpchange,m_tmapProcessor,&TMapProcessor::Tchangerun);
+    connect(m_tmapProcessor, &TMapProcessor::TcheckSend,
+            this, &ip_BulkSend::TcheckSend,
+            Qt::QueuedConnection);
+
+
+    connect(this,&ip_BulkSend::smpchange,m_smapProcessor,&SMapProcessor::Schangerun);
+    connect(m_smapProcessor, &SMapProcessor::ScheckSend,
+            this, &ip_BulkSend::ScheckSend,
+            Qt::QueuedConnection);
+
+    for(int i=0;i<SriNum;i++){
+        connect(this,&ip_BulkSend::smpchange,m_sriphasejson[i],&SriPhaseJsonQueue::sriRun);
+        connect(m_sriphasejson[i], &SriPhaseJsonQueue::ScheckTime,
+                this, &ip_BulkSend::ScheckTime,
+                Qt::QueuedConnection);
+
+        connect(this,&ip_BulkSend::tmpchange,m_triphasejson[i],&TriPhaseJsonQueue::triRun);
+        connect(m_triphasejson[i], &TriPhaseJsonQueue::TcheckTime,
+                this, &ip_BulkSend::TcheckTime,
+                Qt::QueuedConnection);
     }
 }
 
@@ -87,6 +109,7 @@ void ip_BulkSend::on_bulkSendBtn_clicked()  //三相发送启动
 
         ui->bulkSendBtn->setText("停止发送");
 
+        TsendNum = ui->tpeNum->value();
         ui->TcurCap->setEnabled(0);
         ui->devIp->setEnabled(0);
         ui->tpeNum->setEnabled(0);
@@ -124,7 +147,7 @@ void ip_BulkSend::on_SbulkSendBtn_clicked() //单相发送启动
 
 
         ui->SbulkSendBtn->setText("停止发送");
-
+        SsendNum = ui->speNum->value();
         ui->ScurCap->setEnabled(0);
         ui->SdevIp->setEnabled(0);
         ui->speNum->setEnabled(0);
@@ -154,6 +177,33 @@ void ip_BulkSend::on_SbulkSendBtn_clicked() //单相发送启动
         Saddr = -1;
 
     }
+}
+
+void ip_BulkSend::ScheckTime(int t)
+{
+    //qDebug()<<x;
+    ui->SsuccessTime->setValue(t/1000.0);
+}
+
+void ip_BulkSend::ScheckSend(int a,int b,int c)
+{
+    //qDebug()<<a<<' '<<b<<' '<<c;
+
+    ui->SErNum->setValue(c);
+    ui->SsuccessNum->setValue(b);
+}
+
+void ip_BulkSend::TcheckTime(int t)
+{
+    qDebug()<<t;
+    ui->TsuccessTime->setValue(t/1000.0);
+}
+
+void ip_BulkSend::TcheckSend(int a,int b,int c)
+{
+    qDebug()<<a<<b<<c;
+    ui->TErNum->setValue(c);
+    ui->TsuccessNum->setValue(b);
 }
 
 void ip_BulkSend::triggerToggleSend(bool flag)
@@ -262,6 +312,7 @@ void ip_BulkSend::intiMap(const int x) //判断启动项单三相，确定创建
     if(x==3){
         devip = ui->devIp->text();
         addr = -1;
+        tMap.clear();
         for(int i=0;i<tpe;i++){
             bulkinti(3);
         }
@@ -271,6 +322,7 @@ void ip_BulkSend::intiMap(const int x) //判断启动项单三相，确定创建
         //qDebug()<<x;
         Sdevip = ui->SdevIp->text();
         Saddr = -1;
+        sMap.clear();
         for(int i=0;i<spe;i++){
             bulkinti(1);
         }

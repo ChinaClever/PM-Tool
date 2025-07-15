@@ -16,12 +16,13 @@ void DbWriteThread::enqueueTask(const DbWriteTask &task) {
     QMutexLocker locker(&m_mutex);
 
     // 如果队列过长，清空旧任务，只保留最新任务
-    if (m_taskQueue.size() >= 5500) {
-        qDebug() << "⚠️ DbWriteThread 队列超过 1000，清空旧任务以释放内存";
+    if (m_taskQueue.size() >= 6000) {
+        qDebug() << "⚠️ DbWriteThread 队列超过 6000，清空旧任务以释放内存";
         m_taskQueue.clear();
     }
 
     m_taskQueue.enqueue(task);
+
     m_cond.wakeOne();
 }
 
@@ -29,7 +30,7 @@ void DbWriteThread::enqueueTask(const DbWriteTask &task) {
 void DbWriteThread::run() {
     while (true) {
         m_mutex.lock();
-        if (m_taskQueue.isEmpty() && !m_stopped) {
+        while (m_taskQueue.isEmpty() && !m_stopped) {
             m_cond.wait(&m_mutex);
         }
         if (m_stopped) {
@@ -75,8 +76,10 @@ void DbWriteThread::run() {
             }
             break;
         }
+
         if (!ok) {
-            qDebug() << "数据库写入失败, 表:" << task.table << ", key:" << task.key;
+            qDebug() << "数据库写入失败, 表:" << task.table << ", key:" << task.key << ", values.size:" << task.values.size();
         }
     }
 }
+

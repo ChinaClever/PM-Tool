@@ -29,31 +29,32 @@ void IP_sDataPacket<SIZE>::totalDataCal() {
     double x = std::accumulate(
                    this->line_item.vol_value.begin(),
                    this->line_item.vol_value.end(),
-                   0.0 // 初始值，必须是浮点型！
-                   ) / SIZE;
-        if(x == 0){
+                   0.0
+                   ) / this->line_item.vol_value.size();  // 改成自动获取长度
+
+        if (x == 0) {
             this->total_item.vol_unbalance = 0;
+        } else {
+            double max_val = *std::max_element(this->line_item.vol_value.begin(), this->line_item.vol_value.end());
+
+            this->total_item.vol_unbalance = (max_val - x) / x * 100.0;
+
         }
-        else {
-            this->total_item.vol_unbalance = ((*std::max_element(this->line_item.vol_value.begin(),this->line_item.vol_value.end()))
-                                              -(*std::min_element(this->line_item.vol_value.begin(),this->line_item.vol_value.end())))
-                                             /x*100;
-            this->total_item.vol_unbalance = std::min(100.0,this->total_item.vol_unbalance);
-        }
+
+        // 平均值计算
         x = std::accumulate(
-                this->line_item.cur_value.begin(),
-                this->line_item.cur_value.end(),
-                0.0 // 初始值，必须是浮点型！
-                ) / SIZE;
-        if(x == 0){
+                       this->line_item.cur_value.begin(),
+                       this->line_item.cur_value.end(),
+                       0.0 // 初始值，必须是浮点型！
+                       ) / this->line_item.cur_value.size();
+
+        if (x == 0) {
             this->total_item.cur_unbalance = 0;
+        } else {
+            double max_val = *std::max_element(this->line_item.cur_value.begin(), this->line_item.cur_value.end());
+            this->total_item.cur_unbalance = (max_val - x) / x * 100.0;
         }
-        else{
-            this->total_item.cur_unbalance = ((*std::max_element(this->line_item.cur_value.begin(),this->line_item.cur_value.end()))
-                                              -(*std::min_element(this->line_item.cur_value.begin(),this->line_item.cur_value.end())))
-                                             /x*100;
-            this->total_item.cur_unbalance = std::min(100.0,this->total_item.cur_unbalance);
-        }
+
     }
 }
 template <int SIZE>

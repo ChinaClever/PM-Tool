@@ -11,6 +11,13 @@ struct EnvironmentData {
     QVector<double> humidities;   // 4个湿度值
     QVector<bool> sensorStatuses; // 4个传感器状态
     QVector<double> dewPoints;    // 4个露点温度
+
+    QVector<int> door;
+    QVector<int> water;
+    QVector<int> smoke;
+    QVector<int> lock;
+
+
     QVector<int> hunAlarm = {0};
     QVector<int> temAlarm = {0};
     QVector<bool> incr ={0};
@@ -24,6 +31,11 @@ struct EnvironmentData {
         temAlarm.resize(count);
         incr.resize(count);
         humincr.resize(count);
+
+        door.resize(2);
+        water.resize(1);
+        smoke.resize(1);
+        lock.resize(1);
     }
 };
 

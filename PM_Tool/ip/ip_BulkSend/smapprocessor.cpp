@@ -13,7 +13,7 @@ SMapProcessor::SMapProcessor(QObject* parent)
     dbWriteThread = new DbWriteThread(this);
     dbWriteThread->start();
 
-    mSaveTimer->setInterval(15 * 60 * 1000); // 5分钟一次
+    mSaveTimer->setInterval(40 * 60 * 1000); // 5分钟一次
     connect(mSaveTimer, &QTimer::timeout, this, &SMapProcessor::onSaveTimerTimeout);
     mSaveTimer->start();
 
@@ -31,12 +31,8 @@ void SMapProcessor::run()
 
     while(m_running){
 
-
-
-    //if(SJsonQueue.size() > 10000)  SJsonQueue.clear();
-
        QDateTime t1 = QDateTime::currentDateTime();
-       for (auto it = sMap.begin(); it != sMap.end(); ++it) {
+        for (auto it = sMap.begin(); it != sMap.end(); ++it) {
 
            auto &dev = it.value();
 
@@ -53,14 +49,16 @@ void SMapProcessor::run()
             }
         }
 
-       //qDebug()<<sMap.size();
-
 
         QDateTime t2 = QDateTime::currentDateTime();
         int duration = t1.msecsTo(t2);
        // qDebug()<<"duration: "<<duration<<"  "<<Stimesend;
-         if(duration<=Stimesend*1000)
-        msleep(Stimesend*1000-duration);
+        if(duration<=Stimesend*1000){
+            msleep(Stimesend*1000-duration);
+        }
+        //qDebug()<<duration<<"  "<<SCnt<<"  "<<SCntEr<<endl;
+        emit ScheckSend(duration,SCnt,SCntEr);
+        SCnt = SCntEr = 0;
 
     }
 }
@@ -73,9 +71,9 @@ void SMapProcessor::Incchange(IP_sDataPacket<1>&v)
         double x = specRanNumGgen::getrandom(100);
         double y = v.env_item.tem_value[0];
         double newVal = v.incrEnvInc ? x + y : x - y;
-        v.env_item.tem_value[0] = ((v.incrEnvInc ? fmin(x + y, 100) : fmax(x - y, 0)));
-        v.incrEnvInc = (v.incrEnvInc && newVal >= 100) ? false :
-                           (!v.incrEnvInc && newVal <= 0)   ? true  :
+        v.env_item.tem_value[0] = ((v.incrEnvInc ? fmin(x + y, 45) : fmax(x - y, 20)));
+        v.incrEnvInc = (v.incrEnvInc && newVal >= 45) ? false :
+                           (!v.incrEnvInc && newVal <= 20)   ? true  :
                            v.incrEnvInc;
     }
 

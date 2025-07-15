@@ -30,4 +30,9 @@ extern QQueue<QJsonObject>busQueue;
 extern QMutex busBulkJQMutexes;
 extern QMutex busBulkPhase;
 extern int bulkBoxNum;
+extern int bulkBusNum;
+
+extern int BusCnt;
+extern int BusCntt;
+extern int BusCntEr;
 #endif // BUS_GLOBALS_H

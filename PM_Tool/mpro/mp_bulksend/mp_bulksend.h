@@ -52,7 +52,7 @@ signals:
 
 public slots:
     void intchange(); //基础信息更新槽函数
-
+    void checkSend(int,int,int);
 
 private slots:
     void on_mpSendBtn_clicked();

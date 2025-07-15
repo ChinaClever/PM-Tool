@@ -9,7 +9,7 @@
 
 namespace SettingsHelper {
 
-// 你已有的QSpinBox函数
+// 已有的QSpinBox函数
 inline void saveSpinBox(QSettings &s, const QString &key, QSpinBox *box) {
     s.setValue(key, box->value());
 }

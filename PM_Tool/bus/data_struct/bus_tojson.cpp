@@ -69,19 +69,19 @@ void bus_toJson::setBusTotal(Busbar& data)
     QJsonObject total;
     auto &u = data.busData.busTotalData;
 
-    total["pow_value"] = u.powValue;
+    total["pow_value"] = qRound(u.powValue * 1000) / 1000.0;
     total["pow_min"] = u.powMin;
     total["pow_max"] = u.powMax;
     total["pow_status"] = u.powStatus;
 
-    total["pow_apparent"] = u.powApparent;
-    total["pow_reactive"] = u.powReactive;
+    total["pow_apparent"] = qRound(u.powApparent * 1000) / 1000.0;
+    total["pow_reactive"] = qRound(u.powReactive * 1000) / 1000.0;
 
-    total["power_factor"] = u.powerFactor;
+    total["power_factor"] = qRound(u.powerFactor * 100) / 100.0;
 
-    total["ele_active"] = u.eleActive;
-    total["ele_apparent"] = u.eleApparent;
-    total["ele_reactive"] = u.eleReactive;
+    total["ele_active"] = qRound(u.eleActive*1)/1.0;//qRound(systemData.pduData.totalData.eleActive*1)/1.0;
+    total["ele_apparent"] = qRound(u.eleApparent*1)/1.0;
+    total["ele_reactive"] = qRound(u.eleReactive*1)/1.0;
 
     total["cur_residual_value"] = u.curResidualValue;
     total["cur_residual_alarm"] = u.curResidualAlarm;
@@ -92,7 +92,7 @@ void bus_toJson::setBusTotal(Busbar& data)
     total["cur_zero_status"] = u.curZeroStatus;
 
     total["vol_unbalance"] = u.volUnbalance;
-    total["cur_unbalance"] = u.curUnbalance;
+    total["cur_unbalance"] = qRound(u.curUnbalance * 100) / 100.0;
 
     total["hz_value"] = u.hzValue;
     total["hz_min"] = u.hzMin;
@@ -126,7 +126,8 @@ void bus_toJson::setBusLine(Busbar& data)
         vol_status.append(u.volStatus[i]);
         vol_thd.append(u.volThd[i]);
         cur_thd.append(u.curThd[i]);
-        cur_value.append(u.curValue[i]);
+        cur_value.append(qRound(u.curValue[i] * 100) / 100.0);
+
         cur_min.append(u.curMin[i]);
         cur_max.append(u.curMax[i]);
         if (u.curStatus[i]) {
@@ -138,7 +139,8 @@ void bus_toJson::setBusLine(Busbar& data)
 
         cur_status.append(u.curStatus[i]);
 
-        pow_value.append(u.powValue[i]);
+        pow_value.append(qRound(u.powValue[i] * 1000) / 1000.0);
+
         pow_min.append(u.powMin[i]);
         pow_max.append(u.powMax[i]);
         if (u.powStatus[i]) {
@@ -148,16 +150,19 @@ void bus_toJson::setBusLine(Busbar& data)
                          .arg(u.powMax[i]);
         }
         pow_status.append(u.powStatus[i]);
-        pow_apparent.append(u.powApparent[i]);
-        pow_reactive.append(u.powReactive[i]);
+        pow_apparent.append(qRound(u.powApparent[i] * 1000) / 1000.0);  // 保留3位小数
+        pow_reactive.append(qRound(u.powReactive[i] * 1000) / 1000.0);  // 保留3位小数
 
-        ele_active.append(u.eleActive[i]);
-        ele_reactive.append(u.eleReactive[i]);
 
-        power_factor.append(u.powerFactor[i]);
-        load_rate.append(u.loadRate[i]);
+        ele_active.append(qRound(u.eleActive[i]*1)/1.0);
+        ele_reactive.append(qRound(u.eleReactive[i]*1)/1.0);
 
-        vol_line_value.append(u.volLineValue[i]);
+        power_factor.append(qRound(u.powerFactor[i] * 100) / 100.0);  // 功率因数保留 3 位小数
+        load_rate.append(qRound(u.loadRate[i] * 100) / 100.0);           // 负载率保留 2 位小数
+
+
+        vol_line_value.append(qRound(u.volLineValue[i] * 100) / 100.0);
+
         vol_line_min.append(u.volLineMin[i]);
         vol_line_max.append(u.volLineMax[i]);
         vol_line_status.append(u.volLineStatus[i]);
@@ -242,13 +247,14 @@ void bus_toJson::setBoxTotal(Busbar& data)
     QJsonObject total;
     auto &u = data.boxData.boxTotalData;
 
-    total["pow_active"] = u.powActive;
-    total["pow_apparent"] = u.powApparent;
-    total["pow_reactive"] = u.powReactive;
-    total["power_factor"] = u.powerFactor;
-    total["ele_active"] = u.eleActive;
-    total["ele_apparent"] = u.eleApparent;
-    total["ele_reactive"] = u.eleReactive;
+    total["pow_active"] = qRound(u.powActive * 1000) / 1000.0;
+    total["pow_apparent"] = qRound(u.powApparent * 1000) / 1000.0;
+    total["pow_reactive"] = qRound(u.powReactive * 1000) / 1000.0;
+    total["power_factor"] = qRound(u.powerFactor * 1000) / 1000.0;
+
+    total["ele_active"] = qRound(u.eleActive * 1) / 1.0;
+    total["ele_apparent"] = qRound(u.eleApparent * 1) / 1.0;
+    total["ele_reactive"] = qRound(u.eleReactive * 1) / 1.0;
 
     m_box_total_data = total;
 
@@ -262,13 +268,16 @@ void bus_toJson::setOutLet(Busbar& data)
     auto &u = data.boxData.outletItemList;
 
     for(int i = 0; i < data.boxData.outletItemList.eleActive.size(); i++) {
-        pow_active.append(u.powActive[i]);
-        pow_apparent.append(u.powApparent[i]);
-        pow_reactive.append(u.powReactive[i]);
-        ele_active.append(u.eleActive[i]);
-        ele_apparent.append(u.eleApparent[i]);
-        ele_reactive.append(u.eleReactive[i]);
-        power_factor.append(u.powerFactor[i]);
+        pow_active.append(qRound(u.powActive[i] * 1000) / 1000.0);      // 有功功率保留3位小数
+        pow_apparent.append(qRound(u.powApparent[i] * 1000) / 1000.0);  // 视在功率保留3位小数
+        pow_reactive.append(qRound(u.powReactive[i] * 1000) / 1000.0);  // 无功功率保留3位小数
+
+        ele_active.append(qRound(u.eleActive[i] * 1) / 1.0);             // 有功电能保留整数
+        ele_apparent.append(qRound(u.eleApparent[i] * 1) / 1.0);         // 视在电能保留整数
+        ele_reactive.append(qRound(u.eleReactive[i] * 1) / 1.0);         // 无功电能保留整数
+
+        power_factor.append(qRound(u.powerFactor[i] * 100) / 100.0);  // 功率因数保留3位小数（建议）
+
     }
 
     outlet["pow_active"] = pow_active;
@@ -291,15 +300,16 @@ void bus_toJson::setBoxLine(Busbar& data)
     auto &u = data.boxData.lineItemList;
     for(int i = 0; i < 3; i ++){
         vol_value.append(u.volValue[i]);
-        cur_value.append(u.curValue[i]);
+        cur_value.append(qRound(u.curValue[i] * 100) / 100.0);                // 电流保留2位小数
         cur_thd.append(u.curThd[i]);
-        pow_active.append(u.powActive[i]);
-        pow_apparent.append(u.powApparent[i]);
-        pow_reactive.append(u.powReactive[i]);
-        load_rate.append(u.loadRate[i]);
-        ele_active.append(u.eleActive[i]);
-        ele_reactive.append(u.eleReactive[i]);
-        power_factor.append(u.powerFactor[i]);
+        pow_active.append(qRound(u.powActive[i] * 1000) / 1000.0);            // 有功功率保留3位小数
+        pow_apparent.append(qRound(u.powApparent[i] * 1000) / 1000.0);        // 视在功率保留3位小数
+        pow_reactive.append(qRound(u.powReactive[i] * 1000) / 1000.0);        // 无功功率保留3位小数
+        load_rate.append(qRound(u.loadRate[i] * 100) / 100.0);                // 负载率保留2位小数
+        ele_active.append(qRound(u.eleActive[i] * 1) / 1.0);                  // 电能取整
+        ele_reactive.append(qRound(u.eleReactive[i] * 1) / 1.0);              // 电能取整
+        power_factor.append(qRound(u.powerFactor[i] * 100) / 100.0);
+
     }
     line["vol_value"] = vol_value;
     line["cur_value"] = cur_value;
@@ -333,21 +343,24 @@ void bus_toJson::setLoop(Busbar& data)
 
         if(u.volStatus[i])st = 1;
         vol_status.append(u.volStatus[i]);
-        cur_value.append(u.curValue[i]);
+        cur_value.append(qRound(u.curValue[i] * 100) / 100.0);  // 电流保留 2 位小数
+
         cur_min.append(u.curMin[i]);
         cur_max.append(u.curMax[i]);
         if(u.curStatus[i])st = 1;
         cur_status.append(u.curStatus[i]);
-        pow_value.append(u.powValue[i]);
+        pow_value.append(qRound(u.powValue[i] * 1000) / 1000.0);  // 保留3位小数
+
         pow_min.append(u.powMin[i]);
         pow_max.append(u.powMax[i]);
         if(u.powStatus[i])st = 1;
         pow_status.append(u.powStatus[i]);
-        pow_reactive.append(u.powReactive[i]);
-        pow_apparent.append(u.powApparent[i]);
-        power_factor.append(u.powerFactor[i]);
-        ele_active.append(u.eleActive[i]);
-        ele_reactive.append(u.eleReactive[i]);
+        pow_reactive.append(qRound(u.powReactive[i] * 1000) / 1000.0);     // 保留3位小数
+        pow_apparent.append(qRound(u.powApparent[i] * 1000) / 1000.0);     // 保留3位小数
+        power_factor.append(qRound(u.powerFactor[i] * 100) / 100.0);     // 保留3位小数
+
+        ele_active.append(qRound(u.eleActive[i]*1)/1.0);
+        ele_reactive.append(qRound(u.eleReactive[i])/1.0);
     }
 
     loop["vol_value"] = vol_value;

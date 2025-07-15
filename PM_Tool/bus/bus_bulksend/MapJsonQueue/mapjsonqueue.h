@@ -15,6 +15,8 @@ public:
     void run() override;
 public slots:
     void JRun(bool flag);
+signals:
+    void checkTime(int);
 
 private:
     bool m_running;

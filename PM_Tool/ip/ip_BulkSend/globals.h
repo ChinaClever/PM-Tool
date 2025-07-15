@@ -25,7 +25,15 @@ extern int Ttimesend;
 
 extern QMap<QString, QString>key_time;
 
+extern int SsendNum;
+extern int TsendNum;
 
+extern int SCnt;
+extern int SCntt;
+extern int SCntEr;
+extern int TCnt;
+extern int TCntt;
+extern int TCntEr;
 
 
 
