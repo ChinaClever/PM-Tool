@@ -8,7 +8,7 @@
 BMapProcessor::BMapProcessor(QObject* parent)
     :QThread(parent)
 {
-    qDebug()<<"BMapProcessor create";
+     //qDebug()<<"BMapProcessor create";
     dbWriteThread = new DbWriteThread(this);
     //dbWriteThread->start();
 

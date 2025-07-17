@@ -7,7 +7,7 @@
 #include <QJsonDocument>
 AMapJsonQueue::AMapJsonQueue(QObject* parent)
 {
-    qDebug()<<"AJsonQueue Processor create";
+    // qDebug()<<"AJsonQueue Processor create";
 }
 AMapJsonQueue::~AMapJsonQueue()
 {

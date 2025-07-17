@@ -5,7 +5,7 @@
 
 DMapJsonQueue::DMapJsonQueue(QObject *parent)
 {
-    qDebug()<<"DJQ create";
+     //qDebug()<<"DJQ create";
 }
 
 DMapJsonQueue::~DMapJsonQueue()

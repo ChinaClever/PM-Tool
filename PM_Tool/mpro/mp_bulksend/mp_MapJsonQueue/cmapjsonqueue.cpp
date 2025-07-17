@@ -5,7 +5,7 @@
 
 CMapJsonQueue::CMapJsonQueue(QObject *parent)
 {
-    qDebug()<<"CJQ create";
+    // qDebug()<<"CJQ create";
 }
 
 CMapJsonQueue::~CMapJsonQueue()

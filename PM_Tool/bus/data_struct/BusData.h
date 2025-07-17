@@ -241,9 +241,15 @@ struct EnvItem {
     QVector<double> boxtem;
     QVector<int> temStatus;      // 温度状态
     QVector<int> boxStatus;      // 温度状态
+
+    QVector<bool>increasing;
+    QVector<bool>boxIncr;
+
     void init(int size ) {
         temValue.resize(size); boxStatus.resize(size); boxtem.resize(size);
         temStatus.resize(size);
+        increasing.resize(size);
+        boxIncr.resize(size);
     }
 };
 

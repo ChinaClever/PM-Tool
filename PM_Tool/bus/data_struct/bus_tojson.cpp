@@ -424,7 +424,8 @@ void bus_toJson::setTem(Busbar& Data, bool flag)
         tem_status[i] = 0;
         if(flag)tem_value[i] = u.boxtem[i];
         else tem_value[i] = u.temValue[i];
-        tem.append(tem_value[i]);
+        tem.append(qRound(tem_value[i] * 100) / 100.0);
+
         min.append(tem_min[i]);
         max.append(tem_max[i]);
         status.append(tem_status[i]);

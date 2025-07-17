@@ -10,7 +10,7 @@
 AMapProcessor::AMapProcessor(QObject* parent)
     :QThread(parent)
 {
-    qDebug()<<"AMapProcessor creater";
+    //qDebug()<<"AMapProcessor creater";
 
     dbWriteThread = new DbWriteThread(this);
    // dbWriteThread->start();

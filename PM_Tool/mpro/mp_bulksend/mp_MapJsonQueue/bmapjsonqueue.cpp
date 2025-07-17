@@ -5,7 +5,7 @@
 
 BMapJsonQueue::BMapJsonQueue(QObject *parent)
 {
-    qDebug()<<"BJQ create";
+    // qDebug()<<"BJQ create";
 }
 
 BMapJsonQueue::~BMapJsonQueue()

@@ -29,7 +29,7 @@ bool DatabaseManager::init(const QString &dbPath) {
     }
 
     QSqlQuery query(m_db);
-    m_db.transaction();
+
 
     if (!query.exec("PRAGMA journal_mode=WAL;"))
         qDebug() << "⚠️ 设置 WAL 模式失败:" << query.lastError().text();
@@ -40,6 +40,8 @@ bool DatabaseManager::init(const QString &dbPath) {
         qDebug() << "⚠️ 设置同步模式失败:" << query.lastError().text();
     else
         qDebug() << "✅ 同步模式已设置为 NORMAL";
+
+     m_db.transaction();
 
     if (!query.exec("PRAGMA cache_size=-8192;"))
         qDebug() << "⚠️ 设置缓存大小失败:" << query.lastError().text();

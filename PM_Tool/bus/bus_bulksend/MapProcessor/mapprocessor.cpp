@@ -46,6 +46,7 @@ void MapProcessor::run()
             if((i+1)%(bulkBoxNum+1) == 0){
                  busBulk::setBusline(busMap[i+1].busData);
                  busBulk::setBusTotal(busMap[i+1].busData);
+                 setTemInc(busMap[i+1].envItemList,1);
                  {
                      QMutexLocker locker(&busBulkPhase);
                      bulkPhase = QVector<QVector<double>>(6, QVector<double>(3, 0.0));
@@ -55,6 +56,7 @@ void MapProcessor::run()
                 QString key = busMap[i+1].info.boxKey;
                 busMap[i+1].info.datetime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
                 setBoxInc(busMap[i+1].boxData,key);
+                setTemInc(busMap[i+1].envItemList,0);
                 busBulk::setBoxList(busMap[i+1].boxData);
             }
 
@@ -113,6 +115,43 @@ void MapProcessor::setBoxInc(BoxData& box,const QString& key)
 
         u.eleActive[i] += bus_sendTime*u.powValue[i] / 3600;
         u.eleReactive[i] += bus_sendTime*u.powReactive[i] / 3600;
+    }
+
+}
+
+void MapProcessor::setTemInc(EnvItem& tem, bool flag)
+{
+    if(flag){
+        for (int i = 0; i < tem.temValue.size(); ++i) {
+            double delta = specRanNumGgen::getrandom(100);  // 0~100随机变化幅度
+            double &val = tem.temValue[i];
+            double newVal = tem.increasing[i] ? val + delta : val - delta;
+
+            // 限制范围20~80
+            val = tem.increasing[i] ? std::min(newVal, 80.0) : std::max(newVal, 20.0);
+
+            // 更新增长方向
+            if (tem.increasing[i] && val >= 80.0)
+                tem.increasing[i] = false;
+            else if (!tem.increasing[i] && val <= 20.0)
+                tem.increasing[i] = true;
+        }
+    }
+    else {
+        for (int i = 0; i < tem.temValue.size(); ++i) {
+            double delta = specRanNumGgen::getrandom(100);  // 0~100随机变化幅度
+            double &val = tem.boxtem[i];
+            double newVal = tem.boxIncr[i] ? val + delta : val - delta;
+
+            // 限制范围20~80
+            val = tem.boxIncr[i] ? std::min(newVal, 80.0) : std::max(newVal, 20.0);
+
+            // 更新增长方向
+            if (tem.boxIncr[i] && val >= 80.0)
+                tem.boxIncr[i] = false;
+            else if (!tem.boxIncr[i] && val <= 20.0)
+                tem.boxIncr[i] = true;
+        }
     }
 
 }

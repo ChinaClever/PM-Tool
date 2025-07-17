@@ -15,6 +15,7 @@ public:
     void run() override;
     void setBoxList(BoxData& box);
     void setBoxInc(BoxData& ,const QString&);
+    void setTemInc(EnvItem& ,bool );
 
 public slots:
     void PRun(bool flag);

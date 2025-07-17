@@ -217,12 +217,12 @@ void TMapProcessor::updatePhaseValue(double& value, bool& incFlag) {
     double newval = incFlag ? (y + x) : (y - x);
 
     // 限制范围并更新值
-    value = incFlag ? fmin(newval, 276.0) : fmax(newval, 250.0);
+    value = incFlag ? fmin(newval, 276.0) : fmax(newval, 220.0);
 
     // 更新增减模式
     if (incFlag && newval >= 276.0) {
         incFlag = false;
-    } else if (!incFlag && newval <= 250.0) {
+    } else if (!incFlag && newval <= 220.0) {
         incFlag = true;
     }
 }

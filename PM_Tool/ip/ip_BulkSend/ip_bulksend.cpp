@@ -195,13 +195,13 @@ void ip_BulkSend::ScheckSend(int a,int b,int c)
 
 void ip_BulkSend::TcheckTime(int t)
 {
-    qDebug()<<t;
+    //qDebug()<<t;
     ui->TsuccessTime->setValue(t/1000.0);
 }
 
 void ip_BulkSend::TcheckSend(int a,int b,int c)
 {
-    qDebug()<<a<<b<<c;
+    //qDebug()<<a<<b<<c;
     ui->TErNum->setValue(c);
     ui->TsuccessNum->setValue(b);
 }
