@@ -1,3 +1,4 @@
+
 #include "mapjsonqueue.h"
 #include <QDebug>
 #include <QUdpSocket>
@@ -62,7 +63,7 @@ void MapJsonQueue::run()
             QDateTime t2 = QDateTime::currentDateTime();
             int duration = t1.msecsTo(t2);
             emit checkTime(duration);
-            qDebug()<<duration;
+          //  qDebug()<<duration;
         }
     }
 

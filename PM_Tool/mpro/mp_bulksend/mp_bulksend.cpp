@@ -215,6 +215,7 @@ void mp_bulksend::bulkinti(const int x)
         double energies[48] = {0};
         // 先同步读（如果读时间长，可以考虑异步读）
         bool found = DatabaseManager::instance().queryOutputBitEnergy(key, energies);
+
         if (!found) {
             // 如果没有数据，初始化为0
             for (int i = 0; i < 48; ++i) energies[i] = 0.0;
@@ -230,7 +231,14 @@ void mp_bulksend::bulkinti(const int x)
         DbWriteTask updateTask;
         updateTask.table = DbWriteTask::OutputBit;
         updateTask.key = key;
-        for (int i = 0; i < 48; ++i) updateTask.values.append(energies[i]); // 填写当前48路能量数据
+
+        //qDebug()<<packet.pduData.outputData.outputBits.size();
+        for (int i = 0; i < 48; ++i) {
+            updateTask.values.append(energies[i]); // 填写当前48路能量数据
+            if(i<packet.pduData.outputData.outputBits.size())
+            packet.pduData.outputData.outputBits[i].energy = energies[i];
+        }
+        //for(int i = 0;i<packet.pduData.outputData.outputBits.size(); i ++)qDebug()<<packet.pduData.outputData.outputBits[i].energy;
         m_dbWriteThread->enqueueTask(updateTask);
 
     }

@@ -7,7 +7,7 @@
 #include "databasemanager.h"
 #include <QDebug>
 #include <math.h>
-const int BusNum = 3;
+const int BusNum = 3; //线程数量
 busBulk::busBulk(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::busBulk)
@@ -303,19 +303,27 @@ void busBulk::bulkinti(const int x)
         Bus.info.boxKey = Bus.info.busKey+"-"+QString("%1").arg(i+2);
 
         {
-            double eleActive[6] = {0};
-            double eleReactive[6] = {0};
+            double eleActive[9] = {0};
+            double eleReactive[9] = {0};
             QString key = Bus.info.boxKey;
 
             bool ok = DatabaseManager::instance().queryBoxPhaseEnergy(key, eleActive, eleReactive);
+           // qDebug()<<key;
+           // for(int i = 0;i<9;i++)qDebug()<<eleActive[i];
+           // qDebug()<<"ok: "<<ok;
             if (ok) {
-                for (int i = 0; i < 6; i++) {
+                //qDebug()<<Box.loopItemList.eleActive.size();
+                for (int i = 0; i < 9; i++) {
                     Box.loopItemList.eleActive[i] = eleActive[i];
                     Box.loopItemList.eleReactive[i] = eleReactive[i];
                 }
+                // for (int i = 0; i < 9; i++) {
+                //     qDebug()<<Box.loopItemList.eleActive[i];
+                //     //qDebug()<<Box.loopItemList.eleReactive[i];
+                // }
             } else {
                 // 数据库无此key，赋默认值0
-                for (int i = 0; i < 6; i++) {
+                for (int i = 0; i < 9; i++) {
                     Box.loopItemList.eleActive[i] = 0;
                     Box.loopItemList.eleReactive[i] = 0;
                 }
@@ -324,7 +332,7 @@ void busBulk::bulkinti(const int x)
             }
 
         }
-
+        Bus.boxData = Box;
         busMap[index++] = Bus ;
     }
 
@@ -435,8 +443,6 @@ busBulk::~busBulk()
     // 不需要 mJsonQ.clear();
     delete ui;
 }
-
-
 
 void busBulk::on_bus_timeInv_valueChanged(int arg1)
 {

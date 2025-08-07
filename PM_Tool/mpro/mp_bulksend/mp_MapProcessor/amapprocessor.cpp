@@ -13,14 +13,14 @@ AMapProcessor::AMapProcessor(QObject* parent)
     //qDebug()<<"AMapProcessor creater";
 
     dbWriteThread = new DbWriteThread(this);
-   // dbWriteThread->start();
+    dbWriteThread->start();
 
     dbWriteTimer = new QTimer(this);
-    dbWriteTimer->setInterval(34 * 60 * 1000); // 30分钟写一次
+    dbWriteTimer->setInterval(36 * 60 * 1000); // 30分钟写一次
     //dbWriteTimer->setInterval(10000); // 30分钟写一次
 
     connect(dbWriteTimer, &QTimer::timeout, this, &AMapProcessor::writeDbTimeout);
-    //dbWriteTimer->start();
+    dbWriteTimer->start();
 }
 AMapProcessor::~AMapProcessor()
 {

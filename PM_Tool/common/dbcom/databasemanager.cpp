@@ -245,12 +245,18 @@ bool DatabaseManager::createBoxPhaseEnergyTable() {
             ele_active_3 REAL,
             ele_active_4 REAL,
             ele_active_5 REAL,
+            ele_active_6 REAL,
+            ele_active_7 REAL,
+            ele_active_8 REAL,
             ele_reactive_0 REAL,
             ele_reactive_1 REAL,
             ele_reactive_2 REAL,
             ele_reactive_3 REAL,
             ele_reactive_4 REAL,
-            ele_reactive_5 REAL
+            ele_reactive_5 REAL,
+            ele_reactive_6 REAL,
+            ele_reactive_7 REAL,
+            ele_reactive_8 REAL
         )
     )";
 
@@ -261,7 +267,7 @@ bool DatabaseManager::createBoxPhaseEnergyTable() {
     return true;
 }
 
-bool DatabaseManager::insertOrUpdateBoxPhaseEnergy(const QString &key, const double eleActive[6], const double eleReactive[6]) {
+bool DatabaseManager::insertOrUpdateBoxPhaseEnergy(const QString &key, const double eleActive[9], const double eleReactive[9]) {
     QMutexLocker locker(&m_dbMutex);
 
     if (!m_db.isOpen()) {
@@ -273,12 +279,12 @@ bool DatabaseManager::insertOrUpdateBoxPhaseEnergy(const QString &key, const dou
     query.prepare(R"(
         INSERT INTO BoxPhaseEnergy (
             key,
-            ele_active_0, ele_active_1, ele_active_2, ele_active_3, ele_active_4, ele_active_5,
-            ele_reactive_0, ele_reactive_1, ele_reactive_2, ele_reactive_3, ele_reactive_4, ele_reactive_5
+            ele_active_0, ele_active_1, ele_active_2, ele_active_3, ele_active_4, ele_active_5,ele_active_6, ele_active_7, ele_active_8,
+            ele_reactive_0, ele_reactive_1, ele_reactive_2, ele_reactive_3, ele_reactive_4, ele_reactive_5,ele_reactive_6, ele_reactive_7, ele_reactive_8
         ) VALUES (
             :key,
-            :ea0, :ea1, :ea2, :ea3, :ea4, :ea5,
-            :er0, :er1, :er2, :er3, :er4, :er5
+            :ea0, :ea1, :ea2, :ea3, :ea4, :ea5, :ea6, :ea7, :ea8,
+            :er0, :er1, :er2, :er3, :er4, :er5, :er6, :er7, :er8
         )
         ON CONFLICT(key) DO UPDATE SET
             ele_active_0=excluded.ele_active_0,
@@ -287,16 +293,22 @@ bool DatabaseManager::insertOrUpdateBoxPhaseEnergy(const QString &key, const dou
             ele_active_3=excluded.ele_active_3,
             ele_active_4=excluded.ele_active_4,
             ele_active_5=excluded.ele_active_5,
+            ele_active_6=excluded.ele_active_6,
+            ele_active_7=excluded.ele_active_7,
+            ele_active_8=excluded.ele_active_8,
             ele_reactive_0=excluded.ele_reactive_0,
             ele_reactive_1=excluded.ele_reactive_1,
             ele_reactive_2=excluded.ele_reactive_2,
             ele_reactive_3=excluded.ele_reactive_3,
             ele_reactive_4=excluded.ele_reactive_4,
-            ele_reactive_5=excluded.ele_reactive_5
+            ele_reactive_5=excluded.ele_reactive_5,
+            ele_reactive_6=excluded.ele_reactive_6,
+            ele_reactive_7=excluded.ele_reactive_7,
+            ele_reactive_8=excluded.ele_reactive_8
     )");
 
     query.bindValue(":key", key);
-    for (int i = 0; i < 6; ++i) {
+    for (int i = 0; i < 9; ++i) {
         query.bindValue(QString(":ea%1").arg(i), eleActive[i]);
         query.bindValue(QString(":er%1").arg(i), eleReactive[i]);
     }
@@ -308,8 +320,10 @@ bool DatabaseManager::insertOrUpdateBoxPhaseEnergy(const QString &key, const dou
     return true;
 }
 
-bool DatabaseManager::queryBoxPhaseEnergy(const QString &key, double eleActive[6], double eleReactive[6]) {
+bool DatabaseManager::queryBoxPhaseEnergy(const QString &key, double eleActive[9], double eleReactive[9]) {
     QMutexLocker locker(&m_dbMutex);
+
+    qDebug()<<"!!!!!";
 
     if (!m_db.isOpen()) {
         qDebug() << "Database not open!";
@@ -319,8 +333,8 @@ bool DatabaseManager::queryBoxPhaseEnergy(const QString &key, double eleActive[6
     QSqlQuery query(m_db);
     query.prepare(R"(
         SELECT
-            ele_active_0, ele_active_1, ele_active_2, ele_active_3, ele_active_4, ele_active_5,
-            ele_reactive_0, ele_reactive_1, ele_reactive_2, ele_reactive_3, ele_reactive_4, ele_reactive_5
+            ele_active_0, ele_active_1, ele_active_2, ele_active_3, ele_active_4, ele_active_5,ele_active_6,ele_active_7,ele_active_8,
+            ele_reactive_0, ele_reactive_1, ele_reactive_2, ele_reactive_3, ele_reactive_4, ele_reactive_5,ele_reactive_6,ele_reactive_7,ele_reactive_8
         FROM BoxPhaseEnergy WHERE key = :key
     )");
     query.bindValue(":key", key);
@@ -331,9 +345,9 @@ bool DatabaseManager::queryBoxPhaseEnergy(const QString &key, double eleActive[6
     }
 
     if (query.next()) {
-        for (int i = 0; i < 6; ++i) {
+        for (int i = 0; i < 9; ++i) {
             eleActive[i] = query.value(i).toDouble();
-            eleReactive[i] = query.value(i + 6).toDouble();
+            eleReactive[i] = query.value(i + 9).toDouble();
         }
         return true;
     }
@@ -448,6 +462,7 @@ bool DatabaseManager::queryOutputBitEnergy(const QString &key, double energies[4
     if (query.next()) {
         for (int i = 0; i < 48; ++i) {
             energies[i] = query.value(i).toDouble();
+            //qDebug()<<energies[i];
         }
         return true;
     }

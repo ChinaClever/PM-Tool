@@ -11,14 +11,14 @@ DMapProcessor::DMapProcessor(QObject* parent)
      //qDebug()<<"DMapProcessor create";
 
     dbWriteThread = new DbWriteThread(this);
-    //dbWriteThread->start();
+    dbWriteThread->start();
 
     dbWriteTimer = new QTimer(this);
     dbWriteTimer->setInterval(35 * 60 * 1000); // 30分钟写一次
     //dbWriteTimer->setInterval(10000); // 30分钟写一次
 
     connect(dbWriteTimer, &QTimer::timeout, this, &DMapProcessor::writeDbTimeout);
-    //dbWriteTimer->start();
+    dbWriteTimer->start();
 }
 
 DMapProcessor::~DMapProcessor()

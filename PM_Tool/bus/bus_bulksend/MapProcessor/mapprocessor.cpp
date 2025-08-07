@@ -18,7 +18,7 @@ MapProcessor::MapProcessor(QObject* parent)
     dbWriteThread = new DbWriteThread(this);
 
     dbWriteThread->start();
-    saveTimer->setInterval(30 * 60 * 1000); // 每 5 分钟触发一次
+    saveTimer->setInterval(40 * 60 * 1000); // 每 5 分钟触发一次
     saveTimer->disconnect();
     connect(saveTimer, &QTimer::timeout, this, &MapProcessor::SaveTimerTimeout);
     saveTimer->start();
@@ -42,7 +42,6 @@ void MapProcessor::run()
         busMapLock.lockForRead();  //  加读锁
         for (int i = 0; i < busMap.size(); i++) {
 
-
             if((i+1)%(bulkBoxNum+1) == 0){
                  busBulk::setBusline(busMap[i+1].busData);
                  busBulk::setBusTotal(busMap[i+1].busData);
@@ -55,6 +54,8 @@ void MapProcessor::run()
             else{
                 QString key = busMap[i+1].info.boxKey;
                 busMap[i+1].info.datetime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+                //qDebug()<<key<<busMap[i+1].boxData.loopItemList.eleActive.size();
+                //for(int j =0 ;j<busMap[i+1].boxData.loopItemList.eleActive.size();j++)qDebug()<<busMap[i+1].boxData.loopItemList.eleActive[j];
                 setBoxInc(busMap[i+1].boxData,key);
                 setTemInc(busMap[i+1].envItemList,0);
                 busBulk::setBoxList(busMap[i+1].boxData);
@@ -157,16 +158,27 @@ void MapProcessor::setTemInc(EnvItem& tem, bool flag)
 }
 
 void MapProcessor::SaveTimerTimeout() {
+
+     // qDebug()<<123;
     auto startTime = QDateTime::currentDateTime();
 
     busMapLock.lockForRead();
-    for (auto it = busMap.begin(); it != busMap.end(); ++it) {
+    int idx = 0;
+    for (auto it = busMap.begin(); it != busMap.end(); ++it,++idx) {
+        if((idx+1)%(bulkBoxNum+1) == 0)continue;
         DbWriteTask task;
         task.table = DbWriteTask::BoxPhase;
         task.key = it.value().info.boxKey;
 
         const auto &u = it.value().boxData.loopItemList;
         // 把 eleActive 和 eleReactive 放入 values
+
+        // qDebug()<< u.eleActive.size();
+        // for(int i =0 ;i < u.eleActive.size(); i++){
+        //     qDebug()<<u.eleActive[i];
+        // }
+
+
         for (int i = 0; i < u.eleActive.size(); ++i)
             task.values.append(u.eleActive[i]);
         for (int i = 0; i < u.eleReactive.size(); ++i)

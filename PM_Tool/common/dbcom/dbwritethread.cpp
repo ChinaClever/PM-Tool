@@ -61,10 +61,14 @@ void DbWriteThread::run() {
                     task.values[0].toDouble());
             break;
         case DbWriteTask::BoxPhase:
-            if (task.values.size() >= 12) { // 6+6
-                double eleActive[6], eleReactive[6];
-                for (int i = 0; i < 6; ++i) eleActive[i] = task.values[i].toDouble();
-                for (int i = 0; i < 6; ++i) eleReactive[i] = task.values[i + 6].toDouble();
+            if (task.values.size() >= 18) { // 9+9
+                double eleActive[9], eleReactive[9];
+                for (int i = 0; i < 9; ++i) eleActive[i] = task.values[i].toDouble();
+                for (int i = 0; i < 9; ++i) eleReactive[i] = task.values[i + 9].toDouble();
+
+                //for(int i = 0;i<9;i++)qDebug()<<eleActive[i];
+               // for(int i = 0;i<9;i++)qDebug()<<eleReactive[i];
+
                 ok = DatabaseManager::instance().insertOrUpdateBoxPhaseEnergy(task.key, eleActive, eleReactive);
             }
             break;

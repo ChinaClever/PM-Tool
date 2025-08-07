@@ -245,6 +245,7 @@ void ip_BulkSend::bulkinti(const int x)
         {
             double v0 = 0, v1 = 0, v2 = 0;
             bool found = DatabaseManager::instance().queryThreePhaseEnergy(key, v0, v1, v2);
+           // qDebug()<<v0<<' '<<v1<<' '<<v2;
             if (!found) {
                 qDebug() << "数据库无此key，自动插入初始值 0:" << key;
                 v0 = v1 = v2 = 0.0;
@@ -261,6 +262,9 @@ void ip_BulkSend::bulkinti(const int x)
             packet.line_item.ele_active[0] = v0;
             packet.line_item.ele_active[1] = v1;
             packet.line_item.ele_active[2] = v2;
+
+            //for(int i =0 ;i< 3;i ++)
+            //qDebug()<<packet.line_item.ele_active[i];
         }
 
         tMap[key] = packet;

@@ -21,8 +21,8 @@ public:
 
     // 插接箱回路电能
     bool createBoxPhaseEnergyTable();
-    bool insertOrUpdateBoxPhaseEnergy(const QString &key, const double eleActive[6], const double eleReactive[6]);
-    bool queryBoxPhaseEnergy(const QString &key, double eleActive[6], double eleReactive[6]);
+    bool insertOrUpdateBoxPhaseEnergy(const QString &key, const double eleActive[9], const double eleReactive[9]);
+    bool queryBoxPhaseEnergy(const QString &key, double eleActive[9], double eleReactive[9]);
 
     // 最大48路 OutputBitEnergy
     bool createOutputBitEnergyTable();
