@@ -18,7 +18,7 @@ MapProcessor::MapProcessor(QObject* parent)
     dbWriteThread = new DbWriteThread(this);
 
     dbWriteThread->start();
-    saveTimer->setInterval(40 * 60 * 1000); // 每 5 分钟触发一次
+    saveTimer->setInterval(41 * 60 * 1000); // 每 5 分钟触发一次
     saveTimer->disconnect();
     connect(saveTimer, &QTimer::timeout, this, &MapProcessor::SaveTimerTimeout);
     saveTimer->start();

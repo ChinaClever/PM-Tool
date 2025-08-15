@@ -263,6 +263,7 @@ void busBulk::setBusTotal(BusData& bus)
         u.eleReactive += v.eleReactive[i];
         u.curResidualValue -= v.curValue[i];
     }
+    u.eleApparent = sqrt(u.eleActive*u.eleActive + u.eleReactive*u.eleReactive*1.0);
   //  qDebug()<<u.powValue <<' '<<u.powApparent;
     u.powerFactor = u.powValue / u.powApparent *1.0;
     u.hzValue = 55;
