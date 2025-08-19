@@ -85,7 +85,7 @@ void busBulk::setBoxCfg(BoxConfig& cfg)
     cfg.boxType = 0;
     cfg.breakerStatus.resize(cfg.loopNum);
     for(int i = 0; i < cfg.loopNum; i ++){
-        cfg.breakerStatus[i] = 1;
+        cfg.breakerStatus[i] = 2;
     }
 }
 
@@ -253,16 +253,18 @@ void busBulk::setBusTotal(BusData& bus)
         u.eleActive = 0;
         u.eleReactive = 0;
         u.curResidualValue = 800;
+        u.curZeroValue = 0;
     }
-
+    u.curZeroValue = data_cal::neutral_current_from_rms_120(v.curValue[0],v.curValue[1],v.curValue[2]);
     for(int i = 0; i < 3; i++){
         u.powValue += v.powValue[i];
         u.powApparent += v.powApparent[i];
         u.powReactive += v.powReactive[i];
         u.eleActive += v.eleActive[i];
         u.eleReactive += v.eleReactive[i];
-        u.curResidualValue -= v.curValue[i];
+
     }
+    u.curResidualValue = u.curZeroValue;
     u.eleApparent = sqrt(u.eleActive*u.eleActive + u.eleReactive*u.eleReactive*1.0);
   //  qDebug()<<u.powValue <<' '<<u.powApparent;
     u.powerFactor = u.powValue / u.powApparent *1.0;

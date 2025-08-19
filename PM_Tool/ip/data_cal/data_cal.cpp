@@ -17,6 +17,14 @@ double data_cal::apparent_powerCal(double V,double I)
     return V*I/1000.0;
 }
 
+double  data_cal::neutral_current_from_rms_120(double Ia, double Ib, double Ic) {
+    // |IN| = sqrt(Ia^2 + Ib^2 + Ic^2 - Ia*Ib - Ib*Ic - Ic*Ia)
+    return std::sqrt(
+        Ia*Ia + Ib*Ib + Ic*Ic
+        - Ia*Ib - Ib*Ic - Ic*Ia
+        );
+}
+
 double data_cal::active_powerCal(double V,double I,double pf)
 {
     return V*I*pf/1000.0;

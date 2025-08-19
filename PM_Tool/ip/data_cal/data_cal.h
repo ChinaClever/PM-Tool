@@ -12,7 +12,7 @@ public:
     static double reactive_powerCal(double app_pow,double pow);//无功功率
     static qint64 calculateTimeDiffInSeconds(const QString& timeStr1, const QString& timeStr2); //返回两个时间差值
     static QString generateNextCascadeIP(QString &devip, int &addr,int addnum);  //返回下一个key，devip，addr递增
-
+    static double neutral_current_from_rms_120(double Ia, double Ib, double Ic);
     static double calculate_dewpoint1(double t, double h) ;
     static double calculateUnbalance(double iA, double iB, double iC);
     static QString getNextIp(const QString &ip);
