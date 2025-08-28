@@ -76,7 +76,7 @@ void busBulk::setBoxCfg(BoxConfig& cfg)
 {
     cfg.alarmCount = 5;
     cfg.iof = 1;
-    cfg.boxVersion = "1";
+    cfg.boxVersion = 1;
     cfg.baudRate = 9600;
     cfg.beep = 1;
     cfg.workMode = 2;
@@ -219,11 +219,8 @@ void busBulk::setBusline(BusData& bus)
     for(int i = 0; i < 3; i ++){
         u.volValue[i] = bus.busCfg.vol;
         u.volMax[i] = u.volValue[i];
-        u.volThd[i] = specRanNumGgen::getCurThd();
-
         u.curValue[i] = bulkPhase[0][i];
         u.curMax[i] = 800;
-        u.curThd[i] = specRanNumGgen::getCurThd();
 
         u.powValue[i] = bulkPhase[1][i];
         u.powMax[i] = 100;
@@ -238,6 +235,10 @@ void busBulk::setBusline(BusData& bus)
 
         u.loadRate[i] = u.curValue[i] / u.curMax[i];
         u.powerFactor[i] = u.powValue[i] / u.powApparent[i];
+    }
+    for(int i = 0; i < 96; i ++) {
+        u.curThd[i] = specRanNumGgen::getCurThd();
+        u.volThd[i] = specRanNumGgen::getCurThd();
     }
 }
 

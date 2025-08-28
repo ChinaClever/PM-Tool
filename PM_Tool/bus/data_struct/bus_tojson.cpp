@@ -56,7 +56,7 @@ void bus_toJson::setBusCfg(Busbar& data)
     cfg["shunt_trip"] = u.shuntTrip;
     cfg["breaker_status"] = u.breakerStatus;
     cfg["lsp_status"] = u.lspStatus;
-    cfg["bus_version"] = "2";
+    cfg["bus_version"] = 2;
     cfg["item_type"] = u.itemType;
     cfg["baud_rate"] = u.baudRate;
     cfg["alarm_count"] = u.alarmCount;
@@ -112,6 +112,10 @@ void bus_toJson::setBusLine(Busbar& data)
     QJsonObject line;
     auto &u = data.busData.lineItemList;
 
+    for(int i = 0; i < 96; i ++){
+        vol_thd.append(u.volThd[i]);
+        cur_thd.append(u.curThd[i]);
+    }
     for (int i = 0; i < 3; i++) {
         vol_value.append(u.volValue[i]);
         vol_min.append(u.volMin[i]);
@@ -124,8 +128,7 @@ void bus_toJson::setBusLine(Busbar& data)
         }
 
         vol_status.append(u.volStatus[i]);
-        vol_thd.append(u.volThd[i]);
-        cur_thd.append(u.curThd[i]);
+
         cur_value.append(qRound(u.curValue[i] * 100) / 100.0);
 
         cur_min.append(u.curMin[i]);

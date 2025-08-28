@@ -36,8 +36,8 @@ struct LineItem {
 
     void init(int size ) {
         volValue.resize(size); volMin.resize(size); volMax.resize(size);
-        volStatus.resize(size); volThd.resize(size);
-        curThd = QVector<int>(size);
+        volStatus.resize(size); volThd.resize(96);
+        curThd.resize(96);
 
         curValue.resize(size); curMin.resize(size); curMax.resize(size);
         curStatus.resize(size);
@@ -117,7 +117,7 @@ struct BusData {
 struct BoxConfig {
     int alarmCount;            // 告警次数
     int iof;                   // iof触点
-    QString boxVersion;            // 软件版本
+    int boxVersion;            // 软件版本
     int baudRate;              // 波特率
     int beep;                  // 蜂鸣器
     int itemType;              // 项目类型

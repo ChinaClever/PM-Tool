@@ -249,7 +249,7 @@ BoxData box_ui::generaData()
         auto &u = data.boxCfg;
         u.alarmCount = 5;
         u.iof = 1;
-        u.boxVersion = "V3.0.3";
+        u.boxVersion = 1;
         u.baudRate = 9600;
         u.beep = 1;
         u.itemType = 1;
