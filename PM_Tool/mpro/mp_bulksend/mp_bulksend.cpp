@@ -237,6 +237,8 @@ void mp_bulksend::bulkinti(const int x)
             updateTask.values.append(energies[i]); // 填写当前48路能量数据
             if(i<packet.pduData.outputData.outputBits.size())
             packet.pduData.outputData.outputBits[i].energy = energies[i];
+            // if(x==0)
+            // qDebug()<<energies[i];
         }
         //for(int i = 0;i<packet.pduData.outputData.outputBits.size(); i ++)qDebug()<<packet.pduData.outputData.outputBits[i].energy;
         m_dbWriteThread->enqueueTask(updateTask);

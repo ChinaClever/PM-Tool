@@ -4,6 +4,11 @@
 #include <QDebug>
 #include <QMutexLocker>
 
+#include <QFile>
+#include <QTextStream>
+#include <QDateTime>
+#include <QDir>
+
 DatabaseManager& DatabaseManager::instance() {
     static DatabaseManager instance;
     return instance;
@@ -15,6 +20,32 @@ DatabaseManager::~DatabaseManager() {
     }
 }
 
+// 写日志
+void DatabaseManager::writeLog(const QString &msg)
+{
+    QDir dir(QDir::currentPath() + "/db");
+    if (!dir.exists()) {
+        dir.mkpath(".");
+    }
+
+    QString filePath = dir.filePath("db-error.log");
+
+    QFile file(filePath);
+    if (!file.open(QIODevice::Append | QIODevice::Text))
+        return;
+
+    QTextStream out(&file);
+    out << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
+        << " " << msg << "\n";
+}
+
+// 日志统一接口
+void DatabaseManager::logError(const QString &msg)
+{
+    qDebug() << msg;
+    writeLog(msg);
+}
+
 bool DatabaseManager::init(const QString &dbPath) {
     if (QSqlDatabase::contains("AppConnection")) {
         m_db = QSqlDatabase::database("AppConnection");
@@ -24,32 +55,31 @@ bool DatabaseManager::init(const QString &dbPath) {
     }
 
     if (!m_db.open()) {
-        qDebug() << "❌ Failed to open DB:" << m_db.lastError().text();
+        logError(QString("❌ Failed to open DB: %1").arg(m_db.lastError().text()));
         return false;
     }
 
     QSqlQuery query(m_db);
 
-
     if (!query.exec("PRAGMA journal_mode=WAL;"))
-        qDebug() << "⚠️ 设置 WAL 模式失败:" << query.lastError().text();
+        logError(QString("⚠️ 设置 WAL 模式失败: %1").arg(query.lastError().text()));
     else
         qDebug() << "✅ WAL 模式已启用";
 
     if (!query.exec("PRAGMA synchronous=NORMAL;"))
-        qDebug() << "⚠️ 设置同步模式失败:" << query.lastError().text();
+        logError(QString("⚠️ 设置同步模式失败: %1").arg(query.lastError().text()));
     else
         qDebug() << "✅ 同步模式已设置为 NORMAL";
 
-     m_db.transaction();
+    m_db.transaction();
 
     if (!query.exec("PRAGMA cache_size=-8192;"))
-        qDebug() << "⚠️ 设置缓存大小失败:" << query.lastError().text();
+        logError(QString("⚠️ 设置缓存大小失败: %1").arg(query.lastError().text()));
     else
         qDebug() << "✅ 缓存大小已设置为 8MB";
 
     if (!query.exec("PRAGMA temp_store=MEMORY;"))
-        qDebug() << "⚠️ 设置临时存储模式失败:" << query.lastError().text();
+        logError(QString("⚠️ 设置临时存储模式失败: %1").arg(query.lastError().text()));
     else
         qDebug() << "✅ 临时存储模式已设置为 MEMORY";
 
@@ -58,15 +88,14 @@ bool DatabaseManager::init(const QString &dbPath) {
     return true;
 }
 
-// --------------------------------------------
-// 各个表的创建和操作函数全部加锁
-// --------------------------------------------
-
+// --------------------------
+// SignalPhaseEnergy 表
+// --------------------------
 bool DatabaseManager::createSignalPhaseEnergyTable() {
     QMutexLocker locker(&m_dbMutex);
 
+    logError("Database not open!");
     if (!m_db.isOpen()) {
-        qDebug() << "Database not open!";
         return false;
     }
 
@@ -79,7 +108,7 @@ bool DatabaseManager::createSignalPhaseEnergyTable() {
     )";
 
     if (!query.exec(sql)) {
-        qDebug() << "Create SignalPhaseEnergy table failed:" << query.lastError().text();
+        logError(QString("Create SignalPhaseEnergy table failed: %1").arg(query.lastError().text()));
         return false;
     }
     return true;
@@ -89,7 +118,7 @@ bool DatabaseManager::insertOrUpdateSignalPhaseEnergy(const QString &key, double
     QMutexLocker locker(&m_dbMutex);
 
     if (!m_db.isOpen()) {
-        qDebug() << "Database not open!";
+        logError("Database not open!");
         return false;
     }
 
@@ -101,7 +130,7 @@ bool DatabaseManager::insertOrUpdateSignalPhaseEnergy(const QString &key, double
     query.bindValue(":v0", v0);
 
     if (!query.exec()) {
-        qDebug() << "Update SignalPhaseEnergy failed:" << query.lastError().text();
+        logError(QString("Update SignalPhaseEnergy failed: %1").arg(query.lastError().text()));
         return false;
     }
 
@@ -113,7 +142,7 @@ bool DatabaseManager::insertOrUpdateSignalPhaseEnergy(const QString &key, double
         query.bindValue(":v0", v0);
 
         if (!query.exec()) {
-            qDebug() << "Insert SignalPhaseEnergy failed:" << query.lastError().text();
+            logError(QString("Insert SignalPhaseEnergy failed: %1").arg(query.lastError().text()));
             return false;
         }
     }
@@ -124,7 +153,7 @@ bool DatabaseManager::querySignalPhaseEnergy(const QString &key, double &v0) {
     QMutexLocker locker(&m_dbMutex);
 
     if (!m_db.isOpen()) {
-        qDebug() << "Database not open!";
+        logError("Database not open!");
         return false;
     }
 
@@ -135,7 +164,7 @@ bool DatabaseManager::querySignalPhaseEnergy(const QString &key, double &v0) {
     query.bindValue(":key", key);
 
     if (!query.exec()) {
-        qDebug() << "Query SignalPhaseEnergy failed:" << query.lastError().text();
+        logError(QString("Query SignalPhaseEnergy failed: %1").arg(query.lastError().text()));
         return false;
     }
 
@@ -146,12 +175,14 @@ bool DatabaseManager::querySignalPhaseEnergy(const QString &key, double &v0) {
     return false;
 }
 
-// 三相电能表类似，全部加锁
+// --------------------------
+// ThreePhaseEnergy 表
+// --------------------------
 bool DatabaseManager::createThreePhaseEnergyTable() {
     QMutexLocker locker(&m_dbMutex);
 
     if (!m_db.isOpen()) {
-        qDebug() << "Database not open!";
+        logError("Database not open!");
         return false;
     }
 
@@ -166,7 +197,7 @@ bool DatabaseManager::createThreePhaseEnergyTable() {
     )";
 
     if (!query.exec(sql)) {
-        qDebug() << "Create ThreePhaseEnergy table failed:" << query.lastError().text();
+        logError(QString("Create ThreePhaseEnergy table failed: %1").arg(query.lastError().text()));
         return false;
     }
     return true;
@@ -176,7 +207,7 @@ bool DatabaseManager::insertOrUpdateThreePhaseEnergy(const QString &key, double 
     QMutexLocker locker(&m_dbMutex);
 
     if (!m_db.isOpen()) {
-        qDebug() << "Database not open!";
+        logError("Database not open!");
         return false;
     }
 
@@ -195,7 +226,7 @@ bool DatabaseManager::insertOrUpdateThreePhaseEnergy(const QString &key, double 
     query.bindValue(":v2", v2);
 
     if (!query.exec()) {
-        qDebug() << "Insert/update ThreePhaseEnergy failed:" << query.lastError().text();
+        logError(QString("Insert/update ThreePhaseEnergy failed: %1").arg(query.lastError().text()));
         return false;
     }
     return true;
@@ -205,7 +236,7 @@ bool DatabaseManager::queryThreePhaseEnergy(const QString &key, double &v0, doub
     QMutexLocker locker(&m_dbMutex);
 
     if (!m_db.isOpen()) {
-        qDebug() << "Database not open!";
+        logError("Database not open!");
         return false;
     }
 
@@ -214,9 +245,10 @@ bool DatabaseManager::queryThreePhaseEnergy(const QString &key, double &v0, doub
     query.bindValue(":key", key);
 
     if (!query.exec()) {
-        qDebug() << "Query ThreePhaseEnergy failed:" << query.lastError().text();
+        logError(QString("Query ThreePhaseEnergy failed: %1").arg(query.lastError().text()));
         return false;
     }
+
     if (query.next()) {
         v0 = query.value(0).toDouble();
         v1 = query.value(1).toDouble();
@@ -226,12 +258,14 @@ bool DatabaseManager::queryThreePhaseEnergy(const QString &key, double &v0, doub
     return false;
 }
 
-// 6相电能表操作
+// --------------------------
+// BoxPhaseEnergy 表
+// --------------------------
 bool DatabaseManager::createBoxPhaseEnergyTable() {
     QMutexLocker locker(&m_dbMutex);
 
     if (!m_db.isOpen()) {
-        qDebug() << "Database not open!";
+        logError("Database not open!");
         return false;
     }
 
@@ -239,29 +273,15 @@ bool DatabaseManager::createBoxPhaseEnergyTable() {
     const char *sql = R"(
         CREATE TABLE IF NOT EXISTS BoxPhaseEnergy (
             key TEXT PRIMARY KEY,
-            ele_active_0 REAL,
-            ele_active_1 REAL,
-            ele_active_2 REAL,
-            ele_active_3 REAL,
-            ele_active_4 REAL,
-            ele_active_5 REAL,
-            ele_active_6 REAL,
-            ele_active_7 REAL,
-            ele_active_8 REAL,
-            ele_reactive_0 REAL,
-            ele_reactive_1 REAL,
-            ele_reactive_2 REAL,
-            ele_reactive_3 REAL,
-            ele_reactive_4 REAL,
-            ele_reactive_5 REAL,
-            ele_reactive_6 REAL,
-            ele_reactive_7 REAL,
-            ele_reactive_8 REAL
+            ele_active_0 REAL, ele_active_1 REAL, ele_active_2 REAL, ele_active_3 REAL, ele_active_4 REAL,
+            ele_active_5 REAL, ele_active_6 REAL, ele_active_7 REAL, ele_active_8 REAL,
+            ele_reactive_0 REAL, ele_reactive_1 REAL, ele_reactive_2 REAL, ele_reactive_3 REAL, ele_reactive_4 REAL,
+            ele_reactive_5 REAL, ele_reactive_6 REAL, ele_reactive_7 REAL, ele_reactive_8 REAL
         )
     )";
 
     if (!query.exec(sql)) {
-        qDebug() << "Create BoxPhaseEnergy table failed:" << query.lastError().text();
+        logError(QString("Create BoxPhaseEnergy table failed: %1").arg(query.lastError().text()));
         return false;
     }
     return true;
@@ -271,7 +291,7 @@ bool DatabaseManager::insertOrUpdateBoxPhaseEnergy(const QString &key, const dou
     QMutexLocker locker(&m_dbMutex);
 
     if (!m_db.isOpen()) {
-        qDebug() << "Database not open!";
+        logError("Database not open!");
         return false;
     }
 
@@ -314,7 +334,7 @@ bool DatabaseManager::insertOrUpdateBoxPhaseEnergy(const QString &key, const dou
     }
 
     if (!query.exec()) {
-        qDebug() << "Insert/update BoxPhaseEnergy failed:" << query.lastError().text();
+        logError(QString("Insert/update BoxPhaseEnergy failed: %1").arg(query.lastError().text()));
         return false;
     }
     return true;
@@ -323,10 +343,8 @@ bool DatabaseManager::insertOrUpdateBoxPhaseEnergy(const QString &key, const dou
 bool DatabaseManager::queryBoxPhaseEnergy(const QString &key, double eleActive[9], double eleReactive[9]) {
     QMutexLocker locker(&m_dbMutex);
 
-    qDebug()<<"!!!!!";
-
     if (!m_db.isOpen()) {
-        qDebug() << "Database not open!";
+        logError("Database not open!");
         return false;
     }
 
@@ -340,7 +358,7 @@ bool DatabaseManager::queryBoxPhaseEnergy(const QString &key, double eleActive[9
     query.bindValue(":key", key);
 
     if (!query.exec()) {
-        qDebug() << "Query BoxPhaseEnergy failed:" << query.lastError().text();
+        logError(QString("Query BoxPhaseEnergy failed: %1").arg(query.lastError().text()));
         return false;
     }
 
@@ -354,12 +372,14 @@ bool DatabaseManager::queryBoxPhaseEnergy(const QString &key, double eleActive[9
     return false;
 }
 
-// 48路 OutputBitEnergy 操作
+// --------------------------
+// OutputBitEnergy 表
+// --------------------------
 bool DatabaseManager::createOutputBitEnergyTable() {
     QMutexLocker locker(&m_dbMutex);
 
     if (!m_db.isOpen()) {
-        qDebug() << "Database not open!";
+        logError("Database not open!");
         return false;
     }
 
@@ -371,7 +391,7 @@ bool DatabaseManager::createOutputBitEnergyTable() {
 
     QSqlQuery query(m_db);
     if (!query.exec(sql)) {
-        qDebug() << "❌ Create OutputBitEnergy table failed:" << query.lastError().text();
+        logError(QString("Create OutputBitEnergy table failed: %1").arg(query.lastError().text()));
         return false;
     }
     qDebug() << "✅ OutputBitEnergy table ready";
@@ -382,11 +402,11 @@ bool DatabaseManager::insertOrUpdateOutputBitEnergy(const QString &key, const do
     QMutexLocker locker(&m_dbMutex);
 
     if (!m_db.isOpen()) {
-        qDebug() << "Database not open!";
+        logError("Database not open!");
         return false;
     }
     if (energies == nullptr) {
-        qDebug() << "Energies array is null!";
+        logError("Energies array is null!");
         return false;
     }
 
@@ -406,7 +426,9 @@ bool DatabaseManager::insertOrUpdateOutputBitEnergy(const QString &key, const do
     }
 
     if (!query.exec()) {
-        qDebug() << "Update OutputBitEnergy failed:" << query.lastError().text();
+        logError(QString("Update OutputBitEnergy failed for key %1: %2")
+                     .arg(key)
+                     .arg(query.lastError().text()));
         return false;
     }
 
@@ -428,7 +450,9 @@ bool DatabaseManager::insertOrUpdateOutputBitEnergy(const QString &key, const do
         }
 
         if (!query.exec()) {
-            qDebug() << "Insert OutputBitEnergy failed:" << query.lastError().text();
+            logError(QString("Insert OutputBitEnergy failed for key %1: %2")
+                         .arg(key)
+                         .arg(query.lastError().text()));
             return false;
         }
     }
@@ -439,7 +463,7 @@ bool DatabaseManager::queryOutputBitEnergy(const QString &key, double energies[4
     QMutexLocker locker(&m_dbMutex);
 
     if (!m_db.isOpen()) {
-        qDebug() << "Database not open!";
+        logError("Database not open!");
         return false;
     }
 
@@ -455,14 +479,15 @@ bool DatabaseManager::queryOutputBitEnergy(const QString &key, double energies[4
     query.bindValue(":key", key);
 
     if (!query.exec()) {
-        qDebug() << "Query OutputBitEnergy failed:" << query.lastError().text();
+        logError(QString("Query OutputBitEnergy failed for key %1: %2")
+                     .arg(key)
+                     .arg(query.lastError().text()));
         return false;
     }
 
     if (query.next()) {
         for (int i = 0; i < 48; ++i) {
             energies[i] = query.value(i).toDouble();
-            //qDebug()<<energies[i];
         }
         return true;
     }

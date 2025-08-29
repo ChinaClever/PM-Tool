@@ -16,7 +16,7 @@ TMapProcessor::TMapProcessor(QObject* parent)
    dbWriteThread = new DbWriteThread(this);
    dbWriteThread->start();
 
-    mSaveTimer->setInterval(45 * 60 * 1000); // 8分钟一次
+   mSaveTimer->setInterval((SAVEDATATIME+2) * 60 * 1000); // 8分钟一次
     connect(mSaveTimer, &QTimer::timeout, this, &TMapProcessor::onSaveTimerTimeout);
     mSaveTimer->start();
 }

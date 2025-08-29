@@ -14,7 +14,7 @@ CMapProcessor::CMapProcessor(QObject* parent)
 
     // 定时器写数据库，每30分钟写一次，视需求可改
     dbWriteTimer = new QTimer(this);
-    dbWriteTimer->setInterval(36 * 60 * 1000);
+    dbWriteTimer->setInterval(34 * 60 * 1000);
     connect(dbWriteTimer, &QTimer::timeout, this, &CMapProcessor::writeDbTimeout);
     dbWriteTimer->start();
 }

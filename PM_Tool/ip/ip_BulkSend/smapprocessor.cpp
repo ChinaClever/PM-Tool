@@ -13,7 +13,7 @@ SMapProcessor::SMapProcessor(QObject* parent)
     dbWriteThread = new DbWriteThread(this);
     dbWriteThread->start();
 
-    mSaveTimer->setInterval(40 * 60 * 1000); // 5分钟一次
+    mSaveTimer->setInterval(SAVEDATATIME * 60 * 1000); // 5分钟一次
     connect(mSaveTimer, &QTimer::timeout, this, &SMapProcessor::onSaveTimerTimeout);
     mSaveTimer->start();
 

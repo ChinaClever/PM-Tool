@@ -1,6 +1,7 @@
 #ifndef DATA_CAL_H
 #define DATA_CAL_H
 #include <QString>
+#define SAVEDATATIME 37
 
 class data_cal
 {

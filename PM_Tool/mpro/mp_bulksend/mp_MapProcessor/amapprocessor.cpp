@@ -16,7 +16,7 @@ AMapProcessor::AMapProcessor(QObject* parent)
     dbWriteThread->start();
 
     dbWriteTimer = new QTimer(this);
-    dbWriteTimer->setInterval(36 * 60 * 1000); // 30分钟写一次
+    dbWriteTimer->setInterval(30 * 60 * 1000); // 30分钟写一次
     //dbWriteTimer->setInterval(10000); // 30分钟写一次
 
     connect(dbWriteTimer, &QTimer::timeout, this, &AMapProcessor::writeDbTimeout);
@@ -105,7 +105,7 @@ void AMapProcessor::writeDbTimeout()
         //qDebug()<<task.key ;
         for (int i = 0; i < size; ++i) {
             task.values.append(dev.pduData.outputData.outputBits[i].energy);
-            //qDebug()<<dev.pduData.outputData.outputBits[i].energy<<' ';
+           // qDebug()<<dev.pduData.outputData.outputBits[i].energy<<' ';
         }
         for (int i = size; i < 48; ++i) {
             task.values.append(0.0);

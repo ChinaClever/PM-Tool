@@ -13,7 +13,7 @@ BMapProcessor::BMapProcessor(QObject* parent)
     dbWriteThread->start();
 
     dbWriteTimer = new QTimer(this);
-    dbWriteTimer->setInterval(33 * 60 * 1000); // 30分钟写一次
+    dbWriteTimer->setInterval(31 * 60 * 1000); // 30分钟写一次
     //dbWriteTimer->setInterval(10000); // 30分钟写一次
 
     connect(dbWriteTimer, &QTimer::timeout, this, &BMapProcessor::writeDbTimeout);

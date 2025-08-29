@@ -8,7 +8,8 @@ public:
     static DatabaseManager& instance();
 
     bool init(const QString &dbPath = "db/energy_data.db");
-
+    void writeLog(const QString &msg);
+    void logError(const QString &msg);
     //ip三相电能
     bool createThreePhaseEnergyTable();
     bool insertOrUpdateThreePhaseEnergy(const QString &key, double v0, double v1, double v2);//更新三相电能
