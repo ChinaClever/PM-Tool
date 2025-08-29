@@ -54,6 +54,7 @@ struct OutputBit {
     double powerFactor;     // 功率因数
     double energy;          // 电能
     double currentIncrement;// 电流增量
+    QString name = "Output";
 
     bool curinc = 1;//电流增量
     bool pfinc = 1; //功率因素增量

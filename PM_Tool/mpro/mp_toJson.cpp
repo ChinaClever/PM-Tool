@@ -221,10 +221,10 @@ void mp_toJson::setOutBitItemList(PowerSystemData systemData)//输出位信息
     QVector<int> relay_state(cnt, 0), pow_alarm_status(cnt,0), cur_alarm_status(cnt,0.0);
     QVector<double>cur_value(cnt,0.0), power_factor(cnt,0.0), pow_value(cnt,0.0), pow_reactive(cnt,0.0)
         , pow_apparent(cnt,0.0), ele_active(cnt,0.0), cur_alarm_max(cnt,0.0);
-
+    QVector<QString>names(cnt,"");
     QJsonArray relayArray, curValueArray, powerFactorArray;
     QJsonArray powValueArray, powReactiveArray, powApparentArray, eleActiveArray;
-    QJsonArray powAlarmStatusArray, curAlarmStatusArray, curAlarmMaxArray;
+    QJsonArray powAlarmStatusArray, curAlarmStatusArray, curAlarmMaxArray,Names;
 
     for (int i = 0; i < cnt; ++i) {
         ele_active[i] = qRound(systemData.pduData.outputData.outputBits[i].energy *1)/1.0;
@@ -240,6 +240,9 @@ void mp_toJson::setOutBitItemList(PowerSystemData systemData)//输出位信息
             cur_alarm_status[i] = systemData.pduData.outputData.outputBits[i].curAlarmStatus;
             cur_alarm_max[i] = systemData.pduData.outputData.outputBits[i].curAlarmMax;
         }
+        names[i] = QString("Output%1").arg(i + 1);
+
+        Names.append(names[i]);
         relayArray.append(relay_state[i]);
         curValueArray.append(cur_value[i]);
         powerFactorArray.append(power_factor[i]);
@@ -250,6 +253,7 @@ void mp_toJson::setOutBitItemList(PowerSystemData systemData)//输出位信息
         powAlarmStatusArray.append(pow_alarm_status[i]);
         curAlarmMaxArray.append(cur_alarm_max[i]);
         curAlarmStatusArray.append(cur_alarm_status[i]);
+
     }
 
     QString series = systemData.settings.series;
@@ -267,6 +271,7 @@ void mp_toJson::setOutBitItemList(PowerSystemData systemData)//输出位信息
         BitItem["pow_alarm_status"] = powAlarmStatusArray;
         BitItem["cur_alarm_max"] = curAlarmMaxArray;
         BitItem["cur_alarm_status"] = curAlarmStatusArray;
+        BitItem["name"] = Names;
     }
     m_output_item_list = BitItem;
 }
