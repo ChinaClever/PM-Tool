@@ -94,8 +94,8 @@ bool DatabaseManager::init(const QString &dbPath) {
 bool DatabaseManager::createSignalPhaseEnergyTable() {
     QMutexLocker locker(&m_dbMutex);
 
-    logError("Database not open!");
     if (!m_db.isOpen()) {
+        logError("Database not open!");
         return false;
     }
 
@@ -117,6 +117,7 @@ bool DatabaseManager::createSignalPhaseEnergyTable() {
 bool DatabaseManager::insertOrUpdateSignalPhaseEnergy(const QString &key, double v0) {
     QMutexLocker locker(&m_dbMutex);
 
+    qDebug()<<123;
     if (!m_db.isOpen()) {
         logError("Database not open!");
         return false;

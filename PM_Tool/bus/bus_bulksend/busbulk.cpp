@@ -166,7 +166,7 @@ void busBulk::setBoxList(BoxData& box)
     }
 
     for(int i = 0; i < 3; i++){
-        u.loadRate[i] = u.curValue[i] / x.curMax[i];
+        u.loadRate[i] = u.curValue[i] / x.curMax[i] * 100;
         u.powerFactor[i] = u.powActive[i] / u.powApparent[i];
         v.powerFactor[i] = v.powActive[i] / v.powApparent[i];
         v.eleApparent[i] = sqrt(v.eleActive[i] * v.eleActive[i] + v.eleReactive[i] * v.eleReactive[i]);
@@ -233,7 +233,7 @@ void busBulk::setBusline(BusData& bus)
         u.volLineValue[i] = sqrt(u.volValue[i]);
         u.volLineMax[i] = u.volLineValue[i];
 
-        u.loadRate[i] = u.curValue[i] / u.curMax[i];
+        u.loadRate[i] = u.curValue[i] / u.curMax[i] * 100;
         u.powerFactor[i] = u.powValue[i] / u.powApparent[i];
     }
     for(int i = 0; i < 96; i ++) {

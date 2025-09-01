@@ -16,10 +16,10 @@
   <widget class="QStackedWidget" name="ip_BulkSendWid">
    <property name="geometry">
     <rect>
-     <x>440</x>
-     <y>24</y>
-     <width>487</width>
-     <height>791</height>
+     <x>450</x>
+     <y>-10</y>
+     <width>460</width>
+     <height>808</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -29,10 +29,10 @@
   <widget class="QStackedWidget" name="serSetWid">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>24</y>
-     <width>441</width>
-     <height>251</height>
+     <x>6</x>
+     <y>6</y>
+     <width>460</width>
+     <height>402</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -42,10 +42,10 @@
   <widget class="QStackedWidget" name="mp_bulksendWid">
    <property name="geometry">
     <rect>
-     <x>920</x>
-     <y>24</y>
-     <width>481</width>
-     <height>791</height>
+     <x>934</x>
+     <y>6</y>
+     <width>460</width>
+     <height>808</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -55,10 +55,10 @@
   <widget class="QStackedWidget" name="bus_bulksendWid">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>284</y>
-     <width>441</width>
-     <height>521</height>
+     <x>6</x>
+     <y>303</y>
+     <width>460</width>
+     <height>511</height>
     </rect>
    </property>
    <property name="styleSheet">
