@@ -23,7 +23,18 @@ void SriPhaseJsonQueue::run()
 
     QString ipAddress = serIp;   //需要停止发送才更新发送ip，三相暂时没有改
     QString portStr = port;
+
+    QString ipAddress2 = serIp2;   //需要停止发送才更新发送ip，三相暂时没有改
+    QString portStr2 = port2;
+
+ //   qDebug()<<ipAddress2<<portStr2;
+    QString ipAddress3 = serIp3;   //需要停止发送才更新发送ip，三相暂时没有改
+    QString portStr3 = port3;
+
     quint16 Port = portStr.toUShort();
+    quint16 Port2 = portStr2.toUShort();
+    quint16 Port3 = portStr3.toUShort();
+
     QJsonObject u;
 
     std::unique_ptr<QUdpSocket> udpsocket = std::make_unique<QUdpSocket>();
@@ -48,11 +59,28 @@ void SriPhaseJsonQueue::run()
             SCnt++;
             SCntt++;
 
+            if(!ipAddress.isEmpty() && Port)
             if(udpsocket->writeDatagram(jsonData, QHostAddress(ipAddress), Port) == -1) {
                 qWarning() << "Failed to send data:" << udpsocket->errorString();
                 SCntEr++;
                 // 可以选择重试或记录错误
             }
+
+            if(!ipAddress2.isEmpty() && Port2)
+            if(udpsocket->writeDatagram(jsonData, QHostAddress(ipAddress2), Port2) == -1) {
+                qWarning() << "Failed to send data:" << udpsocket->errorString();
+                SCntEr++;
+                // 可以选择重试或记录错误
+            }
+
+            if(!ipAddress3.isEmpty() && Port3)
+            if(udpsocket->writeDatagram(jsonData, QHostAddress(ipAddress3), Port3) == -1) {
+                qWarning() << "Failed to send data:" << udpsocket->errorString();
+                SCntEr++;
+                // 可以选择重试或记录错误
+            }
+
+
             if((cnt++)%50 == 0){
                 // int s = QRandomGenerator::global()->bounded(1, 100);
                 usleep(1);

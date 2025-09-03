@@ -271,6 +271,8 @@ void mp_toJson::setOutBitItemList(PowerSystemData systemData)//输出位信息
         BitItem["pow_alarm_status"] = powAlarmStatusArray;
         BitItem["cur_alarm_max"] = curAlarmMaxArray;
         BitItem["cur_alarm_status"] = curAlarmStatusArray;
+    }
+    if(series == "B" || series == "D" || series == "C"){
         BitItem["name"] = Names;
     }
     m_output_item_list = BitItem;

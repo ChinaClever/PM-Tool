@@ -18,8 +18,20 @@ void MapJsonQueue::run()
     int cnt = 0;
     QString ipAddress = serIp;
     QString portStr = BusPort;
+
+    QString ipAddress2 = serIp2;
+    QString portStr2 = BusPort2;
+
+    QString ipAddress3 = serIp3;
+    QString portStr3 = BusPort3;
+
+
    // qDebug()<<BusPort;
     quint16 Port = portStr.toUShort();
+    quint16 Port2 = portStr2.toUShort();
+    quint16 Port3 = portStr3.toUShort();
+
+
     msleep(QRandomGenerator::global()->bounded(1, 1000));
     std::unique_ptr<QUdpSocket> udpsocket = std::make_unique<QUdpSocket>();
     while(m_running){
@@ -44,11 +56,31 @@ void MapJsonQueue::run()
 
             BusCnt++;
             BusCntt++;
+
+
+            if(!ipAddress.isEmpty() && Port)
             if(udpsocket->writeDatagram(jsonData, QHostAddress(ipAddress), Port) == -1) {
                 qWarning() << "Failed to send data:" << udpsocket->errorString();
                 BusCntEr++;
                 // 可以选择重试或记录错误
             }
+
+
+            if(!ipAddress2.isEmpty() && Port2)
+            if(udpsocket->writeDatagram(jsonData, QHostAddress(ipAddress2), Port2) == -1) {
+                qWarning() << "Failed to send data:" << udpsocket->errorString();
+                BusCntEr++;
+                // 可以选择重试或记录错误
+            }
+
+
+            if(!ipAddress3.isEmpty() && Port3)
+            if(udpsocket->writeDatagram(jsonData, QHostAddress(ipAddress3), Port3) == -1) {
+                qWarning() << "Failed to send data:" << udpsocket->errorString();
+                BusCntEr++;
+                // 可以选择重试或记录错误
+            }
+
             if((cnt++)%50 == 0){
              // int s = QRandomGenerator::global()->bounded(1, 100);
                 usleep(1);

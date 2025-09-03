@@ -62,7 +62,7 @@ QWidget#tab, QWidget#tab_2 {
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
-        <string>Tab 1</string>
+        <string>服务器1</string>
        </attribute>
        <widget class="QWidget" name="">
         <property name="geometry">
@@ -198,7 +198,7 @@ QWidget#tab, QWidget#tab_2 {
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
-        <string>Tab 2</string>
+        <string>服务器2</string>
        </attribute>
        <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
@@ -334,7 +334,7 @@ QWidget#tab, QWidget#tab_2 {
       </widget>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
-        <string>页</string>
+        <string>服务器3</string>
        </attribute>
        <widget class="QWidget" name="layoutWidget_2">
         <property name="geometry">
