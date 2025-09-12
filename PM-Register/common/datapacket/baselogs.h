@@ -1,7 +1,6 @@
 #ifndef BASELOGS_H
 #define BASELOGS_H
-
-#include "dbstates.h"
+#include "dblogs.h"
 #include "baseobject.h"
 
 class BaseLogs : public QThread, public BaseObject
@@ -18,14 +17,9 @@ public:
 
 protected:
     void run(){saveLogs();}
-    bool initItem(sStateItem &item);
     bool writeLog();
-    void writeLogs();
-    bool writeMac();
-
 private:
     QString mMac;
-    QList<sStateItem> mLogItems;
 };
 
 #endif // BASELOGS_H
