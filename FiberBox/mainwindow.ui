@@ -9,22 +9,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1121</width>
-    <height>771</height>
+    <width>1143</width>
+    <height>797</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>PM-Register注册机</string>
+   <string>FiberBox</string>
   </property>
   <property name="windowIcon">
    <iconset resource="images/image.qrc">
     <normaloff>:/image/logo.jpg</normaloff>:/image/logo.jpg</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <property name="spacing">
-     <number>2</number>
-    </property>
+   <layout class="QGridLayout" name="gridLayout">
     <property name="leftMargin">
      <number>0</number>
     </property>
@@ -37,7 +34,7 @@
     <property name="bottomMargin">
      <number>0</number>
     </property>
-    <item>
+    <item row="0" column="0">
      <widget class="QWidget" name="barWid" native="true">
       <property name="minimumSize">
        <size>
@@ -53,7 +50,7 @@
       </property>
      </widget>
     </item>
-    <item>
+    <item row="1" column="0">
      <widget class="QStackedWidget" name="stackedWidget"/>
     </item>
    </layout>

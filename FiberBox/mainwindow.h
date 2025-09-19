@@ -4,6 +4,9 @@
 #include <QMainWindow>
 #include "navarwid.h"
 #include "homeWid/mainwid.h"
+#include "form.h"
+#include "forrm.h"
+#include "form1.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -24,5 +27,8 @@ private:
     Ui::MainWindow      *ui;
     navarwid            *navigation;
     mainWid             *mainpage;
+    Form                *from;
+    Form1               *from1;
+    Forrm               *frrom;
 };
 #endif // MAINWINDOW_H

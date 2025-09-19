@@ -16,6 +16,15 @@ void MainWindow::init()
     navigation = new navarwid(ui->barWid);
     mainpage = new mainWid(this);
     ui->stackedWidget->addWidget(mainpage);
+
+    from = new Form(this);
+    ui->stackedWidget->addWidget(from);
+    frrom = new Forrm(this);
+    ui->stackedWidget->addWidget(frrom);
+    from1 = new Form1(this);
+    ui->stackedWidget->addWidget(from1);
+
+
 }
 
 MainWindow::~MainWindow()
