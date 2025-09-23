@@ -125,6 +125,7 @@ void ServiceSettingWidget::setStatus(bool flag)
 void ServiceSettingWidget::on_resetBtn_clicked()
 {
     // 重置到当前配置
+    m_config = sAesItf();
     updateUIFromConfig(m_config);
     ui->saveDir->setText(m_savePath);
     m_tempSavePath = m_savePath;

@@ -49,7 +49,7 @@ private:
     sAesItf m_aesItf; //加密配置
     QString m_authFilePath;//授权文件路径
     QString m_saveDir; //许可证保存目录
-
+    QString fileNameWithSuffix; //auth 文件名
     QString activation_code; //激活码
 
     QButtonGroup *buttonGroup;

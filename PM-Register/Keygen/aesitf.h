@@ -14,12 +14,12 @@ struct sAesItf
     QByteArray iv;                   // 偏移量
 
     sAesItf()
-        : level(QAESEncryption::AES_128)
-        , mode(QAESEncryption::ECB)
+        : level(QAESEncryption::AES_256)
+        , mode(QAESEncryption::CBC)
         , padding(QAESEncryption::PKCS7)
     {
-        key = QByteArray::fromHex("00112233445566778899aabbccddeeff");
-        iv  = QByteArray::fromHex("");
+        iv = QByteArray::fromHex("33613766316338653562323039643432");
+        key = QByteArray::fromHex("54686973497341333242797465734b6579466f72414553323536456e63727970");
     }
 };
 

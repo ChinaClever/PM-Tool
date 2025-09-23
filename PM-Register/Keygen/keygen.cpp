@@ -166,6 +166,7 @@ void Keygen::on_generateButton_clicked()//生成许可证
 {
     mPacket->init(); // 初始化日志对象
 
+//Debug： 生成 auth文件
     // QJsonObject featuresObj{
     //     {"全部权限", true},
     //     {"部分功能", true},
@@ -181,7 +182,11 @@ void Keygen::on_generateButton_clicked()//生成许可证
     // };
 
     if (ui->Sntext->toPlainText().isEmpty()) {
-        QMessageBox::warning(this, "提示", "请先导入授权文件");
+        QMessageBox::warning(this, "提示", "请先导入授权文件！");
+        return;
+    }
+    if(ui->lineEditCustomer->text().isEmpty()){
+        QMessageBox::warning(this, "提示", "请填写客户名称！");
         return;
     }
 
@@ -229,7 +234,7 @@ void Keygen::on_generateButton_clicked()//生成许可证
     QString expireFlag = (expireDate == "2099-12-31") ? "PERM" : expireDate;
     customer.replace(QRegularExpression("[\\\\/:*?\"<>|\\s]"), "_");expireFlag.replace(QRegularExpression("[\\\\/:*?\"<>|\\s]"), "_");
 
-    QString fileName = QString("%1_%2.license").arg(customer, expireFlag);
+    QString fileName = QString("%1_%2_%3.license").arg(fileNameWithSuffix).arg(customer, expireFlag);
     saveEncryptedFile(base64Data, fileName);
 }
 
@@ -242,6 +247,10 @@ void Keygen::on_openFileButton_clicked()//导入并解析授权文件
     if (filePath.isEmpty())
         return;
     m_authFilePath = filePath;
+    QFileInfo fileInfo(filePath);
+    fileNameWithSuffix = fileInfo.fileName(); // "powermaster.auth"
+    fileNameWithSuffix = fileInfo.completeBaseName();
+    ui->lineEditFilePath->clear();
     ui->lineEditFilePath->setText(filePath);
     decryptFile();
 }
@@ -271,7 +280,7 @@ void Keygen::decryptFile() //读取并解密文件
 
 
     m_authFilePath.clear();
-    ui->lineEditFilePath->clear();
+   // ui->lineEditFilePath->clear();
 
     QJsonParseError parseError;
     QJsonDocument doc = QJsonDocument::fromJson(decryptedData, &parseError);
@@ -310,8 +319,8 @@ void Keygen::decryptFile() //读取并解密文件
     }
 
     //qDebug() << "解密后的JSON:" << jsonObj;
-    if(jsonObj.value("auth_required") == "true") buttonGroup->button(0)->setChecked(1);
-    else buttonGroup->button(1)->setChecked(1);
+    if(jsonObj.value("auth_required") == "false") buttonGroup->button(1)->setChecked(1);
+    else buttonGroup->button(0)->setChecked(1);
 
     ui->lineEditCustomer->setText(jsonObj.value("customer").toString());
     ui->Sntext->setText(jsonObj.value("device_sn").toString());
