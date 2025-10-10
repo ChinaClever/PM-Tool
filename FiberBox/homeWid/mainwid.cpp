@@ -74,7 +74,7 @@ void mainWid::on_ConfirmTpl_clicked()
     if (mFiberTem->loadFromDatabase(pn)) {
 
         // 3️⃣ 获取模板信息
-        TemInfo info = mFiberTem->getTemInfo();
+        sTemInfo info = mFiberTem->getTemInfo();
         setTemInfo();
         createFanTable();
 
@@ -111,7 +111,7 @@ void mainWid::createFanTable()
 
 void mainWid::setTemInfo()
 {
-    TemInfo info = mFiberTem->getTemInfo();
+    sTemInfo info = mFiberTem->getTemInfo();
     ui->txtProductID->setText(info.PN);
     ui->fanOutPN->setText(info.FanoutPn);
     ui->txtTemplateDesc->setText(info.description);

@@ -33,6 +33,8 @@ private:
     FiberTem* mFiberTem;
     FiberCheck checker;
     MsgCenter* msgCenter;
+
+    int m_currentAccessoryIndex = 0; //待完成 === 显示手动输入按钮 逻辑功能
 };
 
 #endif // MAINWID_H

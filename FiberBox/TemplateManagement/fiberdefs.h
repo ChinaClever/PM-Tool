@@ -38,7 +38,7 @@ enum class FiberMode {
     Unknown
 };
 
-struct FiberInfo {
+struct sFiberInfo {
     InterfaceType iface;
     FiberCountType count; //FiberCount
     FiberSpec spec;

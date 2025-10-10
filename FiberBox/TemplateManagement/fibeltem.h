@@ -2,11 +2,11 @@
 #define FIBELTEM_H
 #include <QString>
 #include "fiberdefs.h"
-struct TemInfo{
+struct sTemInfo{
     QString PN;
     QString FanoutPn;
     int FiberCount;
-    FiberInfo info;
+    sFiberInfo info;
     QString description;
 };
 
@@ -18,7 +18,7 @@ public:
     FiberTem& operator =(const FiberTem&) = delete;
 
     //void setTemInfo(const TemInfo& info);
-    TemInfo getTemInfo()const;
+    sTemInfo getTemInfo()const;
 
     bool loadFromDatabase(const QString& pn);
     void clearInfo();
@@ -27,7 +27,7 @@ private:
     FiberTem();
     ~FiberTem();
 
-    TemInfo TemInst;
+    sTemInfo TemInst;
     bool InstBeUsed; // 0 unused, 1 used
 };
 

@@ -9,7 +9,7 @@ FiberTem& FiberTem::instance()
     return inst;
 }
 
-TemInfo FiberTem::getTemInfo()const
+sTemInfo FiberTem::getTemInfo()const
 {
     return TemInst;
 }
@@ -35,7 +35,7 @@ bool FiberTem::loadFromDatabase(const QString& pn)
 {
     qDebug() << " 模拟从数据库加载模板号:" << pn;
 
-    TemInfo fakeInfo;
+    sTemInfo fakeInfo;
     fakeInfo.PN = pn;
     fakeInfo.FanoutPn = "123456789";
     fakeInfo.FiberCount = 2;
