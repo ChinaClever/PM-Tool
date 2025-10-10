@@ -12,12 +12,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::init()
 {
-
     navigation = new navarwid(ui->barWid);
     mainpage = new mainWid(this);
     ui->stackedWidget->addWidget(mainpage);
-
-
 }
 
 MainWindow::~MainWindow()

@@ -2,6 +2,9 @@ INCLUDEPATH += $$PWD
 
 FORMS +=
 
-HEADERS +=
+HEADERS += \
+    $$PWD/fibeltem.h \
+    $$PWD/fiberdefs.h
 
-SOURCES +=
+SOURCES += \
+    $$PWD/fibeltem.cpp

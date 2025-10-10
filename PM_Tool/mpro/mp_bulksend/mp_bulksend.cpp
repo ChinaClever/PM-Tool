@@ -163,6 +163,15 @@ void mp_bulksend::updateButtonState(bool flag)
     ui->cirNum->setEnabled(flag);
     ui->bitNum->setEnabled(flag);
     ui->volCap->setEnabled(flag);
+    ui->mp_timeInv->setEnabled(flag);
+    ui->AdevIp->setEnabled(flag);
+    ui->AsendNum->setEnabled(flag);
+    ui->BdevIp->setEnabled(flag);
+    ui->BsendNum->setEnabled(flag);
+    ui->CdevIp->setEnabled(flag);
+    ui->CsendNum->setEnabled(flag);
+    ui->DdevIp->setEnabled(flag);
+    ui->DsendNum->setEnabled(flag);
 }
 
 mp_bulksend::~mp_bulksend()

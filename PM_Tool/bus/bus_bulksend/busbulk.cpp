@@ -45,6 +45,7 @@ void busBulk::updateButtonState(bool x)
     ui->devIp->setEnabled(x);
     ui->volCap->setEnabled(x);
     ui->cirCurCap->setEnabled(x);
+    ui->bus_timeInv->setEnabled(x);
 }
 
 void busBulk::DataResize(Busbar& bus) //resize数组大小
