@@ -2,13 +2,7 @@
 #define FIBELTEM_H
 #include <QString>
 #include "fiberdefs.h"
-struct sTemInfo{
-    QString PN;
-    QString FanoutPn;
-    int FiberCount;
-    sFiberInfo info;
-    QString description;
-};
+
 
 class FiberTem
 {

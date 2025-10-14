@@ -1,0 +1,19 @@
+#ifndef TEMBTNBAR_H
+#define TEMBTNBAR_H
+
+#include <QObject>
+#include "sqltablewid.h"
+class TemBtnBar : public SqlBtnBar
+{
+    Q_OBJECT
+public:
+    explicit TemBtnBar(QWidget *parent = nullptr);
+signals:
+
+protected :
+    void addBtn();
+    bool delBtn(int id);
+    void modifyBtn(int id);
+};
+
+#endif // TEMBTNBAR_H
