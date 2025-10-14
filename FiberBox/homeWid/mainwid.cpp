@@ -82,7 +82,7 @@ void mainWid::on_ConfirmTpl_clicked()
         qDebug() << "=== 模板信息 ===";
         qDebug() << "PN:" << info.PN;
         qDebug() << "FanoutPn:" << info.FanoutPn;
-        qDebug() << "光纤数量:" << info.FiberCount;
+        qDebug() << "光纤数量:" << info.FanCount;
         qDebug() << "描述:" << info.description;
 
         // 5️⃣ 打印 FiberInfo 枚举信息
@@ -103,7 +103,7 @@ void mainWid::on_ConfirmTpl_clicked()
 void mainWid::createFanTable()
 {
     ui->tabWidget->clear();
-    for(int i = 1; i <= mFiberTem->getTemInfo().FiberCount; i ++){
+    for(int i = 1; i <= mFiberTem->getTemInfo().FanCount; i ++){
         FiberTab *tab = new FiberTab();
         ui->tabWidget->addTab(tab, QString("扇出线%1").arg(i));
     }
@@ -117,10 +117,10 @@ void mainWid::setTemInfo()
     ui->txtTemplateDesc->setText(info.description);
     ui->txtPolarityType->setText(polarityToString(info.info.polarity));
     ui->txtFiberSpec->setText(specToString(info.info.spec));
-    ui->txtQuantity->setText(QString::number(info.FiberCount));
+    ui->txtQuantity->setText(QString::number(info.FanCount));
     ui->txtType->setText(ifaceToString(info.info.iface)+" "+countToString(info.info.count));
 
-    setAccessoryVisible(info.FiberCount);
+    setAccessoryVisible(info.FanCount);
 }
 
 void mainWid::setAccessoryVisible(int count)

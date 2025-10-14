@@ -1,5 +1,5 @@
-#include "FiberTab.h"
 #include <QTimer>
+#include "FiberTab.h"
 FiberTab::FiberTab(QWidget *parent)
     : QWidget(parent)
 {

@@ -21,7 +21,7 @@ void FiberTem::clearInfo()
     TemInst.description.clear();
 
     // 重置 Fiber 数量
-    TemInst.FiberCount = 0;
+    TemInst.FanCount = 0;
 
     // 重置 info 结构体中的字段为默认值
     TemInst.info.iface = InterfaceType::Unknown;       // 假设有 Unknown 或默认值
@@ -38,7 +38,7 @@ bool FiberTem::loadFromDatabase(const QString& pn)
     sTemInfo fakeInfo;
     fakeInfo.PN = pn;
     fakeInfo.FanoutPn = "123456789";
-    fakeInfo.FiberCount = 2;
+    fakeInfo.FanCount = 2;
 
     fakeInfo.info.iface = InterfaceType::MTP_LC;
     fakeInfo.info.count = FiberCountType::F12;
