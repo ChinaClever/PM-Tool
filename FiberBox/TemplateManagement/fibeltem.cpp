@@ -1,4 +1,5 @@
 #include "fibeltem.h"
+#include "dbtem.h"
 #include <QDebug>
 FiberTem::FiberTem(){}
 FiberTem::~FiberTem(){}
@@ -33,24 +34,24 @@ void FiberTem::clearInfo()
 
 bool FiberTem::loadFromDatabase(const QString& pn)
 {
-    qDebug() << " 模拟从数据库加载模板号:" << pn;
+    qDebug() << "加载模板号:" << pn;
 
-    sTemInfo fakeInfo;
-    fakeInfo.PN = pn;
-    fakeInfo.FanoutPn = "123456789";
-    fakeInfo.FanCount = 2;
+    auto db = DbTem::build();
+    sTemItem item = db->findByPN(pn);
 
-    fakeInfo.info.iface = InterfaceType::MTP_LC;
-    fakeInfo.info.count = FiberCountType::F12;
-    fakeInfo.info.spec = FiberSpec::OM4_Aqua;
-    fakeInfo.info.polarity = Polarity::UNIVERSAL;
-    fakeInfo.info.mode = FiberMode::SM;
+    if (item.data.PN.isEmpty()) {
+        qWarning() << "未找到模板:" << pn;
+        return false;
+    }
 
-    fakeInfo.description = "这是模拟的模板数据";
-    TemInst = fakeInfo;
-
+    TemInst = item.data;
+    qDebug() << "加载模板成功:" << TemInst.PN
+             << " 描述:" << TemInst.description
+             << " 模式:" << (int)TemInst.info.mode;
     return true;
 }
+
+
 
 // void FiberTem::setTemInfo(const TemInfo& info)
 // {

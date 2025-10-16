@@ -1,24 +1,23 @@
 #ifndef DBLOGS_H
 #define DBLOGS_H
+
 #include "basicsql.h"
+#include "fiberlogstruct.h"
 
-struct sLogItem : public DbBasicItem{
-    sLogItem(){}
-
-
-};
-
-class DbLogs : public SqlBasic<sLogItem>
+class DbLogs : public SqlBasic<sFiberLogItem>
 {
-    DbLogs();
 public:
-    static DbLogs* bulid();
-    QString tableName(){return "logs";}
-    bool insertItem(const sLogItem& item);
+    static DbLogs* build();
+
+    DbLogs();
+
+    QString tableName() override { return "logs"; }
+    void createTable() override;
+
+    bool insertItem(const sFiberLogItem &item);
 
 protected:
-    void createTable();
-    bool modifyItem(const sLogItem& item,const QString& cmd);
+    void selectItem(QSqlQuery &query, sFiberLogItem &item) override;
 };
 
 #endif // DBLOGS_H

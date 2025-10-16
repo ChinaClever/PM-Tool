@@ -1,6 +1,6 @@
 #ifndef LOGMAINWID_H
 #define LOGMAINWID_H
-#include "logquerydlg/log_logquerydlg.h"
+#include "log_logquerydlg.h"
 namespace Ui {
 class LogMainWid;
 }

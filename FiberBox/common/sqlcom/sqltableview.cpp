@@ -224,6 +224,7 @@ void SqlTableView::refreshSlot()
 
 void SqlTableView::autoDelSlot()
 {
+    return;
     if(mDb->tableName() == "templates") return;
     int size = Cfg::bulid()->item->logCount;
     int count = mDb->counts();

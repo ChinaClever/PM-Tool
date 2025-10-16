@@ -19,13 +19,13 @@ navarwid::~navarwid()
 
 void navarwid::on_logBtn_clicked()
 {
-    emit navBarSig(3);
+    emit navBarSig(2);
 }
 
 
 void navarwid::on_setBtn_clicked()
 {
-    emit navBarSig(2);
+    emit navBarSig(3);
 }
 
 

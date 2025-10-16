@@ -9,6 +9,7 @@ include(msgcom/msgcom.pri)
 include(excel/excel.pri)
 include(cfgcom/cfgcom.pri)
 include(dbcom/dbcom.pri)
+include(logcom/logcom.pri)
 
 HEADERS += \
 

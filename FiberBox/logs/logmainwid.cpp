@@ -25,7 +25,7 @@ void LogMainWid::initFunSLot()
 {
     QString str = tr("结果日志");
     mLogWid = new LogComWid(ui->tabWidget);
-    mLogWid->initWid(DbLogs::bulid(),new LogBtnBar(),  new Log_LogQueryDlg(this), str);
+    mLogWid->initWid(DbLogs::build(),new LogBtnBar(),  new Log_LogQueryDlg(this), str);
     ui->tabWidget->addTab(mLogWid, str);
 
 }

@@ -5,6 +5,7 @@ FORMS += \
     $$PWD/temmainwid.ui
 
 HEADERS += \
+    $$PWD/edittemdlg.h \
     $$PWD/fibeltem.h \
     $$PWD/fiberdefs.h \
     $$PWD/newtemdlg.h \
@@ -12,6 +13,7 @@ HEADERS += \
     $$PWD/temmainwid.h
 
 SOURCES += \
+    $$PWD/edittemdlg.cpp \
     $$PWD/fibeltem.cpp \
     $$PWD/newtemdlg.cpp \
     $$PWD/tembtnbar.cpp \

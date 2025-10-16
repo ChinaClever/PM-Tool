@@ -5,6 +5,7 @@
 #include "navarwid.h"
 #include "homeWid/mainwid.h"
 #include "temmainwid.h"
+#include "logmainwid.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -20,6 +21,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void      testDbTemInsert();
+    void      testDbLogsInsert();
     void      init();
 public slots:
     void      navBarSlot(int);
@@ -28,5 +30,6 @@ private:
     navarwid            *navigation;
     mainWid             *mainpage;
     temMainwid          *temMain;
+    LogMainWid          *mLog;
 };
 #endif // MAINWINDOW_H

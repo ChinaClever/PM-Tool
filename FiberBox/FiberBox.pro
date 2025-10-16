@@ -11,6 +11,7 @@ CONFIG += c++17
 include (common/common.pri)
 include (homeWid/homeWid.pri)
 include (TemplateManagement/TemplateManagement.pri)
+include (logs/logs.pri)
 
 SOURCES += \
     main.cpp \

@@ -29,7 +29,7 @@ enum class FiberSpec {
 };
 
 enum class Polarity {
-    UNIVERSAL,
+    Universal,
     AC,
     Unknown
 };
@@ -127,14 +127,14 @@ inline FiberSpec stringToSpec(const QString& s) {
 // ---- Polarity ----
 inline QString polarityToString(Polarity p) {
     switch(p){
-    case Polarity::UNIVERSAL: return "UNIVERSAL";
+    case Polarity::Universal: return "Universal";
     case Polarity::AC:        return "A/C";
     default: return "Unknown";
     }
 }
 
 inline Polarity stringToPolarity(const QString& s) {
-    if (s == "UNIVERSAL") return Polarity::UNIVERSAL;
+    if (s == "Universal") return Polarity::Universal;
     if (s == "A/C")        return Polarity::AC;
     return Polarity::Unknown;
 }

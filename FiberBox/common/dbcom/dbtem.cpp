@@ -79,6 +79,19 @@ bool DbTem::updateItem(const sTemItem &item)
     return ret;
 }
 
+QVector<sTemItem> DbTem::getItemsByPN(const QString &pn)
+{
+    return selectItems(QString("WHERE PN='%1'").arg(pn));
+}
+
+sTemItem DbTem::findByPN(const QString &pn)
+{
+    auto list = getItemsByPN(pn);
+    if (!list.isEmpty())
+        return list.first();
+    return sTemItem();
+}
+
 bool DbTem::getItemByPN(const QString& pn, sTemItem &item)
 {
     QString cmd = QString("SELECT *FROM %1 WHERE PN = :PN").arg(tableName());

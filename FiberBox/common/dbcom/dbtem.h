@@ -25,6 +25,9 @@ public:
     void removeItemByPN(const QString& pn);
     bool getItemByPN(const QString& pn, sTemItem &item);
 
+    QVector<sTemItem> getItemsByPN(const QString &pn);
+    sTemItem findByPN(const QString &pn);
+
 protected:
     void createTable() override;
     bool modifyItem(const sTemItem& item, const QString& cmd);

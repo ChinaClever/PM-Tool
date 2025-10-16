@@ -1,6 +1,7 @@
 #ifndef NEWTEMDLG_H
 #define NEWTEMDLG_H
 
+#include "dbtem.h"
 #include <QDialog>
 
 namespace Ui {
@@ -14,6 +15,12 @@ class NewTemDlg : public QDialog
 public:
     explicit NewTemDlg(QWidget *parent = nullptr);
     ~NewTemDlg();
+    void updateDescription();
+    void editTitle(const QString&);
+    void loadTemInfo(sTemItem& tem);
+    virtual bool saveTemInfo(sTemItem&);
+protected:
+    bool inputCheck(void);
 
 private slots:
     void on_cancelBtn_clicked();
@@ -30,9 +37,12 @@ private slots:
 
     void on_FiberSpec_currentIndexChanged(int index);
 
+    void on_EditPN_editingFinished();
+
 private:
     Ui::NewTemDlg *ui;
     QString desc = "";
+
 };
 
 #endif // NEWTEMDLG_H

@@ -8,7 +8,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     init();
     connect(navigation, &navarwid::navBarSig, this, &MainWindow::navBarSlot);
-    testDbTemInsert();
+    //testDbTemInsert();
+    //testDbLogsInsert();
 }
 
 void MainWindow::init()
@@ -17,9 +18,11 @@ void MainWindow::init()
     mainpage = new mainWid(this);
 
     temMain = new temMainwid(this);
+    mLog    = new LogMainWid(this);
 
     ui->stackedWidget->addWidget(mainpage);
     ui->stackedWidget->addWidget(temMain);
+    ui->stackedWidget->addWidget(mLog);
 }
 
 #include "dbtem.h"
@@ -78,6 +81,57 @@ void MainWindow::testDbTemInsert()
     // }
 }
 
+#include "dblogs.h"
+void MainWindow::testDbLogsInsert()
+{
+    // 构造日志数据
+    sFiberLogItem log;
+    // log.date = QDate::currentDate().toString("yyyy-MM-dd");
+    // log.time = QTime::currentTime().toString("HH:mm:ss");
+    log.boxId = "BOX-001";
+    log.PN = "260021";
+    log.fanoutPn = "A018497AA";
+    log.description = "SLIM CASSETTE16F LC-MTP OS2 UNIVERSAL";
+    log.fanoutId = "A018497AA0248010005";
+    log.waveType = "SM";
+    log.limitIL = 0.5;
+    log.qrContent = "QR-TEST";
+
+    log.seq1 = "S1"; log.qr1 = "QR1";
+    log.seq2 = "S2"; log.qr2 = "QR2";
+    log.seq3 = "S3"; log.qr3 = "QR3";
+    log.seq4 = "S4"; log.qr4 = "QR4";
+
+    // 获取日志单例并插入
+    auto db = DbLogs::build();
+    if (db->insertItem(log)) {
+        qDebug() << "日志插入成功, ID =" << log.id;
+    } else {
+        qDebug() << "日志插入失败";
+    }
+
+    // 查询所有日志并打印
+    QVector<sFiberLogItem> logs = db->allItems();
+    for (const auto &l : logs) {
+        qDebug() << "--------------------------------";
+        qDebug() << "ID:" << l.id;
+        qDebug() << "日期:" << l.date << "时间:" << l.time;
+        qDebug() << "光纤盒ID:" << l.boxId;
+        qDebug() << "成品编号:" << l.PN;
+        qDebug() << "Fanout PN:" << l.fanoutPn;
+        qDebug() << "描述:" << l.description;
+        qDebug() << "扇出线ID:" << l.fanoutId;
+        qDebug() << "波类型:" << l.waveType;
+        qDebug() << "最大IL:" << l.limitIL;
+        qDebug() << "二维码:" << l.qrContent;
+        qDebug() << "扇出线序列号/二维码: "
+                 << l.seq1 << l.qr1
+                 << l.seq2 << l.qr2
+                 << l.seq3 << l.qr3
+                 << l.seq4 << l.qr4;
+        qDebug() << "--------------------------------";
+    }
+}
 
 MainWindow::~MainWindow()
 {

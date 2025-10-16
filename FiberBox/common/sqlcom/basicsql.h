@@ -97,6 +97,13 @@ public:
         return findItemById(id).first();
     }
 
+    bool getItemById(int id, T &item){
+        auto items = findItemById(id);
+        if(items.isEmpty()) return false;  // 没找到
+        item = items.first();
+        return true;
+    }
+
     QVector<T> selectByDate(const QString &start, const QString &end) {
         QString cmd = QString("where date Between \'%2\' and \'%3\'").arg(start).arg(end);
         return selectItems(cmd);

@@ -13,7 +13,7 @@ public:
     void setUsrId(int id);
 
 protected:
-     bool saveUsrInfo(sUserItem &user);
+    bool saveUsrInfo(sUserItem &user);
 private:
      int mId;
 };
