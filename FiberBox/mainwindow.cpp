@@ -19,10 +19,12 @@ void MainWindow::init()
 
     temMain = new temMainwid(this);
     mLog    = new LogMainWid(this);
+    mSetup  = new Setup_MainWid(this);
 
     ui->stackedWidget->addWidget(mainpage);
     ui->stackedWidget->addWidget(temMain);
     ui->stackedWidget->addWidget(mLog);
+    ui->stackedWidget->addWidget(mSetup);
 }
 
 #include "dbtem.h"
@@ -140,6 +142,5 @@ MainWindow::~MainWindow()
 
 void MainWindow::navBarSlot(int id)
 {
-    qDebug()<<"current page:  "<<id;
     ui->stackedWidget->setCurrentIndex(id);
 }

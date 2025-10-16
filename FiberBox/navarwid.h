@@ -2,7 +2,7 @@
 #define NAVARWID_H
 
 #include <QWidget>
-
+#include "usrlanddlg.h"
 namespace Ui {
 class navarwid;
 }
@@ -23,12 +23,17 @@ private slots:
 
     void on_setBtn_clicked();
 
+    void recvUserNameSlot(QString str);
+
     void on_templateBtn_clicked();
 
     void on_MainWid_clicked();
 
+    void on_loginBtn_clicked();
+
 private:
-    Ui::navarwid *ui;
+    Ui::navarwid    *ui;
+    UsrLandDlg      *mUserLand;
 };
 
 #endif // NAVARWID_H

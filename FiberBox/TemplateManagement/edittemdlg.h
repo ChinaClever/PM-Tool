@@ -14,7 +14,6 @@ protected:
     bool saveTemInfo(sTemItem& Tem);
 private:
     int mId;
-
 };
 
 #endif // EDITTEMDLG_H

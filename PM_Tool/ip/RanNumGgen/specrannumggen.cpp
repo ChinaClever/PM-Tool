@@ -28,7 +28,7 @@ int specRanNumGgen::get_temperature() { // 实现温度
 
 double specRanNumGgen::getCurThd()
 {
-    return QRandomGenerator::global()->bounded(1,1000) / 1.0;
+    return QRandomGenerator::global()->bounded(1,9999) / 1.0;
 }
 
 int specRanNumGgen::get_humidity() {    //

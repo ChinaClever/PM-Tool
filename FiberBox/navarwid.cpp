@@ -10,6 +10,10 @@ navarwid::navarwid(QWidget *parent)
     gridLayout->setContentsMargins(0, 0, 0, 0);
     gridLayout->addWidget(this);
     set_background_icon(this,":/image/title_back.jpg");
+    mUserLand = new UsrLandDlg(this);
+   // QTimer::singleShot(5,this,SLOT(on_loginBtn_clicked()));
+    connect(mUserLand,SIGNAL(sendUserNameSig(QString)),this,SLOT(recvUserNameSlot(QString)));
+
 }
 
 navarwid::~navarwid()
@@ -28,6 +32,11 @@ void navarwid::on_setBtn_clicked()
     emit navBarSig(3);
 }
 
+void navarwid::recvUserNameSlot(QString str)
+{
+    ui->userLab->setText(str);
+}
+
 
 void navarwid::on_templateBtn_clicked()
 {
@@ -40,3 +49,19 @@ void navarwid::on_MainWid_clicked()
     emit navBarSig(0);
 }
 
+
+
+void navarwid::on_loginBtn_clicked()
+{
+    bool lang = LandingUser::get()->land;
+    if(lang) {
+        int ret = mUserLand->selectWork();
+        if(ret == 1) { // 用户切换
+            mUserLand->exec();
+        }  else if(ret == 2) { // 用户退出
+            mUserLand->quitWidget();
+        }
+    } else {
+        mUserLand->exec();
+    }
+}

@@ -12,6 +12,7 @@ include (common/common.pri)
 include (homeWid/homeWid.pri)
 include (TemplateManagement/TemplateManagement.pri)
 include (logs/logs.pri)
+include (setups/setups.pri)
 
 SOURCES += \
     main.cpp \

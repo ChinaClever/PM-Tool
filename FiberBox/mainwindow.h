@@ -6,6 +6,7 @@
 #include "homeWid/mainwid.h"
 #include "temmainwid.h"
 #include "logmainwid.h"
+#include "setup_mainwid.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -31,5 +32,6 @@ private:
     mainWid             *mainpage;
     temMainwid          *temMain;
     LogMainWid          *mLog;
+    Setup_MainWid       *mSetup;
 };
 #endif // MAINWINDOW_H

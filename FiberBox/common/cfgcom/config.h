@@ -9,7 +9,6 @@ struct sCfgItem
     uchar addr;
     QString user;
     int logCount;
-    uchar aiMode;
     uchar pcNum; //电脑号
     ushort currentNum;
 };
