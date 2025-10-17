@@ -231,8 +231,8 @@ void busBulk::setBusline(BusData& bus)
         u.eleActive[i] = bulkPhase[4][i];
         u.eleReactive[i] = bulkPhase[5][i];
 
-        u.volLineValue[i] = sqrt(u.volValue[i]);
-        u.volLineMax[i] = u.volLineValue[i];
+        u.volLineValue[i] = sqrt(3)*1.0*u.volValue[i];
+        u.volLineMax[i] = u.volLineValue[i] + 1;
 
         u.loadRate[i] = u.curValue[i] / u.curMax[i] * 100;
         u.powerFactor[i] = u.powValue[i] / u.powApparent[i];
