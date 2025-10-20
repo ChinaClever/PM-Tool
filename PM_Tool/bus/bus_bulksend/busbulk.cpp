@@ -86,6 +86,7 @@ void busBulk::setBoxCfg(BoxConfig& cfg)
     cfg.boxType = 0;
     cfg.breakerStatus.resize(cfg.loopNum);
     for(int i = 0; i < cfg.loopNum; i ++){
+        if(i<3)
         cfg.breakerStatus[i] = 2;
     }
 }
@@ -167,7 +168,7 @@ void busBulk::setBoxList(BoxData& box)
     }
 
     for(int i = 0; i < 3; i++){
-        u.loadRate[i] = u.curValue[i] / x.curMax[i] * 100;
+        u.loadRate[i] = u.curValue[i]* 100 / x.curMax[i] ;
         u.powerFactor[i] = u.powActive[i] / u.powApparent[i];
         v.powerFactor[i] = v.powActive[i] / v.powApparent[i];
         v.eleApparent[i] = sqrt(v.eleActive[i] * v.eleActive[i] + v.eleReactive[i] * v.eleReactive[i]);
@@ -234,7 +235,7 @@ void busBulk::setBusline(BusData& bus)
         u.volLineValue[i] = sqrt(3)*1.0*u.volValue[i];
         u.volLineMax[i] = u.volLineValue[i] + 1;
 
-        u.loadRate[i] = u.curValue[i] / u.curMax[i] * 100;
+        u.loadRate[i] = u.curValue[i]* 100 / u.curMax[i] ;
         u.powerFactor[i] = u.powValue[i] / u.powApparent[i];
     }
     for(int i = 0; i < 96; i ++) {

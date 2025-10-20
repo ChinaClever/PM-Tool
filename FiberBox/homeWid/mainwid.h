@@ -2,9 +2,11 @@
 #define MAINWID_H
 #include <QWidget>
 #include <QLineEdit>
+#include "fiberlogstruct.h"
 #include "fibeltem.h"
 #include "fibercheck.h"
 #include "msgboxtip.h"
+#include "ScanInfo.h"
 namespace Ui {
 class mainWid;
 }
@@ -22,6 +24,9 @@ public:
     void    clearTemplateFields();     //清除显示信息
     void    createFanTable();          //创建扇出线Table
     void    init();
+    void    stopWork();
+    bool    checkFiberInTem(ScanInfo& info);
+    void    startWork(const QString &pn);
 
 protected:
     void    setTemInfo();
@@ -39,9 +44,17 @@ private:
     QLineEdit    *scanInput;  // 隐藏扫码输入框
 
     FiberCheck    checker;
-    int           fanIndex = 0;      // 当前扫码序号
-    int           totalFans ;
-    int           m_currentAccessoryIndex = 0; //待完成 === 显示手动输入按钮 逻辑功能
+    bool          working = false;       // 按钮的“工作中/待机”状态（开始/停止）
+    bool          scanningMode = false;  // 是否允许扫码（即模板已确认）
+    bool          activePage = false;    // 当前界面是否可见（用于切页自动暂停）
+    int           fanIndex = 0;           // 当前已扫码的索引（从0开始）
+    int           totalFans = 0;          // 总 fanout 数量
+    sFiberLogItem log;
+
+protected:
+    bool    eventFilter(QObject *obj, QEvent *event) override;
+    void    showEvent(QShowEvent *event) override;
+    void    hideEvent(QHideEvent *event) override;
 };
 
 #endif // MAINWID_H

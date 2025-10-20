@@ -261,6 +261,7 @@ BoxData box_ui::generaData()
         for(int r = 0; r < cirNum; ++r){
             QTableWidgetItem* statusItem = table->item(r, 0);
             QString statusText = statusItem->text().trimmed();
+            if(r<3)
             u.breakerStatus[r] = (statusText == QStringLiteral("闭合")) ? 1 : 0;
         }
     }

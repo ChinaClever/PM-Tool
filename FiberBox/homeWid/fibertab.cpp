@@ -1,5 +1,6 @@
 #include "FiberTab.h"
 #include <QTimer>
+#include <QDebug>
 FiberTab::FiberTab(QWidget *parent)
     : QWidget(parent)
 {
@@ -95,7 +96,7 @@ void FiberTab::fillFiberTable(const QString &rawData)
 {
     tableWidget->setRowCount(0);  // 清空旧数据
 
-    QRegularExpression re(R"(Fiber\s*(\d+):\s*(.*))");
+    QRegularExpression re(R"(F(\d+):\s*(.*))");
     QRegularExpressionMatchIterator it = re.globalMatch(rawData);
 
     QList<QString> fiberNumbers;
@@ -108,14 +109,14 @@ void FiberTab::fillFiberTable(const QString &rawData)
     }
 
     int totalFibers = fiberNumbers.size();
-    int half = totalFibers / 2;
+    int half = (totalFibers + 1) / 2; // 支持奇数
 
     for (int i = 0; i < half; ++i) {
         int row = tableWidget->rowCount();
         tableWidget->insertRow(row);
 
         // 左列
-        QTableWidgetItem *leftNum = new QTableWidgetItem("Fiber " + fiberNumbers[i]);
+        QTableWidgetItem *leftNum = new QTableWidgetItem("F" + fiberNumbers[i]);
         QTableWidgetItem *leftVal = new QTableWidgetItem(fiberValues[i]);
         leftNum->setTextAlignment(Qt::AlignCenter);
         leftVal->setTextAlignment(Qt::AlignCenter);
@@ -123,26 +124,28 @@ void FiberTab::fillFiberTable(const QString &rawData)
         tableWidget->setItem(row, 1, leftVal);
 
         // 右列
-        QTableWidgetItem *rightNum = new QTableWidgetItem("Fiber " + fiberNumbers[i + half]);
-        QTableWidgetItem *rightVal = new QTableWidgetItem(fiberValues[i + half]);
-        rightNum->setTextAlignment(Qt::AlignCenter);
-        rightVal->setTextAlignment(Qt::AlignCenter);
-        tableWidget->setItem(row, 2, rightNum);
-        tableWidget->setItem(row, 3, rightVal);
+        if (i + half < totalFibers) {
+            QTableWidgetItem *rightNum = new QTableWidgetItem("F" + fiberNumbers[i + half]);
+            QTableWidgetItem *rightVal = new QTableWidgetItem(fiberValues[i + half]);
+            rightNum->setTextAlignment(Qt::AlignCenter);
+            rightVal->setTextAlignment(Qt::AlignCenter);
+            tableWidget->setItem(row, 2, rightNum);
+            tableWidget->setItem(row, 3, rightVal);
+        }
     }
 
     tableWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    // 延迟设置行高
-    QTimer::singleShot(0, this, [=]() {
-        int rowCount = tableWidget->rowCount();
-        if (rowCount == 0) return;
-
+    // **直接设置行高，不用延迟**
+    int rowCount = tableWidget->rowCount();
+    if (rowCount > 0) {
         int availableHeight = tableWidget->viewport()->height();
-        int rowHeight = availableHeight / rowCount;
-        for (int row = 0; row < rowCount; ++row)
-            tableWidget->setRowHeight(row, rowHeight);
-    });
+        if (availableHeight > 0) {
+            int rowHeight = availableHeight / rowCount;
+            for (int row = 0; row < rowCount; ++row)
+                tableWidget->setRowHeight(row, rowHeight);
+        }
+    }
 }
 
 

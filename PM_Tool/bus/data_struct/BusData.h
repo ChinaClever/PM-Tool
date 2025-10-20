@@ -27,7 +27,7 @@ struct LineItem {
     QVector<double> eleActive;       // 有功电能
     QVector<double> eleReactive;     // 无功电能
     QVector<double> powerFactor;     // 功率因素
-    QVector<double> loadRate;        // 负载率
+    QVector<int> loadRate;        // 负载率
 
     QVector<double> volLineValue;    // 线电压值
     QVector<int> volLineMin;      // 线电压下限
@@ -127,7 +127,7 @@ struct BoxConfig {
     QVector<int> breakerStatus;  // 断路器状态数组
 
     void init(int breakerSize) {
-        breakerStatus.resize(breakerSize);
+        breakerStatus.resize(3);
     }
 };
 
@@ -137,7 +137,7 @@ struct LoopItem {
     QVector<int> volMin;         // 电压下限
     QVector<int> volMax;         // 电压上限
     QVector<int> volStatus;      // 电压状态
-
+    QVector<int> loadRate;        // 负载率
     QVector<double> curValue;       // 电流值
     QVector<int> curMin;         // 电流下限
     QVector<int> curMax;         // 电流上限
@@ -181,7 +181,7 @@ struct BoxLineItem {
     QVector<double> powActive;      // 有功功率
     QVector<double> powApparent;    // 视在功率
     QVector<double> powReactive;    // 无功功率
-    QVector<double> loadRate;       // 负载率
+    QVector<int> loadRate;       // 负载率
 
     QVector<double> eleActive;      // 电能
     QVector<double> eleReactive;    // 无功电能

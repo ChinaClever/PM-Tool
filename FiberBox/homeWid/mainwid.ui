@@ -656,7 +656,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <property name="minimumSize">
       <size>
        <width>0</width>
-       <height>480</height>
+       <height>550</height>
       </size>
      </property>
      <property name="font">

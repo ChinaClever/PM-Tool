@@ -105,6 +105,7 @@ inline FiberCountType stringToCount(const QString& s) {
     return FiberCountType::Unknown;
 }
 
+
 // ---- FiberSpec ----
 inline QString specToString(FiberSpec s) {
     switch(s){

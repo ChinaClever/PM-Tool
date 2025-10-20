@@ -161,7 +161,7 @@ void bus_toJson::setBusLine(Busbar& data)
         ele_reactive.append(qRound(u.eleReactive[i]*1)/1.0);
 
         power_factor.append(qRound(u.powerFactor[i] * 100) / 100.0);  // 功率因数保留 3 位小数
-        load_rate.append(qRound(u.loadRate[i] * 100) / 100.0);           // 负载率保留 2 位小数
+        load_rate.append(u.loadRate[i]);           // 负载率保留 2 位小数
 
 
         vol_line_value.append(qRound(u.volLineValue[i] * 100) / 100.0);
@@ -308,7 +308,7 @@ void bus_toJson::setBoxLine(Busbar& data)
         pow_active.append(qRound(u.powActive[i] * 1000) / 1000.0);            // 有功功率保留3位小数
         pow_apparent.append(qRound(u.powApparent[i] * 1000) / 1000.0);        // 视在功率保留3位小数
         pow_reactive.append(qRound(u.powReactive[i] * 1000) / 1000.0);        // 无功功率保留3位小数
-        load_rate.append(qRound(u.loadRate[i] * 100) / 100.0);                // 负载率保留2位小数
+        load_rate.append(u.loadRate[i] );                // 负载率保留2位小数
         ele_active.append(qRound(u.eleActive[i] * 1) / 1.0);                  // 电能取整
         ele_reactive.append(qRound(u.eleReactive[i] * 1) / 1.0);              // 电能取整
         power_factor.append(qRound(u.powerFactor[i] * 100) / 100.0);
@@ -333,7 +333,7 @@ void bus_toJson::setLoop(Busbar& data)
 {
     QJsonArray vol_value,vol_min,vol_max,vol_status,cur_value,cur_min
                 ,cur_max,cur_status,pow_value,pow_min,pow_max,pow_status,
-        pow_reactive,pow_apparent,power_factor,ele_active,ele_reactive;
+        pow_reactive,pow_apparent,power_factor,ele_active,ele_reactive,loop_load;
 
     QJsonObject loop;
 
@@ -347,6 +347,8 @@ void bus_toJson::setLoop(Busbar& data)
         if(u.volStatus[i])st = 1;
         vol_status.append(u.volStatus[i]);
         cur_value.append(qRound(u.curValue[i] * 100) / 100.0);  // 电流保留 2 位小数
+        loop_load.append((int)u.curValue[i]*100/u.curMax[i]);           // 负载率保留 2 位小数
+
 
         cur_min.append(u.curMin[i]);
         cur_max.append(u.curMax[i]);
@@ -373,6 +375,7 @@ void bus_toJson::setLoop(Busbar& data)
     loop["cur_value"] = cur_value;
     loop["cur_min"] = cur_min;
     loop["cur_max"] = cur_max;
+    loop["load_rate"] = loop_load;
     loop["cur_status"] = cur_status;
     loop["pow_value"] = pow_value;
     loop["pow_min"] = pow_min;
@@ -404,6 +407,7 @@ void bus_toJson::setBoxCfg(Busbar& data)
 
     QJsonArray status;
     for(int i = 0; i < u.loopNum; i++){
+        if(i<3)
         status.append(u.breakerStatus[i]);
     }
     cfg["breaker_status"] = status;
