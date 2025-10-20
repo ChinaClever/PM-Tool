@@ -7,7 +7,7 @@
 class DbLogs : public SqlBasic<sFiberLogItem>
 {
 public:
-    static DbLogs* build();
+    static DbLogs* instance();
 
     DbLogs();
 

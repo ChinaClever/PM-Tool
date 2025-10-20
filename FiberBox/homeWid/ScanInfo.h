@@ -18,5 +18,6 @@ struct ScanInfo {
 // 只声明函数，不写实现
 ScanInfo parseScanDataNewFormat(const QString &scanStr);
 bool checkFiberLosses(const ScanInfo &info);
+QStringList reorderFibers(const QStringList &fibers, int count, const QString &polarity);
 
 #endif // SCANINFO_H

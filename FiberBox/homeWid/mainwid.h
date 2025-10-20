@@ -7,6 +7,8 @@
 #include "fibercheck.h"
 #include "msgboxtip.h"
 #include "ScanInfo.h"
+#include "serialmgr.h"
+#include "dblogs.h"
 namespace Ui {
 class mainWid;
 }
@@ -25,21 +27,38 @@ public:
     void    createFanTable();          //创建扇出线Table
     void    init();
     void    stopWork();
-    bool    checkFiberInTem(ScanInfo& info);
     void    startWork(const QString &pn);
+    bool    checkFiberInTem(ScanInfo& info);
 
 protected:
     void    setTemInfo();
     void    setAccessoryVisible(int count);
+    void    handleManualInput(int index);
+
+    bool    eventFilter(QObject *obj, QEvent *event) override;
+    void    showEvent(QShowEvent *event) override;
+    void    hideEvent(QHideEvent *event) override;
 
 private slots:
     void    on_ConfirmTpl_clicked();
+
     void    handleScanCode(const QString &code); // 处理每次扫码
+
+    void    on_btnManualInput1_clicked();
+
+    void    on_btnManualInput2_clicked();
+
+    void    on_btnManualInput3_clicked();
+
+    void    on_btnManualInput4_clicked();
 
 private:
     Ui::mainWid  *ui;
     FiberTem     *mFiberTem;
     MsgCenter    *msgCenter;
+    SerialMgr    *mgr;
+    DbLogs       *dblog;
+
 
     QLineEdit    *scanInput;  // 隐藏扫码输入框
 
@@ -51,10 +70,6 @@ private:
     int           totalFans = 0;          // 总 fanout 数量
     sFiberLogItem log;
 
-protected:
-    bool    eventFilter(QObject *obj, QEvent *event) override;
-    void    showEvent(QShowEvent *event) override;
-    void    hideEvent(QHideEvent *event) override;
 };
 
 #endif // MAINWID_H

@@ -155,4 +155,14 @@ inline FiberMode stringToMode(const QString& s) {
     return FiberMode::Unknown;
 }
 
+inline QString modeToWaveLength(FiberMode m)
+{
+    switch (m) {
+    case FiberMode::SM: return "1310nm/1550nm";
+    case FiberMode::MM: return "850nm/1300nm";
+    default: return "Unknown";
+    }
+}
+
+
 #endif // FIBERDEFS_H

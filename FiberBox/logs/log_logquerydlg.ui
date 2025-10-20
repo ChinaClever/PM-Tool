@@ -148,7 +148,7 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QLineEdit" name="FindFanoutIdEdit">
+  <widget class="QLineEdit" name="FiberBoxIdEdit">
    <property name="geometry">
     <rect>
      <x>170</x>
@@ -186,7 +186,7 @@
     <string notr="true"/>
    </property>
    <property name="text">
-    <string>扇出线id：</string>
+    <string>光纤盒id：</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

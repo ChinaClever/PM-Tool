@@ -94,7 +94,7 @@ void MainWindow::testDbLogsInsert()
     log.PN = "260021";
     log.fanoutPn = "A018497AA";
     log.description = "SLIM CASSETTE16F LC-MTP OS2 UNIVERSAL";
-    log.fanoutId = "A018497AA0248010005";
+    log.fanoutCount = 4;
     log.waveType = "SM";
     log.limitIL = 0.5;
     log.qrContent = "QR-TEST";
@@ -105,7 +105,7 @@ void MainWindow::testDbLogsInsert()
     log.seq4 = "S4"; log.qr4 = "QR4";
 
     // 获取日志单例并插入
-    auto db = DbLogs::build();
+    auto db = DbLogs::instance();
     if (db->insertItem(log)) {
         qDebug() << "日志插入成功, ID =" << log.id;
     } else {
@@ -122,7 +122,7 @@ void MainWindow::testDbLogsInsert()
         qDebug() << "成品编号:" << l.PN;
         qDebug() << "Fanout PN:" << l.fanoutPn;
         qDebug() << "描述:" << l.description;
-        qDebug() << "扇出线ID:" << l.fanoutId;
+        qDebug() << "扇出线ID:" << l.fanoutCount;
         qDebug() << "波类型:" << l.waveType;
         qDebug() << "最大IL:" << l.limitIL;
         qDebug() << "二维码:" << l.qrContent;

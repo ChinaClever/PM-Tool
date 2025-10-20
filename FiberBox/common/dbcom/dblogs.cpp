@@ -6,7 +6,7 @@ DbLogs::DbLogs()
     createTable();
     tableTile = tr("光纤日志");
     headList << tr("光纤盒ID") << tr("成品编号")
-             << tr("FanoutPn") << tr("描述") << tr("扇出线ID") << tr("波类型")
+             << tr("FanoutPn") << tr("描述") << tr("扇出线个数") << tr("波类型")
              << tr("最大限值IL") << tr("二维码内容")
              << tr("扇出线1序列号") << tr("扇出线1二维码内容")
              << tr("扇出线2序列号") << tr("扇出线2二维码内容")
@@ -14,7 +14,7 @@ DbLogs::DbLogs()
              << tr("扇出线4序列号") << tr("扇出线4二维码内容");
 }
 
-DbLogs* DbLogs::build()
+DbLogs* DbLogs::instance()
 {
     static DbLogs* instance = nullptr;
     if(!instance) instance = new DbLogs();
@@ -32,7 +32,7 @@ void DbLogs::createTable()
                       "PN TEXT,"
                       "fanoutPn TEXT,"
                       "description TEXT,"
-                      "fanoutId TEXT,"
+                      "fanoutCount INTEGER,"
                       "waveType TEXT,"
                       "limitIL REAL DEFAULT 0.0,"
                       "qrContent TEXT,"
@@ -52,9 +52,9 @@ void DbLogs::createTable()
 bool DbLogs::insertItem(const sFiberLogItem &item)
 {
     QString cmd =
-        "INSERT INTO %1 (date, time, boxId, PN, fanoutPn, description, fanoutId, waveType, limitIL, qrContent,"
+        "INSERT INTO %1 (date, time, boxId, PN, fanoutPn, description, fanoutCount, waveType, limitIL, qrContent,"
         "seq1, qr1, seq2, qr2, seq3, qr3, seq4, qr4) "
-        "VALUES (:date, :time, :boxId, :PN, :fanoutPn, :description, :fanoutId, :waveType, :limitIL, :qrContent,"
+        "VALUES (:date, :time, :boxId, :PN, :fanoutPn, :description, :fanoutCount, :waveType, :limitIL, :qrContent,"
         ":seq1, :qr1, :seq2, :qr2, :seq3, :qr3, :seq4, :qr4)";
 
     QSqlQuery query(mDb);
@@ -66,7 +66,7 @@ bool DbLogs::insertItem(const sFiberLogItem &item)
     query.bindValue(":PN", item.PN);
     query.bindValue(":fanoutPn", item.fanoutPn);
     query.bindValue(":description", item.description);
-    query.bindValue(":fanoutId", item.fanoutId);
+    query.bindValue(":fanoutCount", item.fanoutCount);
     query.bindValue(":waveType", item.waveType);
     query.bindValue(":limitIL", item.limitIL);
     query.bindValue(":qrContent", item.qrContent);
@@ -95,7 +95,7 @@ void DbLogs::selectItem(QSqlQuery &query, sFiberLogItem &item)
     item.PN = query.value("PN").toString();
     item.fanoutPn = query.value("fanoutPn").toString();
     item.description = query.value("description").toString();
-    item.fanoutId = query.value("fanoutId").toString();
+    item.fanoutCount = query.value("fanoutCount").toInt();
     item.waveType = query.value("waveType").toString();
     item.limitIL = query.value("limitIL").toDouble();
     item.qrContent = query.value("qrContent").toString();

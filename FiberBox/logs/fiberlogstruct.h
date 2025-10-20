@@ -9,10 +9,10 @@ struct sFiberLogItem : public DbBasicItem
     QString PN;            // 成品编号
     QString fanoutPn;      // 扇出线PN
     QString description;   // 描述
-    QString fanoutId;      // 扇出线id
+    int fanoutCount;      // 扇出线个数
     QString waveType;      // 波类型
     double limitIL = 0.0;  // 最大限值IL
-    QString qrContent;     // 二维码内容
+    QString qrContent;     // 光纤盒二维码内容
 
     // 扇出线序列号和二维码内容
     QString seq1, qr1;

@@ -64,3 +64,37 @@ bool checkFiberLosses(const ScanInfo &info) {
     return false;  // 所有光纤都符合标准
 }
 
+
+QStringList reorderFibers(const QStringList &fibers, int count, const QString &polarity)
+{
+    QStringList result;
+
+    if (polarity == "A" || polarity == "C") {
+        // A/C 极性保持原顺序
+        result = fibers;
+    } else if (polarity == "Universal") {
+        // Universal 按指定顺序重排
+        QList<int> order;
+        if (count == 8) {
+            order = {0,7,1,6,2,5,3,4}; // 8芯
+        } else if (count == 12) {
+            order = {0,11,1,10,2,9,3,8,4,7,5,6}; // 12芯
+        } else if (count == 16) {
+            order = {0,15,1,14,2,13,3,12,4,11,5,10,6,9,7,8}; // 16芯
+        } else {
+            qWarning() << "[reorderFibers] 未知芯数，保持原顺序:" << count;
+            return fibers;
+        }
+
+        for (int i : order) {
+            if (i < fibers.size()) {
+                result.append(fibers[i]);
+            }
+        }
+    } else {
+        qWarning() << "[reorderFibers] 未知极性，保持原顺序:" << polarity;
+        result = fibers;
+    }
+
+    return result;
+}

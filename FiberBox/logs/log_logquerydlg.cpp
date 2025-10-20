@@ -34,9 +34,9 @@ QString Log_LogQueryDlg::getCmd()
     str.remove(QRegularExpression("\\s+"));
     if(!str.isEmpty()) cmd += QString(" and fanoutPn like '%%1%'").arg(str);
 
-    str = ui->FindFanoutIdEdit->text();
+    str = ui->FiberBoxIdEdit->text();
     str.remove(QRegularExpression("\\s+"));
-    if(!str.isEmpty()) cmd += QString(" and fanoutId like '%%1%'").arg(str);
+    if(!str.isEmpty()) cmd += QString(" and boxId like '%%1%'").arg(str);
 
 
 
@@ -70,3 +70,4 @@ void Log_LogQueryDlg::on_okBtn_clicked()
         this->accept();
     }
 }
+

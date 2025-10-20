@@ -2,7 +2,7 @@ INCLUDEPATH += $$PWD
 
 
 include(backcolour/backcolour.pri)
-include(FiberCheck/FiberCheck.pri)
+include(Fibercom/Fibercom.pri)
 include(MsgBoxTip/MsgBoxTip.pri)
 include(sqlcom/sqlcom.pri)
 include(msgcom/msgcom.pri)
