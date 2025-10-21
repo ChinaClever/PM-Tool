@@ -45,10 +45,10 @@ void mainWid::on_ConfirmTpl_clicked()
     scanInput->clear();
 
     QString pn = ui->txtPN->text().trimmed();
-    if (!checker.verify(pn)) {
-        msgCenter->sendTip("模板号不合法！", Qt::red);
-        return;
-    }
+    // if (!checker.verify(pn)) {
+    //     msgCenter->sendTip("模板号不合法！", Qt::red);
+    //     return;
+    // }
     if (!mFiberTem->loadFromDatabase(pn)) {
         msgCenter->sendTip("未找到该模板！", Qt::red);
         return;

@@ -11,9 +11,11 @@ public:
 signals:
 
 protected :
-    void addBtn();
-    bool delBtn(int id);
-    void modifyBtn(int id);
+    void addBtn()   override;
+    bool delBtn(int id)override;
+    void modifyBtn(int id)override;
+    bool importBtn() override;
+
 };
 
 #endif // TEMBTNBAR_H

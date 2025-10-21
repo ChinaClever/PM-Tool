@@ -48,28 +48,32 @@ void SerialMgr::saveCurrentNum()
     m_cfg->write("num", num, "Serial");
 }
 
-// 生成完整唯一ID
 QString SerialMgr::generateFullCode(const QString &materialCode)
 {
     checkMonthReset();
 
     QDate today = QDate::currentDate();
-    int yy = today.year() % 100;
-    int ww = today.weekNumber();
-    QString yyWww = QString("%1W%2").arg(yy, 2, 10, QChar('0'))
-                        .arg(ww, 2, 10, QChar('0'));
+    int yy = today.year() % 100;          // 年份后两位
+    int ww = today.weekNumber();          // 周数
+    QString yyWww = QString("%1W%2")
+                        .arg(yy, 2, 10, QChar('0'))
+                        .arg(ww, 2, 10, QChar('0')); // 年周
 
-    // 临时序号
+    int mm = today.month();               // 月份
+
+    // 临时流水号
     int num = loadCurrentNum() + 1;
 
-    // 拼接序列号: yyWww + 电脑编号 + 流水号
-    QString serial = QString("%1%2%3")
-                         .arg(yyWww)
-                         .arg(m_machineId, 2, 10, QChar('0'))
-                         .arg(num, 5, 10, QChar('0'));
+    // 序列号: 年(2)+月(2)+电脑编号(2)+流水号(4)
+    QString serial = QString("%1%2%3%4")
+                         .arg(yy, 2, 10, QChar('0'))          // 年
+                         .arg(mm, 2, 10, QChar('0'))          // 月
+                         .arg(m_machineId, 2, 10, QChar('0')) // 电脑编号
+                         .arg(num, 4, 10, QChar('0'));        // 流水号
 
-    // 拼接完整ID: 物料编码 + 日期码 + 序列号
-    QString fullCode = QString("%1 %2 %3").arg(materialCode).arg(yyWww).arg(serial);
+    // 完整ID: 物料编码 + 年周 + 序列号
+    QString fullCode = QString("%1%2%3").arg(materialCode).arg(yyWww).arg(serial);
 
     return fullCode;
 }
+
