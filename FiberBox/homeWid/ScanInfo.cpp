@@ -69,7 +69,8 @@ QStringList reorderFibers(const QStringList &fibers, int count, const QString &p
 {
     QStringList result;
 
-    if (polarity == "A" || polarity == "C") {
+    qDebug()<<polarity<<endl;
+    if (polarity.contains('A') || polarity.contains('C')) {
         // A/C 极性保持原顺序
         result = fibers;
     } else if (polarity == "Universal") {

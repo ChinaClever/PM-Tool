@@ -263,6 +263,19 @@ void mainWid::handleScanCode(const QString &code)
         if (dblog->insertItem(log)) {
             qDebug() << "日志插入成功, ID =" << log.id;
             mgr->saveCurrentNum();
+
+            sLabelInfo info;
+            info.desc = log.description;
+            info.qr = log.qrContent;
+            info.PN = log.PN;
+            QDate today = QDate::currentDate();
+            int yy = today.year() % 100;          // 年份后两位
+            int ww = today.weekNumber();          // 周数
+            QString yyWww = QString("%1W%2")
+                                .arg(yy, 2, 10, QChar('0'))
+                                .arg(ww, 2, 10, QChar('0')); // 年周
+            info.date = yyWww;
+            emit doprint(info);
         } else {
             qDebug() << "日志插入失败";
         }
@@ -412,10 +425,14 @@ void mainWid::setTemInfo()
 
 void mainWid::getInstCon()
 {
-    mFiberTem = &FiberTem::instance();
-    msgCenter = MsgCenter::instance();
-          mgr = SerialMgr::instance();
-        dblog =    DbLogs::instance();
+    mFiberTem   = &FiberTem::instance();
+    msgCenter   = MsgCenter::instance();
+          mgr   = SerialMgr::instance();
+        dblog   =    DbLogs::instance();
+    printThread = new printworker(this);
+
+    connect(this,&mainWid::doprint,printThread,&printworker::doprint);
+
 
     connect(msgCenter,&MsgCenter::tipChanged,this,[=](const QString& text, const QColor& color){
         ui->msgBoxTip->setText(text);

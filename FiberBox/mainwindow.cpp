@@ -27,7 +27,6 @@ void MainWindow::init()
     ui->stackedWidget->addWidget(mSetup);
 }
 
-#include "dbtem.h"
 void MainWindow::testDbTemInsert()
 {
     // sTemItem testItem;

@@ -9,6 +9,7 @@
 #include "ScanInfo.h"
 #include "serialmgr.h"
 #include "dblogs.h"
+#include "printerworker.h"
 namespace Ui {
 class mainWid;
 }
@@ -51,6 +52,8 @@ private slots:
     void    on_btnManualInput3_clicked();
 
     void    on_btnManualInput4_clicked();
+signals:
+    void doprint(const sLabelInfo);
 
 private:
     Ui::mainWid  *ui;
@@ -58,7 +61,7 @@ private:
     MsgCenter    *msgCenter;
     SerialMgr    *mgr;
     DbLogs       *dblog;
-
+    printworker  *printThread;
 
     QLineEdit    *scanInput;  // 隐藏扫码输入框
 

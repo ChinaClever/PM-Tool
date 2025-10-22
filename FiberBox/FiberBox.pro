@@ -13,6 +13,8 @@ include (homeWid/homeWid.pri)
 include (TemplateManagement/TemplateManagement.pri)
 include (logs/logs.pri)
 include (setups/setups.pri)
+include (http/http.pri)
+include (printworker/printworker.pri)
 
 SOURCES += \
     main.cpp \

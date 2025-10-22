@@ -203,6 +203,7 @@ void NewTemDlg::updateDescription()
     QString flippedIface = iface;
     if (iface.contains('-')) {
         QStringList parts = iface.split('-');  // ["MTP", "LC"]
+       // qDebug()<<parts;
         if (parts.size() == 2)
             flippedIface = parts[1] + " " + parts[0];  // "LC MTP"
     }
@@ -210,7 +211,7 @@ void NewTemDlg::updateDescription()
     // 格式化描述字符串
     QString desc = QString("SLIM CASSETTE %1 %2 ULTRA %3")
                        .arg(fiberCount)
-                       .arg(iface)
+                       .arg(flippedIface)
                        .arg(spec);
 
     ui->EditDesc->setText(desc);
