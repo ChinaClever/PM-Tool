@@ -299,9 +299,14 @@ void mp_bulksend::totalInti(PowerSystemData& u)
         u.pduData.totalData.curValue += u.pduData.phases.currents[i];
         u.pduData.totalData.powActive += u.pduData.phases.activePowers[i];
         u.pduData.totalData.powApparent += u.pduData.phases.apparentPowers[i];
-        u.pduData.totalData.powReactive += u.pduData.phases.reactivePowers[i];
+        //u.pduData.totalData.powReactive += u.pduData.phases.reactivePowers[i];
         u.pduData.totalData.eleActive += u.pduData.phases.energies[i];
     }
+
+    u.pduData.totalData.powReactive = std::sqrt(
+        u.pduData.totalData.powApparent * u.pduData.totalData.powApparent -
+        u.pduData.totalData.powActive * u.pduData.totalData.powActive
+        );
 
     u.pduData.totalData.powerFactor = (u.pduData.totalData.powApparent != 0 ?
                                         u.pduData.totalData.powActive/u.pduData.totalData.powApparent : 0);

@@ -17,9 +17,13 @@ void IP_sDataPacket<SIZE>::totalDataCal() {
 
         this->total_item.pow_active+=this->line_item.pow_value[i];
         this->total_item.pow_apparent+=this->line_item.pow_apparent[i];
-        this->total_item.pow_reactive+=this->line_item.pow_reactive[i];
+       // this->total_item.pow_reactive+=this->line_item.pow_reactive[i];
     }
-
+    this->total_item.pow_reactive = std::sqrt(
+        std::max(0.0,
+                 this->total_item.pow_apparent * this->total_item.pow_apparent -
+                     this->total_item.pow_active * this->total_item.pow_active)
+        );
     this->total_item.power_factor = this->total_item.pow_apparent == 0 ? 0 :(this->total_item.pow_active/this->total_item.pow_apparent)*1.0;
 
     if(SIZE == 3){
