@@ -8,7 +8,7 @@ NewTemDlg::NewTemDlg(QWidget *parent)
     , ui(new Ui::NewTemDlg)
 {
     ui->setupUi(this);
-    this->setWindowTitle("新增模板");
+    this->setWindowTitle(tr("新增模板"));
     set_background_icon(this,":/image/back.jpg");
 }
 
@@ -68,12 +68,18 @@ void NewTemDlg::loadTemInfo(sTemItem &tem)
 }
 
 
-void NewTemDlg::editTitle(const QString& str = "新增模板")
+void NewTemDlg::editTitle(const QString &str)
 {
     ui->EditPN->setEnabled(false);
-    this->setWindowTitle(str);
-    //checkUsr();
+
+    if (str == "新增模板")
+        this->setWindowTitle(tr("新增模板"));
+    else if (str == "编辑模板")
+        this->setWindowTitle(tr("编辑模板"));
+    else
+        this->setWindowTitle(str); // 其他不需要翻译的情况
 }
+
 
 bool NewTemDlg::saveTemInfo(sTemItem& item)
 {

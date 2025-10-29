@@ -5,7 +5,7 @@
  */
 #include "sqlbtnbar.h"
 #include "ui_sqlbtnbar.h"
-//extern bool usr_land_jur();
+extern bool usr_land_jur();
 
 SqlBtnBar::SqlBtnBar(QWidget *parent) :
     QWidget(parent),
@@ -71,20 +71,12 @@ void SqlBtnBar::on_refreshBtn_clicked()
 
 bool SqlBtnBar::checkJur()
 {
-    bool ret = true; //usr_land_jur();   /////////////============
+    bool ret = usr_land_jur();
     if(!ret) {
         MsgBox::information(this, tr("您无权操作此功能！"));
     }
     return ret;
 }
-// bool SqlBtnBar::checkJur()
-// {
-//     bool ret = usr_land_jur();
-//     if(!ret) {
-//         MsgBox::information(this, tr("您无权操作此功能！"));
-//     }
-//     return ret;
-// }
 
 void SqlBtnBar::on_addBtn_clicked()
 {

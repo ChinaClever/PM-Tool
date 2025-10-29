@@ -3,9 +3,6 @@
 #include "backcolourcom.h"
 #include "fibertab.h"
 #include "manualinputdialog.h"
-
-#include <QTimer>
-#include <QDebug>
 #include <QMessageBox>
 mainWid::mainWid(QWidget *parent)
     : QWidget(parent)
@@ -50,7 +47,7 @@ void mainWid::on_ConfirmTpl_clicked()
     //     return;
     // }
     if (!mFiberTem->loadFromDatabase(pn)) {
-        msgCenter->sendTip("未找到该模板！", Qt::red);
+        msgCenter->sendTip(tr("未找到该模板！"), Qt::red);
         return;
     }
     // 启动工作（内部设置 working/scanningMode 等）
@@ -62,7 +59,7 @@ void mainWid::createFanTable()
     ui->tabWidget->clear();
     for(int i = 1; i <= mFiberTem->getTemInfo().FanCount; i ++){
         FiberTab *tab = new FiberTab();
-        ui->tabWidget->addTab(tab, QString("扇出线%1").arg(i));
+        ui->tabWidget->addTab(tab, tr("扇出线%1").arg(i));
     }
 }
 
@@ -133,6 +130,7 @@ bool mainWid::checkFiberInTem(ScanInfo& info)
     // };
 
     if (Tem.FanoutPn != info.id) {
+        msgCenter->sendTip(tr("扇出线id不匹配!\n\n请检查模板"),Qt::red);
         qDebug() << "[Mismatch] FanoutPn 不匹配:"
                  << "模板=" << Tem.FanoutPn
                  << "扫码=" << info.id;
@@ -140,6 +138,8 @@ bool mainWid::checkFiberInTem(ScanInfo& info)
     }
 
     if (static_cast<int>(Tem.info.count) != info.count) {
+        msgCenter->sendTip(tr("光纤数量不匹配!\n\n请检查模板"),Qt::red);
+
         qDebug() << "[Mismatch] FanCount 不匹配:"
                  << "模板=" << static_cast<int>(Tem.info.count)
                  << "扫码=" << info.count;
@@ -151,6 +151,8 @@ bool mainWid::checkFiberInTem(ScanInfo& info)
     else if (Tem.info.mode == FiberMode::MM) wave = "850nm/1300nm";
 
     if (wave != info.wavelength) {
+
+        msgCenter->sendTip(tr("波长不匹配!\n\n请检查模板"),Qt::red);
         qDebug() << "[Mismatch] 波长不匹配:"
                  << "模板=" << wave
                  << "扫码=" << info.wavelength;
@@ -158,6 +160,8 @@ bool mainWid::checkFiberInTem(ScanInfo& info)
     }
 
     if (Tem.limit < info.ilimit) {
+
+        msgCenter->sendTip(tr("IL限值不匹配!\n\n请检查模板"),Qt::red);
         qDebug() << "[Mismatch] IL限值不匹配:"
                  << "模板限值=" << Tem.limit
                  << "扫码=" << info.ilimit;
@@ -165,6 +169,7 @@ bool mainWid::checkFiberInTem(ScanInfo& info)
     }
 
     if (checkFiberLosses(info)) {
+        msgCenter->sendTip(tr("光纤损耗超出限值!\n\n请更换扇出线扫描"),Qt::red);
         qDebug() << "[Mismatch] 光纤损耗超出限值!";
         return false;
     }
@@ -229,7 +234,7 @@ void mainWid::handleScanCode(const QString &code)
     }
 
     if (!ok) {
-        msgCenter->sendTip(QString("配件 %1/%2 扫码失败，请重新扫码！")
+        msgCenter->sendTip(tr("配件 %1/%2 扫码失败，请重新扫码！")
                                .arg(fanIndex + 1)
                                .arg(totalFans), Qt::red);
         scanInput->clear();
@@ -253,12 +258,12 @@ void mainWid::handleScanCode(const QString &code)
 
     fanIndex++;
     if (fanIndex < totalFans) {
-        msgCenter->sendTip(QString("请扫码配件 %1/%2")
+        msgCenter->sendTip(tr("请扫码配件 %1/%2")
                                .arg(fanIndex + 1)
                                .arg(totalFans), Qt::yellow);
     } else {
 
-        msgCenter->sendTip(" 所有配件扫码完成！", Qt::green);
+        msgCenter->sendTip(tr(" 所有配件扫码完成！"), Qt::green);
         log.qrContent = ui->lblQRCodeInfo->toPlainText();
         if (dblog->insertItem(log)) {
             qDebug() << "日志插入成功, ID =" << log.id;
@@ -275,7 +280,7 @@ void mainWid::handleScanCode(const QString &code)
                                 .arg(yy, 2, 10, QChar('0'))
                                 .arg(ww, 2, 10, QChar('0')); // 年周
             info.date = yyWww;
-            emit doprint(info);
+            //emit doprint(info);
         } else {
             qDebug() << "日志插入失败";
         }
@@ -336,7 +341,7 @@ void mainWid::startWork(const QString &pn)
     // 可选：改变样式区分状态
     ui->ConfirmTpl->setStyleSheet("background-color: #d9534f; color: white;");
 
-    msgCenter->sendTip(QString("模板 %1 已加载\n\n请扫码配件 1/%2")
+    msgCenter->sendTip(tr("模板 %1 已加载\n\n请扫码配件 1/%2")
                            .arg(pn)
                            .arg(totalFans),
                        Qt::yellow);
@@ -361,7 +366,7 @@ void mainWid::stopWork()
     ui->ConfirmTpl->setText(tr("确认模板"));
     ui->ConfirmTpl->setStyleSheet(""); // 恢复默认样式
 
-    msgCenter->sendTip("工作已停止。\n\n 请重新确认物料编码", Qt::red);
+    msgCenter->sendTip(tr("工作已停止。\n\n 请重新确认物料编码"), Qt::red);
     setAccessoryVisible(0);
     // 可选：清空配件显示
     ui->lblAccessory1Scan->clear();
@@ -403,7 +408,7 @@ void mainWid::init()
     ui->tabWidget->clear();
     for(int i = 1; i <= 1; i ++){
         FiberTab *tab = new FiberTab();
-        ui->tabWidget->addTab(tab, QString("扇出线%1").arg(i));
+        ui->tabWidget->addTab(tab, tr("扇出线%1").arg(i));
     }
 }
 
@@ -446,7 +451,7 @@ void mainWid::getInstCon()
         font.setBold(true);      // 加粗
         ui->msgBoxTip->setFont(font);
     });
-    msgCenter->sendTip("请确认模板",Qt::yellow);
+    msgCenter->sendTip(tr("请确认模板"),Qt::yellow);
 }
 
 void mainWid::clearTemplateFields()
@@ -469,7 +474,7 @@ void mainWid::exmple()
     // 创建多个扇出线 Tab
     for (int i = 1; i <= 3; ++i) {
         FiberTab *tab = new FiberTab();
-        ui->tabWidget->addTab(tab, QString("扇出线%1").arg(i));
+        ui->tabWidget->addTab(tab, tr("扇出线%1").arg(i));
     }
 
 

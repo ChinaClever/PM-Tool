@@ -11,7 +11,7 @@ navarwid::navarwid(QWidget *parent)
     gridLayout->addWidget(this);
     set_background_icon(this,":/image/title_back.jpg");
     mUserLand = new UsrLandDlg(this);
-   // QTimer::singleShot(5,this,SLOT(on_loginBtn_clicked()));
+    QTimer::singleShot(5,this,SLOT(on_loginBtn_clicked()));
     connect(mUserLand,SIGNAL(sendUserNameSig(QString)),this,SLOT(recvUserNameSlot(QString)));
 
 }

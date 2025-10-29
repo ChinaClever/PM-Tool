@@ -71,10 +71,10 @@ void Setup_MainWid::on_pcBtn_clicked()
     QString btnText = tr("修改");
 
     // 权限检查
-    // if (!usr_land_jur()) {
-    //     MsgBox::critical(this, tr("你无权进行此操作"));
-    //     return;
-    // }
+    if (!usr_land_jur()) {
+        MsgBox::critical(this, tr("你无权进行此操作"));
+        return;
+    }
 
     if (isEditing) {
         writePcNum();        // 保存 PC 编号
