@@ -7,6 +7,7 @@
 QString printworker::doprint(sLabelInfo info)
 {
     QString str1 = "DATE,DESC,PN,QR";
+    info.qr.remove(QRegularExpression("\\s+"));
     QString str2 = info.date + ',' + info.desc + ',' + info.PN + ',' + info.qr;
 
     qDebug()<<str2;
