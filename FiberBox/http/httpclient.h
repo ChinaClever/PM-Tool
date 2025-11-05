@@ -433,19 +433,27 @@ public:
     HttpResponse *exec()
     {
         HttpClient &client = *HttpClient::instance();
+
         client.get(m_httpRequest.m_request.url().toString())
-              .timeout(30)
-              .block(m_httpRequest.m_isBlock)
-              .attribute(QNetworkRequest::FollowRedirectsAttribute, true)
-              .onHead(this, SLOT(onHead(QList<QNetworkReply::RawHeaderPair>)))
-              .onHead(this, SLOT(onHead(QMap<QString,QString>)))
-              .onReadyRead(this, SLOT(onReadyRead(QNetworkReply*)))
-              .onFailed(this, SLOT(onResponse(QNetworkReply::NetworkError)))
-              .exec();
+            .timeout(30)
+            .block(m_httpRequest.m_isBlock)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+            // Qt6 写法：使用 RedirectPolicyAttribute
+            .attribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy)
+#else
+        // Qt5 写法：使用 FollowRedirectsAttribute
+            .attribute(QNetworkRequest::FollowRedirectsAttribute, true)
+#endif
+            .onHead(this, SLOT(onHead(QList<QNetworkReply::RawHeaderPair>)))
+            .onHead(this, SLOT(onHead(QMap<QString,QString>)))
+            .onReadyRead(this, SLOT(onReadyRead(QNetworkReply*)))
+            .onFailed(this, SLOT(onResponse(QNetworkReply::NetworkError)))
+            .exec();
 
         m_response = new HttpResponse(m_httpRequest, nullptr);
         return m_response;
     }
+
 
 private slots:
     void onResponse(QNetworkReply::NetworkError)
@@ -468,12 +476,23 @@ private slots:
 
             if (key.contains("Content-Disposition", Qt::CaseInsensitive)) {
                 QString dispositionHeader = value;
-                // fixme rx
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+                // Qt6 写法
+                QRegularExpression rx(R"(attachment;\s*filename=([\S]+))");
+                QRegularExpressionMatch match = rx.match(dispositionHeader);
+                if (match.hasMatch()) {
+                    m_fileName = match.captured(1);
+                }
+#else
+                // Qt5 写法
                 QRegExp rx("attachment;\\s*filename=([\\S]+)");
                 if (rx.exactMatch(dispositionHeader)) {
                     m_fileName = rx.cap(1);
                 }
+#endif
             }
+
 
             if (key.contains("Content-Length", Qt::CaseInsensitive)) {
                 m_contentLength = value.toLongLong();
@@ -582,13 +601,16 @@ do { \
         } \
     } \
 } while(0);
+inline const char* toCStr(const QString& s) { return s.toUtf8().constData(); }
+inline const char* toCStr(const char* s) { return s; } // const char* 直接返回
 
-#define printTrace(level, str) _logger(level, HttpRequest::Trace, str)
-#define printInfo(level, str)  _logger(level, HttpRequest::Info,  str)
-#define printDebug(level, str) _logger(level, HttpRequest::Debug, str)
-#define printWarn(level, str)  _logger(level, HttpRequest::Warn,  str)
-#define printError(level, str) _logger(level, HttpRequest::Error, str)
-#define printFatal(level, str) _logger(level, HttpRequest::Fatal, str)
+#define printTrace(level, str) _logger(level, HttpRequest::Trace, toCStr(str))
+#define printInfo(level, str)  _logger(level, HttpRequest::Info,  toCStr(str))
+#define printDebug(level, str) _logger(level, HttpRequest::Debug, toCStr(str))
+#define printWarn(level, str)  _logger(level, HttpRequest::Warn,  toCStr(str))
+#define printError(level, str) _logger(level, HttpRequest::Error, toCStr(str))
+#define printFatal(level, str) _logger(level, HttpRequest::Fatal, toCStr(str))
+
 
 HttpRequest::~HttpRequest()
 {
@@ -1439,11 +1461,18 @@ void HttpResponse::setHttpRequest(const HttpRequest &httpRequest)
 
                 if (ret == 0) {
                     QString method = lambdaString;
-                    if (isMethod(qPrintable(method)))
-                        method.remove(0, 1);
 
-                    printWarn(httpRequest.m_logLevel, QString("%1 method[%2] is invalid").arg(key).arg(method));
+                    // 安全地把 QString 转为 const char* 传给 isMethod
+                    QByteArray methodBA = method.toUtf8(); // 或 toLocal8Bit() 根据你的编码需求
+                    if (isMethod(methodBA.constData())) {
+                        method.remove(0, 1); // 原来的逻辑
+                    }
+
+                    printWarn(httpRequest.m_logLevel,
+                              QString("%1 method[%2] is invalid").arg(key).arg(method));
                 }
+
+
             }
         }
     }

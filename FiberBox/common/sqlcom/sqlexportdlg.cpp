@@ -41,12 +41,18 @@ void SqlExportDlg::init(const QString &title, QList<QStringList> &list)
  */
 void SqlExportDlg::on_pushButton_clicked()
 {
-    QFileDialog dlg(this,tr("路径选择"));
-    dlg.setFileMode(QFileDialog::DirectoryOnly);
+    QFileDialog dlg(this, tr("路径选择"));
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    dlg.setFileMode(QFileDialog::Directory); // Qt6
+#else
+    dlg.setFileMode(QFileDialog::DirectoryOnly); // Qt5
+#endif
+
     dlg.setDirectory("E:");
     if(dlg.exec() == QDialog::Accepted) {
         QString fn = dlg.selectedFiles().at(0);
-        if(fn.right(1) != "/")  fn += "/";
+        if(!fn.endsWith("/"))  fn += "/";
         ui->pathEdit->setText(fn);
     }
 }

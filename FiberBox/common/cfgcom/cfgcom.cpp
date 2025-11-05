@@ -53,11 +53,17 @@ bool CfgCom::cfgOpen(QObject *parent, const QString& fn)
     bool ret = QFileInfo(strFilename).exists();
     if(mCfgIni == nullptr) {
         mCfgIni = new QSettings(strFilename, QSettings::IniFormat, parent);
-        mCfgIni->setIniCodec(QTextCodec::codecForName("utf-8")); // gb18030
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        // Qt5 需要设置编码
+        mCfgIni->setIniCodec(QTextCodec::codecForName("utf-8")); // 或 "GB18030"
+#endif
     }
+
     qDebug() << "配置文件路径：" << strFilename;
 
     return ret;
+
 }
 
 

@@ -120,7 +120,12 @@ void LOG_DateWidget::updateSlot()
 bool LOG_DateWidget::isDate(const QString &date)
 {
     bool ret = false;
-    QStringList list = date.split("-",QString::SkipEmptyParts);
+    QStringList list;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    list = date.split("-", Qt::SkipEmptyParts); // Qt6
+#else
+    list = date.split("-", QString::SkipEmptyParts); // Qt5
+#endif
     if(list.size() == 3) {
         ret = true;
     }

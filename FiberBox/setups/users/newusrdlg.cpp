@@ -8,6 +8,19 @@
  */
 #include "newusrdlg.h"
 #include "ui_newusrdlg.h"
+#include <QValidator>
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
+#define REGEX_TYPE QRegularExpression
+#define REGEX_VALIDATOR_TYPE QRegularExpressionValidator
+#else
+#include <QRegExp>
+#include <QRegExpValidator>
+#define REGEX_TYPE QRegExp
+#define REGEX_VALIDATOR_TYPE QRegExpValidator
+#endif
 
 NewUsrDlg::NewUsrDlg(QWidget *parent) :
     QDialog(parent),
@@ -16,9 +29,10 @@ NewUsrDlg::NewUsrDlg(QWidget *parent) :
     ui->setupUi(this);
     groupBox_background_icon(this);
 
-    QRegExp regx("[0-9]+$");
-    QValidator *validator = new QRegExpValidator(regx, ui->TelephonelineEdit);
-    ui->TelephonelineEdit->setValidator( validator );
+    // 创建数字校验器
+    REGEX_TYPE regx("[0-9]+$");
+    QValidator *validator = new REGEX_VALIDATOR_TYPE(regx, ui->TelephonelineEdit);
+    ui->TelephonelineEdit->setValidator(validator);
 }
 
 NewUsrDlg::~NewUsrDlg()

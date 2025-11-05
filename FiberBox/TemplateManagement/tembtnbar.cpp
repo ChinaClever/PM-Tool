@@ -96,7 +96,9 @@ bool TemBtnBar::importBtn()
     }
 
     QTextStream in(&file);
-    in.setCodec("UTF-8");
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    in.setCodec("UTF-8");   // Qt5 支持
+#endif
 
     bool firstLine = true;
     int success = 0;
@@ -113,8 +115,13 @@ bool TemBtnBar::importBtn()
             continue;
         }
 
-        // 按制表符或逗号分割
-        QStringList cols = line.split(QRegExp("[,\t]"), Qt::SkipEmptyParts);
+        // 按制表符或逗号分割（Qt5/Qt6 兼容）
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        QStringList cols = line.split(QRegularExpression("[,\\t]"), Qt::SkipEmptyParts);
+#else
+        QStringList cols = line.split(QRegExp("[,\\t]"), Qt::SkipEmptyParts);
+#endif
+
         if (cols.size() < 11)
             continue;
 
@@ -144,7 +151,6 @@ bool TemBtnBar::importBtn()
 
     return true;
 }
-
 
 
 

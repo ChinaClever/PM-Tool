@@ -6,6 +6,10 @@
  */
 #include "excel_savethread.h"
 #include "msgbox.h"
+#ifdef Q_OS_WIN32
+#include <windows.h>   // OleInitialize, CoInitializeEx
+#include <objbase.h>   // S_OK, S_FALSE
+#endif
 
 Excel_SaveThread::Excel_SaveThread(QObject *parent) : QThread(parent)
 {

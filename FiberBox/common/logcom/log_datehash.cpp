@@ -43,21 +43,28 @@ void LOG_DateHash::setDate(const QStringList &dateList)
  */
 void LOG_DateHash::addDate(const QString &date)
 {
-    QStringList list = date.split("-",QString::SkipEmptyParts);
+    QStringList list;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    list = date.split("-", Qt::SkipEmptyParts);  // Qt6
+#else
+    list = date.split("-", QString::SkipEmptyParts); // Qt5
+#endif
 
-    if(list.size() == 3) {
+        if(list.size() == 3) {
         QString str = list[0];
         if(!mYearList.contains(str))
             mYearList << str;
 
-        str += "-"+list[1];
+        str += "-" + list[1];
         if(!mMonthList.contains(str))
             mMonthList << str;
 
         if(!mDayList.contains(date))
             mDayList << date;
     }
+
 }
+
 
 void LOG_DateHash::getYearList(QStringList &list)
 {
