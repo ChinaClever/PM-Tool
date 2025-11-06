@@ -67,7 +67,16 @@ void Cfg::initCurrentNum()
         item->currentNum = value;
     }
 }
+QString Cfg::getLanguage()
+{
+    return mCfg->read("language", "zh", "Sys").toString();
+}
 
+// 设置当前语言
+void Cfg::setLanguage(const QString &lang)
+{
+    mCfg->write("language", lang, "Sys");
+}
 
 /**
  * @brief 根据名称获取配置文件数值

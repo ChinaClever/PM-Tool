@@ -15,13 +15,14 @@ public:
         return &_instance;
     }
 
-    void sendTip(const QString& text, const QColor& color = Qt::yellow)
+    void sendTip(const QString& text, const QColor& color = Qt::yellow, bool append = false)
     {
-        emit tipChanged(text, color);
+        emit tipChanged(text, color, append);
     }
 
 signals:
-    void tipChanged(const QString& text, const QColor& color);
+    //void tipChanged(const QString& text, const QColor& color);                       // 覆盖旧内容
+    void tipChanged(const QString& text, const QColor& color, bool append);          // 控制是否追加
 
 private:
     MsgCenter() {}

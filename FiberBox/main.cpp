@@ -35,7 +35,15 @@ int main(int argc, char *argv[])
 // #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 //     QGuiApplication::setStyleHints(nullptr);  // 禁止自动暗色检测
 // #endif
-
+    Cfg *cfg = Cfg::bulid();
+    QTranslator translator;
+    QString lang = cfg->getLanguage(); // zh / en
+    if(lang == "en") {
+        QString qmPath = QApplication::applicationDirPath() + "/translations/FiberBox_en.qm";
+        if(translator.load(qmPath)) {
+            app.installTranslator(&translator);
+        }
+    }
     MainWindow w;
     w.show();
     return app.exec();

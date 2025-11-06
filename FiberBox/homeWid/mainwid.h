@@ -27,7 +27,8 @@ public:
     void    clearTemplateFields();     //清除显示信息
     void    createFanTable();          //创建扇出线Table
     void    init();
-    void    stopWork();
+    void    AccessoryScanClear();
+    void    stopWork(int type);
     void    startWork(const QString &pn);
     bool    checkFiberInTem(ScanInfo& info);
 
@@ -62,9 +63,6 @@ private:
     SerialMgr    *mgr;
     DbLogs       *dblog;
     printworker  *printThread;
-
-    QLineEdit    *scanInput;  // 隐藏扫码输入框
-
     FiberCheck    checker;
     bool          working = false;       // 按钮的“工作中/待机”状态（开始/停止）
     bool          scanningMode = false;  // 是否允许扫码（即模板已确认）
@@ -72,6 +70,7 @@ private:
     int           fanIndex = 0;           // 当前已扫码的索引（从0开始）
     int           totalFans = 0;          // 总 fanout 数量
     sFiberLogItem log;
+    QSet<QString> scannedIds;
 
 };
 

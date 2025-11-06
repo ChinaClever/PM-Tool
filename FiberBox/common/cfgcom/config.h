@@ -26,6 +26,8 @@ public:
     QString getLoginName();
     void setLoginName(const QString &name);
 
+    QString getLanguage();
+    void setLanguage(const QString& );
 
     void setCurrentNum();
     void write(const QString &key, const QVariant& v, const QString &g="cfg");

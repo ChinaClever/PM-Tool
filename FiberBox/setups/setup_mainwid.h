@@ -20,13 +20,19 @@ protected:
     void writeLogCount();
     void initPcNum();
     void writePcNum();
+    void retranslateAllUi();
 
 private slots:
     void on_pcBtn_clicked();
 
+    void on_Translation_clicked();
+
 private:
     Ui::Setup_MainWid *ui;
     UserMainWid *mUserWid;
+
+    QTranslator translator;
+    bool        isEnglish = false;
     //sCfgItem *mItem;
 };
 

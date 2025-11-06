@@ -29,17 +29,19 @@ void mainWid::on_ConfirmTpl_clicked()
                                            tr("当前正在工作，是否中断并停止？"),
                                            QMessageBox::Yes | QMessageBox::No);
         if (reply == QMessageBox::No) {
-            QTimer::singleShot(0, scanInput, SLOT(setFocus()));
+            QTimer::singleShot(0, ui->scanInput, SLOT(setFocus()));
             return;
         }
-        stopWork();
+        stopWork(0);
         return;
     }
 
+    scannedIds.clear();
+    AccessoryScanClear(); //clear
     scanningMode = false;
     fanIndex = 0;
     totalFans = 0;
-    scanInput->clear();
+    ui->scanInput->clear();
 
     QString pn = ui->txtPN->text().trimmed();
     // if (!checker.verify(pn)) {
@@ -68,8 +70,8 @@ void mainWid::showEvent(QShowEvent *event)
     QWidget::showEvent(event);
     activePage = true;
     if (scanningMode && working) {
-        scanInput->clear();
-        scanInput->setFocus();
+        ui->scanInput->clear();
+        ui->scanInput->setFocus();
     }
 }
 
@@ -89,10 +91,10 @@ bool mainWid::eventFilter(QObject *obj, QEvent *event)
             event->type() == QEvent::KeyPress) {
 
             QWidget *fw = QApplication::focusWidget();
-            if (fw && fw != scanInput) {
+            if (fw && fw != ui->scanInput) {
                 QTimer::singleShot(50, this, [this]() {
                     if (activePage && scanningMode && working) {
-                        scanInput->setFocus(Qt::OtherFocusReason);
+                        ui->scanInput->setFocus(Qt::OtherFocusReason);
                     }
                 });
             }
@@ -191,6 +193,17 @@ void mainWid::handleScanCode(const QString &code)
 
     qDebug() << "扫码" << (fanIndex + 1) << ":" << code;
 
+    QString codePn = code ;
+    QStringList parts = code.split(';');
+    if (parts.size() >= 3) {
+        codePn = parts[2];  // 索引从 0 开始
+    }
+    if (scannedIds.contains(codePn)) {
+        // 已扫描过
+        QMessageBox::warning(this, "提示", QString("ID %1 已被扫描过！").arg(codePn));
+        return;
+    }
+    scannedIds.insert(codePn);
     ui->tabWidget->setCurrentIndex(fanIndex);
     FiberTab *tab = qobject_cast<FiberTab*>(ui->tabWidget->widget(fanIndex));
     ScanInfo info = parseScanDataNewFormat(code);  // 用扫码内容解析
@@ -236,9 +249,9 @@ void mainWid::handleScanCode(const QString &code)
     if (!ok) {
         msgCenter->sendTip(tr("配件 %1/%2 扫码失败，请重新扫码！")
                                .arg(fanIndex + 1)
-                               .arg(totalFans), Qt::red);
-        scanInput->clear();
-        scanInput->setFocus();
+                               .arg(totalFans), Qt::red,1);
+        ui->scanInput->clear();
+        ui->scanInput->setFocus();
         return; // 不前进
     }
 
@@ -248,11 +261,12 @@ void mainWid::handleScanCode(const QString &code)
     F01:0.23/0.21;F02:0.32/0.35;F03:0.41/0.42;F04:0.35/0.38;F05:0.41/0.44;F06:0.32/0.36;F07:0.38/0.39;F08:0.42/0.41"
     */
 
+
     switch (fanIndex) {
-    case 0: ui->lblAccessory1Scan->setText(code); log.seq1 = code.split(';').value(2); log.qr1 = code; break;
-    case 1: ui->lblAccessory2Scan->setText(code); log.seq2 = code.split(';').value(2); log.qr2 = code; break;
-    case 2: ui->lblAccessory3Scan->setText(code); log.seq3 = code.split(';').value(2); log.qr3 = code; break;
-    case 3: ui->lblAccessory4Scan->setText(code); log.seq4 = code.split(';').value(2); log.qr4 = code; break;
+    case 0: ui->lblAccessory1Scan->setText(codePn); log.seq1 = code.split(';').value(2); log.qr1 = code; break;
+    case 1: ui->lblAccessory2Scan->setText(codePn); log.seq2 = code.split(';').value(2); log.qr2 = code; break;
+    case 2: ui->lblAccessory3Scan->setText(codePn); log.seq3 = code.split(';').value(2); log.qr3 = code; break;
+    case 3: ui->lblAccessory4Scan->setText(codePn); log.seq4 = code.split(';').value(2); log.qr4 = code; break;
     default: /* 如果超过，则忽略或保存到表 */ break;
     }
 
@@ -265,14 +279,17 @@ void mainWid::handleScanCode(const QString &code)
 
         msgCenter->sendTip(tr(" 所有配件扫码完成！"), Qt::green);
         log.qrContent = ui->lblQRCodeInfo->toPlainText();
+        QDateTime current = QDateTime::currentDateTime();
+        QString timestamp = current.toString("yyMMddHHmmss");
+        log.boxId = "C" + timestamp;
         if (dblog->insertItem(log)) {
             qDebug() << "日志插入成功, ID =" << log.id;
             mgr->saveCurrentNum();
 
             sLabelInfo info;
+            info.PN = log.PN;
             info.desc = log.description;
             info.qr = log.qrContent;
-            info.PN = log.PN;
             QDate today = QDate::currentDate();
             int yy = today.year() % 100;          // 年份后两位
             int ww = today.weekNumber();          // 周数
@@ -284,13 +301,13 @@ void mainWid::handleScanCode(const QString &code)
         } else {
             qDebug() << "日志插入失败";
         }
-        stopWork();
+        stopWork(1);
     }
 
-    scanInput->clear();
+    ui->scanInput->clear();
     // 仅当仍在工作且页面可见时继续聚焦
     if (working && scanningMode && activePage)
-        scanInput->setFocus();
+        ui->scanInput->setFocus();
 }
 
 void mainWid::startWork(const QString &pn)
@@ -300,7 +317,7 @@ void mainWid::startWork(const QString &pn)
     scanningMode = false;
     fanIndex = 0;
     totalFans = 0;
-    scanInput->clear();
+    ui->scanInput->clear();
 
     sTemInfo info = mFiberTem->getTemInfo();
     log = sFiberLogItem();
@@ -348,45 +365,54 @@ void mainWid::startWork(const QString &pn)
 
     // 启动扫码焦点（仅当界面可见）
     if (activePage) {
-        scanInput->clear();
-        scanInput->setFocus();
+        ui->scanInput->clear();
+        ui->scanInput->setFocus();
     }
 }
 
-void mainWid::stopWork()
+void mainWid::AccessoryScanClear()
 {
-    // 停止工作并清理状态
-    working = false;
-    scanningMode = false;
-    fanIndex = 0;
-    totalFans = 0;
-    scanInput->clear();
-    ui->txtPN->setEnabled(true);
-    // 恢复按钮文本及样式
-    ui->ConfirmTpl->setText(tr("确认模板"));
-    ui->ConfirmTpl->setStyleSheet(""); // 恢复默认样式
-
-    msgCenter->sendTip(tr("工作已停止。\n\n 请重新确认物料编码"), Qt::red);
-    setAccessoryVisible(0);
-    // 可选：清空配件显示
     ui->lblAccessory1Scan->clear();
     ui->lblAccessory2Scan->clear();
     ui->lblAccessory3Scan->clear();
     ui->lblAccessory4Scan->clear();
 }
 
+void mainWid::stopWork(int type)
+{
+    // 停止工作并清理状态
+    working = false;
+    scanningMode = false;
+    fanIndex = 0;
+    totalFans = 0;
+    ui->scanInput->clear();
+    ui->txtPN->setEnabled(true);
+    // 恢复按钮文本及样式
+    ui->ConfirmTpl->setText(tr("确认模板"));
+    ui->ConfirmTpl->setStyleSheet(""); // 恢复默认样式
+
+    if(!type)
+    msgCenter->sendTip(tr("工作已停止。\n\n 请重新确认物料编码"), Qt::red);
+    else{
+        msgCenter->sendTip(tr("扇出线检测完成 \n\n 打印标签"), Qt::green);
+    }
+    // 可选：清空配件显示
+    //setAccessoryVisible(0);
+    //AccessoryScanClear();
+}
+
 
 void mainWid::init()
 {
     // 创建隐藏扫码输入框
-    scanInput = new QLineEdit(this);
-    scanInput->setObjectName("lineEditScan");
+   // scanInput = new QLineEdit(this);
+    ui->scanInput->setObjectName("lineEditScan");
     //scanInput->hide();
-    scanInput->setFocusPolicy(Qt::StrongFocus); // 强焦点策略
+    ui->scanInput->setFocusPolicy(Qt::StrongFocus); // 强焦点策略
 
-    connect(scanInput, &QLineEdit::returnPressed, this, [=]() {
-        QString code = scanInput->text().trimmed();
-        scanInput->clear();
+    connect(ui->scanInput, &QLineEdit::returnPressed, this, [=]() {
+        QString code = ui->scanInput->text().trimmed();
+        ui->scanInput->clear();
         handleScanCode(code);
     });
 
@@ -438,19 +464,26 @@ void mainWid::getInstCon()
 
     connect(this,&mainWid::doprint,printThread,&printworker::doprint);
 
+    connect(msgCenter, &MsgCenter::tipChanged, this,
+            [=](const QString& text, const QColor& color, bool append)
+            {
+                QString newText = text;
+                if (append) {
+                    newText = ui->msgBoxTip->text() + "\n" + text;
+                }
+                ui->msgBoxTip->setText(newText);
 
-    connect(msgCenter,&MsgCenter::tipChanged,this,[=](const QString& text, const QColor& color){
-        ui->msgBoxTip->setText(text);
-        QPalette pal = ui->msgBoxTip->palette();
-        pal.setColor(QPalette::Window,color);
-        ui->msgBoxTip->setPalette(pal);
-        ui->msgBoxTip->setAutoFillBackground(true);
+                QPalette pal = ui->msgBoxTip->palette();
+                pal.setColor(QPalette::Window, color);
+                ui->msgBoxTip->setPalette(pal);
+                ui->msgBoxTip->setAutoFillBackground(true);
 
-        QFont font;
-        font.setPointSize(13);  // 字号
-        font.setBold(true);      // 加粗
-        ui->msgBoxTip->setFont(font);
-    });
+                QFont font;
+                font.setPointSize(13);
+                font.setBold(true);
+                ui->msgBoxTip->setFont(font);
+            });
+
     msgCenter->sendTip(tr("请确认模板"),Qt::yellow);
 }
 
@@ -534,7 +567,7 @@ void mainWid::handleManualInput(int index)
         QString code = dlg.getScanCode();
         handleScanCode(code);
     } else {
-        QTimer::singleShot(0, scanInput, SLOT(setFocus()));
+        QTimer::singleShot(0, ui->scanInput, SLOT(setFocus()));
     }
 }
 

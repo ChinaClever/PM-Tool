@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>FiberBox_en.qm</file>
+        <file>FiberBox_zh.qm</file>
+    </qresource>
+</RCC>

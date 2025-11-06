@@ -93,3 +93,30 @@ void Setup_MainWid::on_pcBtn_clicked()
     ui->pcNumSpin->setEnabled(isEditing);
 }
 
+
+void Setup_MainWid::on_Translation_clicked()
+{
+    qApp->removeTranslator(&translator);
+
+    if(!isEnglish) {
+        QString qmPath = QApplication::applicationDirPath() + "/translations/FiberBox_en.qm";
+        if(translator.load(qmPath)) {
+            qApp->installTranslator(&translator);
+            isEnglish = true;
+            Cfg::bulid()->setLanguage("en");
+        }
+    } else {
+        isEnglish = false;
+        Cfg::bulid()->setLanguage("zh");
+    }
+
+    ui->retranslateUi(this);
+
+    // 刷新所有控件
+    for(QWidget *w : findChildren<QWidget*>()) {
+        w->update();
+        w->repaint();
+    }
+
+    ui->Translation->setText(isEnglish ? tr("Switch to Chinese") : tr("Switch to English"));
+}
