@@ -1494,7 +1494,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
         <location filename="homeWid/mainwid.ui" line="936"/>
         <source>
        QTableWidget {
-           background-color: #f9f9f9;
+           background-color:rgb(132, 29, 29);
            border: 1px solid #ccc;
            font-size: 13px;
        }
