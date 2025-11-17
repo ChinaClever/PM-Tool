@@ -7,6 +7,13 @@ struct sLabelInfo{
     QString date;
     QString PN;
     QString qr;
+
+    QString Id;
+    QString Mode;
+    QString SN;
+    QStringList FiberInfo;
+
+    int PrintTemplate;
 };
 
 class printworker : public QThread
@@ -14,7 +21,7 @@ class printworker : public QThread
     Q_OBJECT
 public:
     explicit printworker(QObject *parent = nullptr) : QThread (parent){}
-    QString httpPostIni(const QString& data,const QString ip,const QString& host);
+    QString httpPostIni(const QString& data,const QString ip,const QString& host,const int PrintTemplate);
 public slots:
     QString doprint(const sLabelInfo);
 };

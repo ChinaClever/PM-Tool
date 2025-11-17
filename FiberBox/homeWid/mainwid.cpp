@@ -37,6 +37,8 @@ void mainWid::on_ConfirmTpl_clicked()
     }
 
     scannedIds.clear();
+    LabelID.clear();
+    FiberList.clear();
     AccessoryScanClear(); //clear
     scanningMode = false;
     fanIndex = 0;
@@ -180,9 +182,29 @@ bool mainWid::checkFiberInTem(ScanInfo& info)
 
 }
 
+QStringList mainWid::parseFiberLosses(const QString &rawData)
+{
+    QStringList lossPairs;
+    QString text = rawData;
+
+    // 匹配类似 "0.23 / 0.21" 这样的双值
+    QRegularExpression rx(R"((\d+\.\d+)\s*/\s*(\d+\.\d+))");
+
+    QRegularExpressionMatchIterator it = rx.globalMatch(text);
+    while (it.hasNext()) {
+        QRegularExpressionMatch match = it.next();
+        QString pair = QString("%1/%2")
+                           .arg(match.captured(1))
+                           .arg(match.captured(2));
+        lossPairs << pair;
+    }
+    return lossPairs;
+}
+
+
 void mainWid::handleScanCode(const QString &code)
 {
-    qDebug()<<code;
+    //qDebug()<<code;
     // 只有在工作流程中并处于扫码模式并且页面可见才接收扫码
     if (!working || !scanningMode || !activePage) {
         qDebug() << "忽略扫码（非工作状态或页面不可见）:" << code;
@@ -211,6 +233,10 @@ void mainWid::handleScanCode(const QString &code)
     // 调整顺序
     QStringList fibers = info.rawData.split('\n', Qt::SkipEmptyParts);
     info.rawData = reorderFibers(fibers, info.count, polarityToString(mFiberTem->getTemInfo().info.polarity)).join("\n");
+
+    auto rawData = parseFiberLosses(info.rawData);
+    FiberList.append(rawData);
+    //for(auto u:rawData)qDebug()<<u;
 
     bool ok = checkFiberInTem(info);
 
@@ -261,9 +287,8 @@ void mainWid::handleScanCode(const QString &code)
     F01:0.23/0.21;F02:0.32/0.35;F03:0.41/0.42;F04:0.35/0.38;F05:0.41/0.44;F06:0.32/0.36;F07:0.38/0.39;F08:0.42/0.41"
     */
 
-
     switch (fanIndex) {
-    case 0: ui->lblAccessory1Scan->setText(codePn); log.seq1 = code.split(';').value(2); log.qr1 = code; break;
+    case 0: ui->lblAccessory1Scan->setText(codePn); log.seq1 = code.split(';').value(2); log.qr1 = code; LabelID = log.seq1; break;
     case 1: ui->lblAccessory2Scan->setText(codePn); log.seq2 = code.split(';').value(2); log.qr2 = code; break;
     case 2: ui->lblAccessory3Scan->setText(codePn); log.seq3 = code.split(';').value(2); log.qr3 = code; break;
     case 3: ui->lblAccessory4Scan->setText(codePn); log.seq4 = code.split(';').value(2); log.qr4 = code; break;
@@ -287,9 +312,22 @@ void mainWid::handleScanCode(const QString &code)
             mgr->saveCurrentNum();
 
             sLabelInfo info;
+            info.Mode = modeToWaveLength(mFiberTem->getTemInfo().info.mode);
             info.PN = log.PN;
+
+            info.SN = log.boxId;
+            info.Id = mFiberTem->getTemInfo().FanoutPn;
+
             info.desc = log.description;
             info.qr = log.qrContent;
+
+            info.FiberInfo = FiberList;
+            FiberList.clear();
+
+
+
+            //for(auto u:info.FiberInfo)qDebug()<<u;
+
             QDate today = QDate::currentDate();
             int yy = today.year() % 100;          // 年份后两位
             int ww = today.weekNumber();          // 周数
@@ -297,7 +335,11 @@ void mainWid::handleScanCode(const QString &code)
                                 .arg(yy, 2, 10, QChar('0'))
                                 .arg(ww, 2, 10, QChar('0')); // 年周
             info.date = yyWww;
-            //emit doprint(info);
+            QString templateStr = mFiberTem->getTemInfo().labelTemplate; // 比如 "Template 1"
+            int templateNum = templateStr.split(' ').last().toInt();
+            info.PrintTemplate = templateNum;
+
+            emit doprint(info);
         } else {
             qDebug() << "日志插入失败";
         }
@@ -331,7 +373,8 @@ void mainWid::startWork(const QString &pn)
     working = true;
 
 
-    log.boxId = mgr->generateFullCode(info.FanoutPn);
+    //log.boxId = mgr->generateFullCode(info.FanoutPn);
+    log.boxId = "";
     log.PN = info.PN;
     log.description = info.description;
     log.fanoutPn = info.FanoutPn;
@@ -426,7 +469,7 @@ void mainWid::init()
     fanIndex = 0;
     totalFans = 0;
 
-    // 把按钮文本设置为“确认模板”。注意按钮对象名是 ui->ConfirmTpl
+    // 把按钮文本设置为“确认模板”。
     ui->ConfirmTpl->setText(tr("确认模板"));
 
     // 其它原有初始化

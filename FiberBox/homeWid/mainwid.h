@@ -22,39 +22,39 @@ public:
     explicit mainWid(QWidget *parent = nullptr);
     ~mainWid();
 
-    void    exmple();
-    void    getInstCon();              //初始化槽函数连接
-    void    clearTemplateFields();     //清除显示信息
-    void    createFanTable();          //创建扇出线Table
-    void    init();
-    void    AccessoryScanClear();
-    void    stopWork(int type);
-    void    startWork(const QString &pn);
-    bool    checkFiberInTem(ScanInfo& info);
+    void        exmple();
+    void        getInstCon();              //初始化槽函数连接
+    void        clearTemplateFields();     //清除显示信息
+    void        createFanTable();          //创建扇出线Table
+    void        init();
+    void        AccessoryScanClear();
+    void        stopWork(int type);
+    void        startWork(const QString &pn);
+    bool        checkFiberInTem(ScanInfo& info);
 
 protected:
-    void    setTemInfo();
-    void    setAccessoryVisible(int count);
-    void    handleManualInput(int index);
+    void        setTemInfo();
+    void        setAccessoryVisible(int count);
+    void        handleManualInput(int index);
 
-    bool    eventFilter(QObject *obj, QEvent *event) override;
-    void    showEvent(QShowEvent *event) override;
-    void    hideEvent(QHideEvent *event) override;
-
+    bool        eventFilter(QObject *obj, QEvent *event) override;
+    void        showEvent(QShowEvent *event) override;
+    void        hideEvent(QHideEvent *event) override;
+    QStringList parseFiberLosses(const QString &rawData);
 private slots:
-    void    on_ConfirmTpl_clicked();
+    void        on_ConfirmTpl_clicked();
 
-    void    handleScanCode(const QString &code); // 处理每次扫码
+    void        handleScanCode(const QString &code); // 处理每次扫码
 
-    void    on_btnManualInput1_clicked();
+    void        on_btnManualInput1_clicked();
 
-    void    on_btnManualInput2_clicked();
+    void        on_btnManualInput2_clicked();
 
-    void    on_btnManualInput3_clicked();
+    void        on_btnManualInput3_clicked();
 
-    void    on_btnManualInput4_clicked();
+    void        on_btnManualInput4_clicked();
 signals:
-    void doprint(const sLabelInfo);
+    void        doprint(const sLabelInfo);
 
 private:
     Ui::mainWid  *ui;
@@ -71,6 +71,8 @@ private:
     int           totalFans = 0;          // 总 fanout 数量
     sFiberLogItem log;
     QSet<QString> scannedIds;
+    QStringList   FiberList;
+    QString       LabelID;
 
 };
 

@@ -4,19 +4,48 @@
 #include <QDebug>
 
 
+// QString printworker::doprint(sLabelInfo info)
+// {
+//     QString str1 = "DATE,DESC,PN,QR";
+//     info.qr.remove(QRegularExpression("\\s+"));
+//     QString str2 = info.date + ',' + info.desc + ',' + info.PN + ',' + info.qr;
+
+//     qDebug()<<str2;
+//     return httpPostIni(str1 + "\n" + str2 , "16","80",0);
+// }
+
 QString printworker::doprint(sLabelInfo info)
 {
-    QString str1 = "DATE,DESC,PN,QR";
-    info.qr.remove(QRegularExpression("\\s+"));
-    QString str2 = info.date + ',' + info.desc + ',' + info.PN + ',' + info.qr;
+    QString str1 = "MODE,DATE,ID,SN";
+    QString str2 = info.Mode+","+info.date+","+info.Id+","+info.SN;
 
-    qDebug()<<str2;
-    return httpPostIni(str1 + "\n" + str2 , "16","80");
+    for(int i = 0; i < info.FiberInfo.size(); i ++){
+        str1 += QString(",F%1").arg(i+1);
+        str2 += QString(",%1").arg(info.FiberInfo[i]);
+    }
+    //qDebug()<<str1;qDebug()<<str2;
+
+    int PrintTemplate = info.PrintTemplate;
+
+    //return "";
+    return httpPostIni(str1 + "\n" + str2 , "16","80",PrintTemplate);
 }
 
-QString printworker::httpPostIni(const QString& data,const QString ip, const QString& host) {
+QString printworker::httpPostIni(const QString& data,const QString ip, const QString& host,const int PrintTemplate) {
     // 构造 URL
+
     QString url = QString("http://%1:%2/Integration/FiberBox16F/Execute").arg("192.168.1." + ip).arg(host);
+    QString Newhost = QString::number(host.toInt() + PrintTemplate);
+    switch (PrintTemplate){
+        case 0:break;
+        case 1:url = QString("http://%1:%2/Integration/FiberBoxLabel1/Execute").arg("192.168.1." + ip).arg(Newhost);break;
+        case 2:url = QString("http://%1:%2/Integration/FiberBoxLabel2/Execute").arg("192.168.1." + ip).arg(Newhost);break;
+        case 3:url = QString("http://%1:%2/Integration/FiberBoxLabel3/Execute").arg("192.168.1." + ip).arg(Newhost);break;
+        case 4:url = QString("http://%1:%2/Integration/FiberBoxLabel4/Execute").arg("192.168.1." + ip).arg(Newhost);break;
+        case 5:url = QString("http://%1:%2/Integration/FiberBoxLabel5/Execute").arg("192.168.1." + ip).arg(Newhost);break;
+        case 6:url = QString("http://%1:%2/Integration/FiberBoxLabel6/Execute").arg("192.168.1." + ip).arg(Newhost);break;
+    }
+
     qDebug() << "URL:" << url;
     qDebug() << "Data:" << data;
     QString str = "";
