@@ -227,7 +227,6 @@ void mainWid::handleScanCode(QString &code)
         QMessageBox::warning(this, "提示", QString("ID %1 已被扫描过！").arg(codePn));
         return;
     }
-    scannedIds.insert(codePn);
     ui->tabWidget->setCurrentIndex(fanIndex);
     FiberTab *tab = qobject_cast<FiberTab*>(ui->tabWidget->widget(fanIndex));
     ScanInfo info = parseScanDataNewFormat(code);  // 用扫码内容解析
@@ -244,6 +243,7 @@ void mainWid::handleScanCode(QString &code)
 
 //    bool ok = true;
     if (ok) {
+        scannedIds.insert(codePn);
         tab->setInfo(info.serNum, info.count, info.wavelength, info.standard);
         tab->fillFiberTable(info.rawData);
 

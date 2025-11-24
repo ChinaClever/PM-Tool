@@ -21,7 +21,7 @@ class printworker : public QThread
     Q_OBJECT
 public:
     explicit printworker(QObject *parent = nullptr) : QThread (parent){}
-    QString httpPostIni(const QString& data,const QString ip,const QString& host,const int PrintTemplate);
+    QString httpPostIni(const QString& data,const QString net,const QString ip,const QString& host,const int PrintTemplate);
 public slots:
     QString doprint(const sLabelInfo);
 };

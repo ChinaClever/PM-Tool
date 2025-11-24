@@ -77,9 +77,9 @@ void bitInc(PowerSystemData& u) //输出位增量变化
         double &y = u.pduData.outputData.outputBits[i].current;
         auto &incr = u.pduData.outputData.outputBits[i].curinc;
         double newVal = incr ?x+y : y-x;
-        u.pduData.outputData.outputBits[i].current = (incr ? fmin(x + y, 8) : fmax(y - x, 0));
+        u.pduData.outputData.outputBits[i].current = (incr ? fmin(x + y, 6) : fmax(y - x, 0));
 
-        incr = (incr && newVal >= 8) ? false :(!incr && newVal <= 0)   ? true  : incr;
+        incr = (incr && newVal >= 6) ? false :(!incr && newVal <= 0)   ? true  : incr;
 
         x = specRanNumGgen::getrandom(8);
         double &yy = u.pduData.outputData.outputBits[i].powerFactor;

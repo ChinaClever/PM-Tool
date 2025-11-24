@@ -280,9 +280,9 @@ void mp_bulksend::setInti(PowerSystemData& u)
     u.settings.outputBitCount = u.pduData.outputData.outputBits.size();
     u.settings.phaseMode = "three";
     u.thresholds.capPhaseCur = 63;
-    u.thresholds.capCirCur = 16;
+    u.thresholds.capCirCur = 32;
     u.thresholds.capVol = volCap;
-    u.thresholds.capbitCur = 10;
+    u.thresholds.capbitCur = 6;
 }
 
 void mp_bulksend::totalInti(PowerSystemData& u)
