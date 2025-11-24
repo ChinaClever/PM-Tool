@@ -10,6 +10,7 @@ mainWid::mainWid(QWidget *parent)
 {
     ui->setupUi(this);
     set_background_icon(this,":/image/back.jpg");
+    cfg = Cfg::bulid();
     getInstCon();
     init();
     //exmple();
@@ -19,8 +20,6 @@ mainWid::~mainWid()
 {
     delete ui;
 }
-
-
 
 void mainWid::on_ConfirmTpl_clicked()
 {
@@ -202,7 +201,7 @@ QStringList mainWid::parseFiberLosses(const QString &rawData)
 }
 
 
-void mainWid::handleScanCode(const QString &code)
+void mainWid::handleScanCode(QString &code)
 {
     //qDebug()<<code;
     // 只有在工作流程中并处于扫码模式并且页面可见才接收扫码
@@ -210,6 +209,9 @@ void mainWid::handleScanCode(const QString &code)
         qDebug() << "忽略扫码（非工作状态或页面不可见）:" << code;
         return;
     }
+
+    code.replace(",", ".");   // 英文逗号 -> 点
+    code.replace("，", ".");  // 中文逗号 -> 点
 
     if (code.isEmpty()) return;
 
@@ -304,9 +306,12 @@ void mainWid::handleScanCode(const QString &code)
 
         msgCenter->sendTip(tr(" 所有配件扫码完成！"), Qt::green);
         log.qrContent = ui->lblQRCodeInfo->toPlainText();
-        QDateTime current = QDateTime::currentDateTime();
-        QString timestamp = current.toString("yyMMddHHmmss");
-        log.boxId = "C" + timestamp;
+        // QDateTime current = QDateTime::currentDateTime();
+        // QString timestamp = current.toString("yyMMddHHmmss");
+        // QString lang = cfg->getLanguage();
+        // if(lang == "en")lang = "F";
+        // else lang = "C";
+        // log.boxId = lang + timestamp;
         if (dblog->insertItem(log)) {
             qDebug() << "日志插入成功, ID =" << log.id;
             mgr->saveCurrentNum();
@@ -384,6 +389,12 @@ void mainWid::startWork(const QString &pn)
 
 
     ui->lblQRCodeInfo->clear();
+    QDateTime current = QDateTime::currentDateTime();
+    QString timestamp = current.toString("yyMMddHHmmss");
+    QString lang = cfg->getLanguage();
+    if(lang == "en")lang = "F";
+    else lang = "C";
+    log.boxId = lang + timestamp;
     QString infoText;
     infoText += QString("ID: %1\n").arg(log.boxId);
     infoText += QString("Fiber Insertion Losses\n");
@@ -450,6 +461,12 @@ void mainWid::init()
     // 创建隐藏扫码输入框
    // scanInput = new QLineEdit(this);
     ui->scanInput->setObjectName("lineEditScan");
+
+    ui->btnManualInput1->hide();
+    ui->btnManualInput2->hide();
+    ui->btnManualInput3->hide();
+    ui->btnManualInput4->hide();
+
     //scanInput->hide();
     ui->scanInput->setFocusPolicy(Qt::StrongFocus); // 强焦点策略
 
@@ -580,20 +597,20 @@ void mainWid::setAccessoryVisible(int count)
     struct AccessoryWidgets {
         QWidget* label;
         QWidget* scanLabel;
-        QWidget* manualBtn;
+       // QWidget* manualBtn;
     };
     QVector<AccessoryWidgets> accessories = {
-                                             {ui->label_17, ui->lblAccessory1Scan, ui->btnManualInput1},
-                                             {ui->label_18, ui->lblAccessory2Scan, ui->btnManualInput2},
-                                             {ui->label_19, ui->lblAccessory3Scan, ui->btnManualInput3},
-                                             {ui->label_20, ui->lblAccessory4Scan, ui->btnManualInput4},
+                                             {ui->label_17, ui->lblAccessory1Scan},
+                                             {ui->label_18, ui->lblAccessory2Scan},
+                                             {ui->label_19, ui->lblAccessory3Scan},
+                                             {ui->label_20, ui->lblAccessory4Scan},
                                              };
 
     for (int i = 0; i < accessories.size(); ++i) {
         bool visible = (i < count);
         accessories[i].label->setVisible(visible);
         accessories[i].scanLabel->setVisible(visible);
-        accessories[i].manualBtn->setVisible(visible);
+    //    accessories[i].manualBtn->setVisible(visible);
     }
 }
 

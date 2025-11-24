@@ -100,6 +100,7 @@ void Setup_MainWid::on_Translation_clicked()
 
     if(!isEnglish) {
         QString qmPath = QApplication::applicationDirPath() + "/translations/FiberBox_en.qm";
+        qDebug()<<qmPath;
         if(translator.load(qmPath)) {
             qApp->installTranslator(&translator);
             isEnglish = true;

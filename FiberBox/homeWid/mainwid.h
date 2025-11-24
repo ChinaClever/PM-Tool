@@ -44,7 +44,7 @@ protected:
 private slots:
     void        on_ConfirmTpl_clicked();
 
-    void        handleScanCode(const QString &code); // 处理每次扫码
+    void        handleScanCode(QString &code); // 处理每次扫码
 
     void        on_btnManualInput1_clicked();
 
@@ -73,6 +73,8 @@ private:
     QSet<QString> scannedIds;
     QStringList   FiberList;
     QString       LabelID;
+
+    Cfg           *cfg;
 
 };
 
