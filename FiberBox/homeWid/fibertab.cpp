@@ -19,7 +19,7 @@ FiberTab::FiberTab(QWidget *parent)
     lineId->setMinimumSize(200, 35);
     lineId->setFont(font);
 
-    labelFiber = new QLabel("光纤数量：", this);
+    labelFiber = new QLabel(tr("光纤数量："), this);
     labelFiber->setFont(font);
     labelFiber->setMinimumHeight(35);
     labelFiber->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
@@ -34,7 +34,7 @@ FiberTab::FiberTab(QWidget *parent)
     gridLayout->addWidget(labelFiber,0, 2);
     gridLayout->addWidget(lineFiber, 0, 3);
 
-    labelWl = new QLabel("波长值：", this);
+    labelWl = new QLabel(tr("波长值："), this);
     labelWl->setFont(font);
     labelWl->setMinimumHeight(35);
     labelWl->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
@@ -44,7 +44,7 @@ FiberTab::FiberTab(QWidget *parent)
     lineWl->setMinimumSize(200, 35);
     lineWl->setFont(font);
 
-    labelIL = new QLabel("IL限值：", this);
+    labelIL = new QLabel(tr("IL限值："), this);
     labelIL->setFont(font);
     labelIL->setMinimumHeight(35);
     labelIL->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
@@ -59,7 +59,7 @@ FiberTab::FiberTab(QWidget *parent)
     gridLayout->addWidget(labelIL, 1, 2);
     gridLayout->addWidget(lineIL,  1, 3);
 
-    QGroupBox *groupBox = new QGroupBox("光纤损耗值", this);
+    QGroupBox *groupBox = new QGroupBox(tr("光纤损耗值"), this);
     QGridLayout *gbLayout = new QGridLayout(groupBox);
     gbLayout->setContentsMargins(0, 0, 0, 0);
     gbLayout->setHorizontalSpacing(4);
@@ -84,7 +84,8 @@ FiberTab::FiberTab(QWidget *parent)
 
     tableWidget->setColumnCount(4);
     QStringList headers;
-    headers << "序号" << "Value (dB)" << "序号" << "Value (dB)";
+    headers << tr("序号") << tr("Value (dB)")
+            << tr("序号") << tr("Value (dB)");
     tableWidget->setHorizontalHeaderLabels(headers);
     tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 

@@ -35,7 +35,7 @@ QString CfgCom::pathOfData(const QString& name)
     if(!dataDir.exists(dirName)) { dataDir.mkdir(dirName); }
     dataDir.cd(dirName);
 
-    dirName = QCoreApplication::applicationName();  // Node-Fvt
+    dirName = QCoreApplication::applicationName();
     if(!dataDir.exists(dirName)) { dataDir.mkdir(dirName); }
     dataDir.cd(dirName);
 

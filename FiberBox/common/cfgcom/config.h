@@ -11,6 +11,7 @@ struct sCfgItem
     int logCount;
     uchar pcNum; //电脑号
     ushort currentNum;
+    QString printIp;
 };
 
 class Cfg

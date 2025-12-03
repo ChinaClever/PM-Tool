@@ -4,14 +4,14 @@
 DbLogs::DbLogs()
 {
     createTable();
-    tableTile = tr("光纤日志");
-    headList << tr("光纤盒ID") << tr("成品编号")
-             << tr("FanoutPn") << tr("描述") << tr("扇出线个数") << tr("波类型")
-             << tr("最大限值IL") << tr("二维码内容")
-             << tr("扇出线1序列号") << tr("扇出线1二维码内容")
-             << tr("扇出线2序列号") << tr("扇出线2二维码内容")
-             << tr("扇出线3序列号") << tr("扇出线3二维码内容")
-             << tr("扇出线4序列号") << tr("扇出线4二维码内容");
+    tableTile = QObject::tr("光纤日志");
+    headList << QObject::tr("光纤盒ID") << QObject::tr("成品编号")
+             << QObject::tr("FanoutPn") << QObject::tr("描述") << QObject::tr("扇出线个数") << QObject::tr("波类型")
+             << QObject::tr("最大限值IL") << QObject::tr("二维码内容")
+             << QObject::tr("扇出线1序列号") << QObject::tr("扇出线1二维码内容")
+             << QObject::tr("扇出线2序列号") << QObject::tr("扇出线2二维码内容")
+             << QObject::tr("扇出线3序列号") << QObject::tr("扇出线3二维码内容")
+             << QObject::tr("扇出线4序列号") << QObject::tr("扇出线4二维码内容");
 }
 
 DbLogs* DbLogs::instance()

@@ -6,15 +6,14 @@
 DbTem::DbTem()
 {
     createTable();
-    tableTile = tr("模板管理");
+    tableTile = QObject::tr("模板管理");
     hiddens << 1 << 2;
-    headList << tr("成品编号") << tr("描述") << tr("极性")
-             << tr("类型") << tr("QR模板") << tr("Fanout PN")
-             << tr("用量") << tr("标贴模板") << tr("λ1")
-             << tr("λ2") << tr("IL 限值") << tr("类型SM/MM") << tr("光纤规格");
-
-
+    headList << QObject::tr("成品编号") << QObject::tr("描述") << QObject::tr("极性")
+             << QObject::tr("类型") << QObject::tr("QR模板") << QObject::tr("Fanout PN")
+             << QObject::tr("用量") << QObject::tr("标贴模板") << QObject::tr("λ1")
+             << QObject::tr("λ2") << QObject::tr("IL 限值") << QObject::tr("类型SM/MM") << QObject::tr("光纤规格");
 }
+
 
 DbTem* DbTem::build()
 {

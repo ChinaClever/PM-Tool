@@ -2,6 +2,7 @@
 #include "http/JQLibrary/JQNet"
 #include "http/httpclient.h"
 #include <QDebug>
+#include "config.h"
 
 
 // QString printworker::doprint(sLabelInfo info)
@@ -28,22 +29,25 @@ QString printworker::doprint(sLabelInfo info)
     int PrintTemplate = info.PrintTemplate;
 
     //return "";
-    return httpPostIni(str1 + "\n" + str2 , "127.0.0.", "1","80",PrintTemplate);
+    Cfg *cfg = Cfg::bulid();
+    QString value = cfg->read("printIp", 0, "Sys").toString();
+
+    return httpPostIni(str1 + "\n" + str2 , value ,"80",PrintTemplate);
 }
 
-QString printworker::httpPostIni(const QString& data,const QString net,const QString ip, const QString& host,const int PrintTemplate) {
+QString printworker::httpPostIni(const QString& data,const QString ip, const QString& host,const int PrintTemplate) {
     // 构造 URL
 
     QString url = QString("http://%1:%2/Integration/FiberBox16F/Execute").arg("192.168.1." + ip).arg(host);
     QString Newhost = QString::number(host.toInt() + PrintTemplate);
     switch (PrintTemplate){
         case 0:break;
-        case 1:url = QString("http://%1:%2/Integration/FiberBoxLabel1/Execute").arg(net + ip).arg(Newhost);break;//81
-        case 2:url = QString("http://%1:%2/Integration/FiberBoxLabel2/Execute").arg(net + ip).arg(Newhost);break;//82
-        case 3:url = QString("http://%1:%2/Integration/FiberBoxLabel3/Execute").arg(net + ip).arg(Newhost);break;
-        case 4:url = QString("http://%1:%2/Integration/FiberBoxLabel4/Execute").arg(net + ip).arg(Newhost);break;
-        case 5:url = QString("http://%1:%2/Integration/FiberBoxLabel5/Execute").arg(net + ip).arg(Newhost);break;
-        case 6:url = QString("http://%1:%2/Integration/FiberBoxLabel6/Execute").arg(net + ip).arg(Newhost);break;
+        case 1:url = QString("http://%1:%2/Integration/FiberBoxLabel1/Execute").arg(ip).arg(Newhost);break;//81
+        case 2:url = QString("http://%1:%2/Integration/FiberBoxLabel2/Execute").arg(ip).arg(Newhost);break;//82
+        case 3:url = QString("http://%1:%2/Integration/FiberBoxLabel3/Execute").arg(ip).arg(Newhost);break;
+        case 4:url = QString("http://%1:%2/Integration/FiberBoxLabel4/Execute").arg(ip).arg(Newhost);break;
+        case 5:url = QString("http://%1:%2/Integration/FiberBoxLabel5/Execute").arg(ip).arg(Newhost);break;
+        case 6:url = QString("http://%1:%2/Integration/FiberBoxLabel6/Execute").arg(ip).arg(Newhost);break;
     }
 
     qDebug() << "URL:" << url;

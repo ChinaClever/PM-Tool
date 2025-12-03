@@ -13,6 +13,7 @@ Setup_MainWid::Setup_MainWid(QWidget *parent)
 
     initLogCount();
     initPcNum();
+    initPrintIp();
 
 }
 
@@ -34,6 +35,28 @@ void Setup_MainWid::writePcNum()
     int arg1 = ui->pcNumSpin->value();
     cfg->item->pcNum = arg1;
     cfg->write("pc_num", arg1, "Sys");
+}
+
+void Setup_MainWid::writePrintIp()
+{
+    Cfg *cfg = Cfg::bulid();
+    if (!cfg || !cfg->item) return;
+
+    QString arg1 = ui->printIp->text();
+    cfg->item->printIp = arg1;
+    cfg->write("printIp", arg1, "Sys");
+}
+
+void Setup_MainWid::initPrintIp()
+{
+    Cfg *cfg = Cfg::bulid();
+    if (!cfg) return;
+
+    QString value = cfg->read("printIp", 0, "Sys").toString();
+    if (cfg->item) {
+        cfg->item->printIp = value;
+    }
+    ui->printIp->setText(value);
 }
 
 void Setup_MainWid::initPcNum()
@@ -121,3 +144,27 @@ void Setup_MainWid::on_Translation_clicked()
 
     ui->Translation->setText(isEnglish ? tr("Switch to Chinese") : tr("Switch to English"));
 }
+
+void Setup_MainWid::on_ipBtn_clicked()
+{
+    static bool isEditing = false;   // 当前是否处于编辑模式
+    QString btnText = tr("修改");
+    // 权限检查
+    if (!usr_land_jur()) {
+        MsgBox::critical(this, tr("你无权进行此操作"));
+        return;
+    }
+
+    if (isEditing) {
+        writePrintIp();        // save printIp
+        btnText = tr("修改");
+        isEditing = false;
+    } else {
+        btnText = tr("保存");
+        isEditing = true;
+    }
+
+    ui->ipBtn->setText(btnText);
+    ui->printIp->setEnabled(isEditing);
+}
+

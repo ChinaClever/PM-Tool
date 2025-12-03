@@ -20,12 +20,16 @@ protected:
     void writeLogCount();
     void initPcNum();
     void writePcNum();
+    void initPrintIp();
+    void writePrintIp();
     void retranslateAllUi();
 
 private slots:
     void on_pcBtn_clicked();
 
     void on_Translation_clicked();
+
+    void on_ipBtn_clicked();
 
 private:
     Ui::Setup_MainWid *ui;
