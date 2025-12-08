@@ -45,6 +45,7 @@ void MapProcessor::run()
             if((i+1)%(bulkBoxNum+1) == 0){
                  busBulk::setBusline(busMap[i+1].busData);
                  busBulk::setBusTotal(busMap[i+1].busData);
+                 busMap[i+1].info.key = busMap[i+1].info.busKey;
                  setTemInc(busMap[i+1].envItemList,1);
                  {
                      QMutexLocker locker(&busBulkPhase);
@@ -53,6 +54,8 @@ void MapProcessor::run()
             }
             else{
                 QString key = busMap[i+1].info.boxKey;
+
+                busMap[i+1].info.key = busMap[i+1].info.boxKey;
                 busMap[i+1].info.datetime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
                 //qDebug()<<key<<busMap[i+1].boxData.loopItemList.eleActive.size();
                 //for(int j =0 ;j<busMap[i+1].boxData.loopItemList.eleActive.size();j++)qDebug()<<busMap[i+1].boxData.loopItemList.eleActive[j];

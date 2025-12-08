@@ -11,3 +11,5 @@ QString BusPort2;
 QString serIp3;
 QString port3;
 QString BusPort3;
+
+

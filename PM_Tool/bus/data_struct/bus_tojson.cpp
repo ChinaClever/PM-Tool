@@ -222,10 +222,12 @@ void bus_toJson::setJson(bool flag)
     json["bar_id"] = m_bar_id;
     json["bus_name"] = m_bus_name;
     json["bus_key"] = m_bus_key;
+    json["key"] = m_bus_key;
     json["box_name"] = "";
     if(flag){
         json["box_name"] = m_box_name;
         json["box_key"] = m_box_key ;
+        json["key"] = m_box_key;
     }
 
    // qDebug()<<m_box_key;

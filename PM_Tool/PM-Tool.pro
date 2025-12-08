@@ -1,5 +1,10 @@
 QT += core gui network sql
 
+INCLUDEPATH += $$PWD/paho/include
+
+LIBS += -L$$PWD/paho/lib
+LIBS += -lpaho-mqtt3c
+# 如果以后用 SSL 版本可以换成 -lpaho-mqtt3cs
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

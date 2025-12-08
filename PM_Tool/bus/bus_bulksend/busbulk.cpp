@@ -7,7 +7,7 @@
 #include "databasemanager.h"
 #include <QDebug>
 #include <math.h>
-const int BusNum = 3; //线程数量
+const int BusNum = 1; //线程数量
 busBulk::busBulk(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::busBulk)

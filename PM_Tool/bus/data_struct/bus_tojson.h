@@ -58,6 +58,7 @@ private:
     QString m_box_name;
     QString m_bus_key;
     QString m_box_key;
+    QString key;
 
     QJsonObject m_bus_data;
     QJsonObject m_bus_cfg;

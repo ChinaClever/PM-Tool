@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QThread>
+#include <MQTTClient.h>
 
 class MapJsonQueue:public QThread
 {
@@ -13,6 +14,7 @@ public:
     ~MapJsonQueue();
 
     void run() override;
+    bool sendMqtt(const QJsonObject &obj, const QString &brokerIp, quint16 brokerPort);
 public slots:
     void JRun(bool flag);
 signals:
@@ -20,5 +22,6 @@ signals:
 
 private:
     bool m_running;
+    MQTTClient m_pahoClient = NULL;
 };
 #endif // MAPJSONQUEUE_H
