@@ -13,10 +13,19 @@ extern QString serIp3;
 extern QString port3;
 extern QString BusPort3;
 
+extern QString mqttserIp;
+extern QString mqttport;
+extern QString mqttBusPort;
+
 extern bool enableUdp;    // true = UDP
 extern bool enableMqtt;   // true = MQTT
 
-extern QString mqttClientId;   // clientId
-extern QString mqttTopicPath;  // topic/path
 extern int mqttKeepAlive;      // 心跳秒数
 extern int mqttQos;            // 发送 Qos
+
+enum class SendMode {
+    UDP,
+    MQTT,
+    NONE
+};
+extern SendMode sendMode;

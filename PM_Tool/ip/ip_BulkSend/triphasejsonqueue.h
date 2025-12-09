@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QThread>
-
+#include <MQTTClient.h>
 class TriPhaseJsonQueue:public QThread
 {
     Q_OBJECT
@@ -19,7 +19,7 @@ signals:
 private:
 
     bool m_running = true;
-
+    MQTTClient m_pahoClient = NULL;
 };
 
 #endif // TRIPHASEJSONQUEUE_H

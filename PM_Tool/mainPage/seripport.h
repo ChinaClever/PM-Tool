@@ -26,6 +26,10 @@ signals:
 private slots:
     void on_sendAllBtn_clicked();
 
+    void on_radioButton_clicked();
+
+    void on_radioButton_clicked(bool checked);
+
 private:
     Ui::serIpPort *ui;
     busBulk* mBusBulk = nullptr;

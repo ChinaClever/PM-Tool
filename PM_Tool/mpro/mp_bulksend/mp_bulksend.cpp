@@ -7,7 +7,7 @@
 #include "databasemanager.h"
 #include <QDebug>
 #include <math.h>
-const int ProNum = 3;
+const int ProNum = 1;
 
 mp_bulksend::mp_bulksend(QWidget *parent)
     : QWidget(parent)

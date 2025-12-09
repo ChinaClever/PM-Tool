@@ -24,7 +24,12 @@ serIpPort::serIpPort(QWidget *parent)
     port3 = ui->port3->text();
     BusPort3 = ui->BusPort3->text();
 
-    ui->serIp1->setValidator(new QRegExpValidator(QRegExp("\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b")));
+
+    mqttserIp = ui->mqttIp->text();
+    mqttport = ui->mqttPdu->text();
+    mqttBusPort = ui->mqttBus->text();
+
+    //ui->serIp1->setValidator(new QRegExpValidator(QRegExp("\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b")));
     ui->port1->setValidator(new QIntValidator(0, 65532,ui->port1));
     ui->BusPort1->setValidator(new QIntValidator(0, 65532,ui->BusPort1));
     ui->serIp2->setValidator(new QRegExpValidator(QRegExp("\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b")));
@@ -33,6 +38,9 @@ serIpPort::serIpPort(QWidget *parent)
     ui->serIp3->setValidator(new QRegExpValidator(QRegExp("\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b")));
     ui->port3->setValidator(new QIntValidator(0, 65532,ui->port3));
     ui->BusPort3->setValidator(new QIntValidator(0, 65532,ui->BusPort3));
+
+    ui->mqttBus->setValidator(new QIntValidator(0, 65532,ui->port3));
+    ui->mqttPdu->setValidator(new QIntValidator(0, 65532,ui->BusPort3));
 
     connect(ui->serIp1, &QLineEdit::editingFinished, this, [this](){
         serIp = ui->serIp1->text();
@@ -63,6 +71,16 @@ serIpPort::serIpPort(QWidget *parent)
     connect(ui->BusPort3, &QLineEdit::editingFinished, this, [this](){
         BusPort3 = ui->BusPort3->text();
     });
+
+    connect(ui->mqttIp, &QLineEdit::editingFinished, this, [this](){
+        mqttserIp = ui->mqttIp->text();
+    });
+    connect(ui->mqttPdu, &QLineEdit::editingFinished, this, [this](){
+        mqttport = ui->mqttPdu->text();
+    });
+    connect(ui->mqttBus, &QLineEdit::editingFinished, this, [this](){
+        mqttBusPort = ui->mqttBus->text();
+    });
 }
 
 serIpPort::~serIpPort()
@@ -91,5 +109,22 @@ void serIpPort::setSubModules(ip_BulkSend* ip, mp_bulksend* mp, busBulk* bus)
     mIpBulkSend = ip;
     mMpBulkSend = mp;
     mBusBulk = bus;
+}
+
+
+void serIpPort::on_radioButton_clicked()
+{
+
+}
+
+
+void serIpPort::on_radioButton_clicked(bool checked)
+{
+    if(checked){
+        sendMode = SendMode::MQTT;
+    }
+    else{
+        sendMode = SendMode::NONE;
+    }
 }
 

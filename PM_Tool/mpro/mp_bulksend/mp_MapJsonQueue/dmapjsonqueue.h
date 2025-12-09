@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QThread>
-
+#include <MQTTClient.h>
 class DMapJsonQueue:public QThread
 {
 public:
@@ -15,6 +15,7 @@ public slots:
     void DJRun(bool flag);
 private:
     bool m_running;
+    MQTTClient m_pahoClient = NULL;
 };
 
 #endif // DMAPJSONQUEUE_H

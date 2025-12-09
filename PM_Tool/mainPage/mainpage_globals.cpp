@@ -12,4 +12,10 @@ QString serIp3;
 QString port3;
 QString BusPort3;
 
+QString mqttserIp;
+QString mqttport;
+QString mqttBusPort;
 
+SendMode sendMode = SendMode::NONE;
+int mqttKeepAlive = 60;
+int mqttQos = 0;

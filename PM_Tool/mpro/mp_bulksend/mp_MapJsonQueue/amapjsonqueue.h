@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QThread>
+#include <MQTTClient.h>
 
 class AMapJsonQueue:public QThread
 {
@@ -18,6 +19,7 @@ public slots:
 
 private:
     bool m_running;
+    MQTTClient m_pahoClient = NULL;
 };
 
 #endif // AMAPJSONQUEUE_H

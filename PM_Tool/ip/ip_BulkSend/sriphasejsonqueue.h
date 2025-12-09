@@ -2,6 +2,7 @@
 #define SRIPHASEJSONQUEUE_H
 #include <QObject>
 #include <QThread>
+#include <MQTTClient.h>
 
 class SriPhaseJsonQueue:public QThread
 {
@@ -17,8 +18,7 @@ signals:
     void ScheckTime(int);
 private:
     bool m_running;
-
-
+    MQTTClient m_pahoClient = NULL;
 
 };
 
