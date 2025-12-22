@@ -42,7 +42,7 @@ void MapProcessor::run()
         busMapLock.lockForRead();  //  加读锁
         for (int i = 0; i < busMap.size(); i++) {
 
-            if((i+1)%(bulkBoxNum+1) == 0){
+            if((i+1)%(bulkBoxNum+1) == 0){              //始端箱
                  busBulk::setBusline(busMap[i+1].busData);
                  busBulk::setBusTotal(busMap[i+1].busData);
                  busMap[i+1].info.key = busMap[i+1].info.busKey;
@@ -52,7 +52,7 @@ void MapProcessor::run()
                      bulkPhase = QVector<QVector<double>>(6, QVector<double>(3, 0.0));
                  }
             }
-            else{
+            else{                                      //插接箱
                 QString key = busMap[i+1].info.boxKey;
 
                 busMap[i+1].info.key = busMap[i+1].info.boxKey;
@@ -93,6 +93,7 @@ void MapProcessor::setBoxInc(BoxData& box,const QString& key)
     auto &u = box.loopItemList;
     for(int i = 0; i < box.loopItemList.curValue.size(); i ++ ){
         x = specRanNumGgen::getrandom(100);
+        x /= 10.0;
         double &y = u.curValue[i];
         newVal = u.curInc[i] ? x+y : y-x;
 

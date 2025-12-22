@@ -98,5 +98,6 @@ QString printworker::httpPostIni(const QString& data,const QString ip, const QSt
         thread->wait(1000); // 等待最多 1 秒
     }
 
+    qDebug()<<str;
     return str;
 }
