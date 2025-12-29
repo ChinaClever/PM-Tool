@@ -92,8 +92,7 @@ void MapProcessor::setBoxInc(BoxData& box,const QString& key)
     double x,newVal;
     auto &u = box.loopItemList;
     for(int i = 0; i < box.loopItemList.curValue.size(); i ++ ){
-        x = specRanNumGgen::getrandom(100);
-        x /= 10.0;
+        x = specRanNumGgen::getrandom(5);
         double &y = u.curValue[i];
         newVal = u.curInc[i] ? x+y : y-x;
 
