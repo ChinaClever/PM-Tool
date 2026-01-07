@@ -132,7 +132,6 @@ private:
     bool m_isPendingPrizeSwitch = false; // 标识是否处于“点击进入下一奖项”的等待期
     QVector<QLabel*> m_dynamicLabels;    // 右侧滚动区域的 Label 控件集合
 
-    QElapsedTimer m_doubleClickTimer;
 };
 
 #endif // WIDGET_H

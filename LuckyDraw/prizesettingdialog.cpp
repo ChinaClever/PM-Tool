@@ -91,7 +91,10 @@ PrizeSettingDialog::PrizeSettingDialog(const QVector<PrizeConfig> &prizes, QWidg
     // 双击选图 (第6列)
     connect(table, &QTableWidget::cellDoubleClicked, [this](int row, int col){
         if(col == 6) {
-            QString path = QFileDialog::getOpenFileName(this, "选择图片", "./images", "Images (*.png *.jpg)");
+            QString path = QFileDialog::getOpenFileName(this,
+                                                        "选择图片",
+                                                        "./images",
+                                                        "图片文件 (*.png *.jpg *.jpeg *.bmp *.gif)");
             if(!path.isEmpty()) table->item(row, col)->setText("images/" + QFileInfo(path).fileName());
         }
     });
@@ -111,15 +114,23 @@ void PrizeSettingDialog::setRowData(int row, const PrizeConfig &p) {
     table->setItem(row, 2, new QTableWidgetItem(p.priceName));
 
     // --- 3 & 4. 纯手动数字控件 ---
-    auto createSpinBox = [this, row](int value) {
+    auto createSpinBox = [this, row](int value, int column) {
         QSpinBox *sb = new QSpinBox();
-        sb->setRange(1, 9999);
+
+        // 如果是第 3 列（每轮人数），设置上限为 20
+        if (column == 3) {
+            sb->setRange(1, 20);
+            sb->setToolTip("每轮抽奖人数最多不能超过 20 人");
+        } else {
+            sb->setRange(1, 9999); // 总轮数不限制
+        }
+
         sb->setValue(value);
         sb->setAlignment(Qt::AlignCenter);
 
-        // 【关键】：隐藏上下按钮，只能手动填
+        // 隐藏上下按钮，只能手动填
         sb->setButtonSymbols(QAbstractSpinBox::NoButtons);
-        // 【关键】：安装事件过滤器，用于禁用鼠标滚轮
+        // 安装事件过滤器，用于禁用鼠标滚轮
         sb->installEventFilter(this);
 
         connect(sb, QOverload<int>::of(&QSpinBox::valueChanged), [this, row](){
@@ -127,9 +138,8 @@ void PrizeSettingDialog::setRowData(int row, const PrizeConfig &p) {
         });
         return sb;
     };
-
-    table->setCellWidget(row, 3, createSpinBox(p.winnersPerRound));
-    table->setCellWidget(row, 4, createSpinBox(p.totalRounds));
+    table->setCellWidget(row, 3, createSpinBox(p.winnersPerRound,3));
+    table->setCellWidget(row, 4, createSpinBox(p.totalRounds,4));
 
     // 5. 奖品总数 (计算列，底色区分)
     int total = p.winnersPerRound * p.totalRounds;
@@ -175,7 +185,7 @@ void PrizeSettingDialog::updateGrandTotal() {
     for(int i = 0; i < table->rowCount(); ++i) {
         if(table->item(i, 5)) total += table->item(i, 5)->text().toInt();
     }
-    totalSumLabel->setText(QString("所有奖项累计总人数: %1 人").arg(total));
+    totalSumLabel->setText(QString("所有奖项累计总人数: %1 人 \n非全员参与的奖项人数请不要超过总人数").arg(total));
 }
 
 void PrizeSettingDialog::swapRows(int rowA, int rowB) {

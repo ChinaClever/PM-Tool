@@ -106,8 +106,8 @@ void Widget::on_btnSettings_clicked()
     // 每次点击后重写计时器
     m_clickTimer.restart();
 
-    // 2. 检查是否达到 5 次
-    if (m_settingsClickCount >= 5) {
+    // 2. 检查是否达到 2 次
+    if (m_settingsClickCount >= 2) {
         // 重置计数器，防止下次进来又是 1 次就开
         m_settingsClickCount = 0;
         m_clickTimer.invalidate();
@@ -129,7 +129,7 @@ void Widget::on_btnSettings_clicked()
         }
     } else {
         // 可选：在控制台或者状态栏小提示，调试用，正式发布可以删掉
-        qDebug() << "还要再点" << (5 - m_settingsClickCount) << "次打开配置";
+        qDebug() << "还要再点" << (2 - m_settingsClickCount) << "次打开配置";
     }
 }
 
@@ -197,6 +197,7 @@ void Widget::loadPeopleExcel(const QString &path) {
     m_people.clear();
     int row = 2; // 默认第一行是：工号, 姓名, 部门...
 
+    QSet<QString>st;
     while (true) {
         // 读取第一列和第二列
         QVariant idVar = xlsx.read(row, 1);
@@ -208,10 +209,11 @@ void Widget::loadPeopleExcel(const QString &path) {
         }
 
         Person p;
+        if(st.contains(idVar.toString().trimmed()))continue;
+        st.insert(idVar.toString().trimmed());
         p.employeeId = idVar.toString().trimmed();
         // 如果有工号但没填姓名，给个“未知”占位
         p.name = nameVar.isNull() ? "未知" : nameVar.toString().trimmed();
-
         m_people.append(p);
         row++;
     }
@@ -634,18 +636,9 @@ void Widget::loadHistoryFromTxt() {
 
 void Widget::on_startDrawButton_clicked()
 {
-    // --- 1. 双击判定逻辑 ---
-    bool isDoubleClick = false;
-    if (m_doubleClickTimer.isValid() && m_doubleClickTimer.elapsed() < 250) { // 稍微放宽到350ms，更容易触发
-        isDoubleClick = true;
-        qDebug() << "检测到双击，强制穿透保护层！";
-    }
-    m_doubleClickTimer.restart();
-
-    // --- 2. 拦截判断 ---
-    // 修改点：如果是双击(isDoubleClick为true)，就不进这个if，直接往下走
-    if (!isDoubleClick && m_lastClickTimer.elapsed() < 1000) {
-        qDebug() << "点击太快了，操作已拦截 (双击可强制执行)";
+    if (m_lastClickTimer.elapsed() < 500) {
+        qDebug() << "点击太快了，操作已拦截";
+        m_lastClickTimer.restart();
         return;
     }
     m_lastClickTimer.restart();
@@ -656,12 +649,15 @@ void Widget::on_startDrawButton_clicked()
         const PrizeConfig &current = m_prizes[m_currentPrizeIndex];
 
         int count = 0;
+        // 【核心修改】：传入完整的 current 对象，匹配“等级-奖品名”分组逻辑
         QSet<QString> peopleWonInThisPrize = getIdsFromCurrentSection(current);
 
         for (const Person &p : m_people) {
             if (current.allowUsedPeople) {
+                // 全员抽：只要在本奖项（特定等级和奖品）没中过就算可用
                 if (!peopleWonInThisPrize.contains(p.employeeId)) count++;
             } else {
+                // 普通抽：必须全局没中过才算可用
                 if (!m_usedPeople.contains(p.employeeId)) count++;
             }
         }
@@ -680,8 +676,10 @@ void Widget::on_startDrawButton_clicked()
         qDeleteAll(m_dynamicLabels);
         m_dynamicLabels.clear();
 
+        // 【新增】：重置标题为“候选名单”
         ui->rightTitle->setText("候选名单");
 
+        // 切换后检查新奖项是否还有人可抽
         if (getAvailablePoolSize() <= 0) {
             ui->startDrawButton->setText("人员不足以开启新奖项");
             ui->startDrawButton->setEnabled(false);
@@ -696,13 +694,15 @@ void Widget::on_startDrawButton_clicked()
         m_isRunning = false;
         m_timer->stop();
 
+        // 【新增】：停止时切换标题
         ui->rightTitle->setText("中奖名单");
 
-        drawFinalWinners();
+        drawFinalWinners(); // 内部已包含隐藏多余框和设置字体的逻辑
 
         const PrizeConfig &current = m_prizes[m_currentPrizeIndex];
         int availableAfterDraw = getAvailablePoolSize();
 
+        // 1. 先检查是否达到了配置的奖项总轮数
         if (m_currentRound >= current.totalRounds) {
             if (m_currentPrizeIndex < m_prizes.size() - 1) {
                 m_isPendingPrizeSwitch = true;
@@ -713,13 +713,15 @@ void Widget::on_startDrawButton_clicked()
                 ui->startDrawButton->setEnabled(false);
             }
         }
+        // 2. 如果轮数还没完，但池子已经空了
         else if (availableAfterDraw <= 0) {
             ui->startDrawButton->setText("人员已抽完");
             ui->startDrawButton->setEnabled(false);
         }
+        // 3. 还有人，准备下一轮
         else {
             m_currentRound++;
-            updateRoundUI();
+            updateRoundUI(); // 点击停止后，顶部立刻显示“第 2 / 3 轮”，让用户知道下一轮要开始了
             if (availableAfterDraw < current.winnersPerRound) {
                 ui->startDrawButton->setText(QString("准备下轮(剩%1人)").arg(availableAfterDraw));
             } else {
@@ -727,8 +729,10 @@ void Widget::on_startDrawButton_clicked()
             }
         }
 
+        // 更新左下角参与人数标签
         int globalUnused = 0;
         for (const Person &p : m_people) if (!m_usedPeople.contains(p.employeeId)) globalUnused++;
+       // ui->joinCountLabel->setText(QString("参与人数: %1").arg(globalUnused));
         return;
     }
 
@@ -742,11 +746,14 @@ void Widget::on_startDrawButton_clicked()
             return;
         }
 
+        // 【新增】：开始抽奖时切换标题
         ui->rightTitle->setText("候选名单");
 
-        if (ui->startDrawButton->text().contains("下一轮") || ui->startDrawButton->text().contains("准备下轮")) {
+        // 清理上一轮的残余名牌
+        if (ui->startDrawButton->text().contains("准备下一轮") || ui->startDrawButton->text().contains("准备下轮")) {
             qDeleteAll(m_dynamicLabels);
             m_dynamicLabels.clear();
+            updateRoundUI();
         }
 
         m_isRunning = true;
