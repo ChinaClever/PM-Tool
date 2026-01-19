@@ -12,6 +12,7 @@
 #include <QString>
 #include <QDebug>
 #include <cstring>
+#include <QCoreApplication>
 
 MapJsonQueue::MapJsonQueue(QObject* parent)
 {
@@ -44,6 +45,7 @@ void MapJsonQueue::run()
 
     msleep(QRandomGenerator::global()->bounded(1, 1000));
     std::unique_ptr<QUdpSocket> udpsocket = std::make_unique<QUdpSocket>();
+    udpsocket->setSocketOption(QAbstractSocket::SendBufferSizeSocketOption, 2 * 1024 * 1024);
 
     if (m_pahoClient == NULL) { // 检查是否已初始化
         QString uri = QString("tcp://%1:%2").arg(MQTTipAddress).arg(MQTTportStr);
@@ -80,7 +82,7 @@ void MapJsonQueue::run()
             {
                 QMutexLocker locker(&busBulkJQMutexes);
                 if(!busQueue.isEmpty()) u = busQueue.dequeue();
-                if(busQueue.size()>10000)
+                if(busQueue.size()>500)
                     qDebug()<<" aa  "<<busQueue.size();
             }
             if (u.isEmpty()) {
@@ -95,17 +97,27 @@ void MapJsonQueue::run()
                 BusCnt++;
                 BusCntt++;
 
-                if(!ipAddress.isEmpty() && Port)
-                    if(udpsocket->writeDatagram(jsonData, QHostAddress(ipAddress), Port) == -1) {
-                        qWarning() << "Failed to send data:" << udpsocket->errorString();
-                        BusCntEr++;
-                        // 可以选择重试或记录错误
+                if(!ipAddress.isEmpty() && Port) {
+                    // 尝试发送
+                    qint64 res = udpsocket->writeDatagram(jsonData, QHostAddress(ipAddress), Port);
+
+                    if(res == -1) {
+                        // 如果是缓冲区满，等待写入就绪后再试一次（仅限必要情况）
+                        if(udpsocket->waitForBytesWritten(10)) {
+                            res = udpsocket->writeDatagram(jsonData, QHostAddress(ipAddress), Port);
+                        }
                     }
+
+                    if(res == -1) {
+                        qWarning() << "Still failed:" << udpsocket->errorString();
+                        BusCntEr++;
+                    }
+                }
 
 
                 if(!ipAddress2.isEmpty() && Port2)
                     if(udpsocket->writeDatagram(jsonData, QHostAddress(ipAddress2), Port2) == -1) {
-                        qWarning() << "Failed to send data:" << udpsocket->errorString();
+                        qWarning() << "Failed to send2 data:" << udpsocket->errorString();
                         BusCntEr++;
                         // 可以选择重试或记录错误
                     }
@@ -113,15 +125,18 @@ void MapJsonQueue::run()
 
                 if(!ipAddress3.isEmpty() && Port3)
                     if(udpsocket->writeDatagram(jsonData, QHostAddress(ipAddress3), Port3) == -1) {
-                        qWarning() << "Failed to send data:" << udpsocket->errorString();
+                        qWarning() << "Failed to send3 data:" << udpsocket->errorString();
                         BusCntEr++;
                         // 可以选择重试或记录错误
                     }
 
-                if((cnt++)%50 == 0){
-                    // int s = QRandomGenerator::global()->bounded(1, 100);
-                    usleep(1);
+                int currentSize = busQueue.size();
+                if (currentSize > 5000) {
+                    if (cnt % 100 == 0) QThread::usleep(500); // 压力大，每100个包睡0.5ms
+                } else {
+                    if (cnt % 50 == 0) QThread::msleep(1);    // 压力小，每50个包睡1ms
                 }
+                cnt++;
  //           }
  //           else
             if(sendMode == SendMode::MQTT){
@@ -142,7 +157,7 @@ void MapJsonQueue::run()
                         );
 
                     if (pub_rc != MQTTCLIENT_SUCCESS) {
-                        qWarning() << "MQTT Publish failed to" << topic << ", rc:" << pub_rc;
+                        qWarning() << "MQTT Publish failed to4" << topic << ", rc:" << pub_rc;
                         // TODO: 考虑增加错误计数或重试机制
                         BusCntEr++;
                     } else {
@@ -156,7 +171,7 @@ void MapJsonQueue::run()
             //sendMqtt(u,"",2);
 
         }
-        msleep(5);
+        msleep(10);
 
         //qDebug()<<BusCntt<<' '<<(bulkBoxNum+1)*bulkBusNum;
         if(BusCntt >= bulkBoxNum*bulkBusNum) {
