@@ -82,8 +82,11 @@ void MapJsonQueue::run()
             {
                 QMutexLocker locker(&busBulkJQMutexes);
                 if(!busQueue.isEmpty()) u = busQueue.dequeue();
-                if(busQueue.size()>500)
-                    qDebug()<<" aa  "<<busQueue.size();
+                if(busQueue.size()>20000){
+                    busQueue.clear();
+                     //qDebug()<<" aa  "<<busQueue.size();
+                }
+
             }
             if (u.isEmpty()) {
                 qDebug() << "Empty JSON object, skipped";
@@ -132,9 +135,9 @@ void MapJsonQueue::run()
 
                 int currentSize = busQueue.size();
                 if (currentSize > 5000) {
-                    if (cnt % 100 == 0) QThread::usleep(500); // 压力大，每100个包睡0.5ms
+                    if (cnt % 100 == 0) QThread::usleep(50); // 压力大，每100个包睡0.5ms
                 } else {
-                    if (cnt % 50 == 0) QThread::msleep(1);    // 压力小，每50个包睡1ms
+                    if (cnt % 20 == 0) QThread::msleep(50);    // 压力小，每50个包睡1ms
                 }
                 cnt++;
  //           }
