@@ -146,7 +146,12 @@ void DMapJsonQueue::run()
                         MpCntEr++;
                     }
                 }
-
+                int currentSize = ProBulkJQs[3].size();
+                if (currentSize > 5000) {
+                    if (cnt % 100 == 0) QThread::usleep(50); // 压力大，每100个包睡0.5ms
+                } else {
+                    if (cnt % 20 == 0) QThread::msleep(50);    // 压力小，每50个包睡1ms
+                }
             if (sendMode == SendMode::MQTT) {
 
                 // 【MQTT 逻辑：持久连接 + 重连 + 成功计数】
@@ -193,11 +198,8 @@ void DMapJsonQueue::run()
                 }
             } // 结束 MQTT 模式
             // --------------------------------------------------------
-
-            if((++cnt)%50 == 0)
-                usleep(1);
         }
-        usleep(5);
+        usleep(10);
 
         // 计时逻辑 (保持不变)
         if(MpCntt >= (Anum+Bnum+Cnum+Dnum)*0.9) {

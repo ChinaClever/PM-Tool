@@ -134,7 +134,12 @@ void BMapJsonQueue::run()
 
                     MpCnt++;
                     MpCntt++;
-
+                    int currentSize = ProBulkJQs[1].size();
+                    if (currentSize > 5000) {
+                        if (cnt % 100 == 0) QThread::usleep(50); // 压力大，每100个包睡0.5ms
+                    } else {
+                        if (cnt % 20 == 0) QThread::msleep(50);    // 压力小，每50个包睡1ms
+                    }
             if (sendMode == SendMode::MQTT) {
 
                 // 【MQTT 高效发送逻辑】
@@ -173,8 +178,6 @@ void BMapJsonQueue::run()
             } // 结束 MQTT 模式
 
             // 【限流】 每处理 50 个数据包，短暂休息 1 微秒
-            if((cnt++)%50 == 0)
-                usleep(1);
         } // 结束 while(!ProBulkJQs[1].isEmpty())
 
         // 如果 m_pahoClient 在内循环中被置为 NULL，则跳过 usleep(5) 直接进入下一轮重连。
@@ -183,7 +186,7 @@ void BMapJsonQueue::run()
         }
 
         // 优化：队列为空时，让出 CPU 给其他线程（包括 A, C, D）
-        msleep(5);
+        msleep(10);
 
         // 计时逻辑 (保持不变)
         if(MpCntt >= (Anum+Bnum+Cnum+Dnum)*0.9) {
